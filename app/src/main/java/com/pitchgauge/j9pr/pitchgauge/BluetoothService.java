@@ -9,18 +9,21 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
 public class BluetoothService {
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static final String NAME = "BluetoothData";
     public static final int STATE_CONNECTED = 3;
     public static final int STATE_CONNECTING = 2;
@@ -32,7 +35,7 @@ public class BluetoothService {
     private int ar = 16;
     private int av = 2000;
     private Context context;
-    float[] fData = new float[32];
+    //float[] fData = new float[32];
     private int iBaud = 9600;
     private int iError = 0;
     long lLastTime = System.currentTimeMillis();
@@ -43,12 +46,24 @@ public class BluetoothService {
     private final Handler mHandler;
     private int mState;
     MyFile myFile;
-    private byte[] packBuffer = new byte[11];
-    private Queue<Byte> queueBuffer = new LinkedList();
+    //private byte[] packBuffer = new byte[11];
+    //private Queue<Byte> queueBuffer = new LinkedList();
     private int sDataSave = 0;
     String strDate = "";
     String strTime = "";
     boolean mSuspend = false;
+
+    private List<String> mDeviceAddresses;
+    private List<String> mDeviceNames;
+    private List<ConnectedThread> mConnThreads;
+    private List<BluetoothSocket> mSockets;
+    private List<float[]> mfDatas;
+    private List<Queue<Byte>> mQueueBuffers;
+    private List<byte[]> mPackBuffers;
+
+    
+    private static final int MAX_SENSOR_COUNT = 2;
+    private final String TAG = "BLService";
 
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
@@ -57,6 +72,12 @@ public class BluetoothService {
             BluetoothServerSocket tmp = null;
             try {
                 tmp = BluetoothService.this.mAdapter.listenUsingRfcommWithServiceRecord(BluetoothService.NAME, BluetoothService.MY_UUID);
+                if (mAdapter.isEnabled()) {
+
+                    tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME,
+                            BluetoothService.MY_UUID);
+                }
+
             } catch (IOException e) {
             }
             this.mmServerSocket = tmp;
@@ -64,28 +85,34 @@ public class BluetoothService {
 
         public void run() {
             setName("AcceptThread");
-            while (BluetoothService.this.mState != 3) {
+            Log.d(TAG, "mState in acceptThread==" + mState);
+
+            while (BluetoothService.this.mState != STATE_CONNECTED) {
                 try {
                     BluetoothSocket socket = this.mmServerSocket.accept();
                     if (socket != null) {
                         synchronized (BluetoothService.this) {
-                            switch (BluetoothService.this.mState) {
-                                case 0:
-                                case 3:
+                            switch (mState) {
+                                case STATE_LISTEN:
+                                case STATE_CONNECTING:
+                                    connected(socket, socket.getRemoteDevice(), getAvailablePosIndexForNewConnection(socket.getRemoteDevice()));
+                                    break;
+                                case STATE_NONE:
+                                case STATE_CONNECTED:
+                                    // Either not ready or already connected. Terminate
+                                    // new socket.
                                     try {
                                         socket.close();
-                                        break;
                                     } catch (IOException e) {
-                                        break;
+                                        Log.e(TAG, "Could not close unwanted socket", e);
                                     }
-                                case 1:
-                                case 2:
-                                    BluetoothService.this.connected(socket, socket.getRemoteDevice());
                                     break;
                             }
                         }
                     }
                 } catch (IOException e2) {
+                    Log.e(TAG, "accept() failed", e2);
+
                     return;
                 }
             }
@@ -100,15 +127,18 @@ public class BluetoothService {
         }
     }
 
+
     private class ConnectThread extends Thread {
         private final BluetoothDevice mmDevice;
         private final BluetoothSocket mmSocket;
+        private int position;
 
-        public ConnectThread(BluetoothDevice device) {
+        public ConnectThread(BluetoothDevice device, UUID uuid, int pos) {
             this.mmDevice = device;
             BluetoothSocket tmp = null;
+            position = pos;
             try {
-                tmp = device.createRfcommSocketToServiceRecord(BluetoothService.MY_UUID);
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
             } catch (IOException e) {
             }
             this.mmSocket = tmp;
@@ -116,21 +146,33 @@ public class BluetoothService {
 
         public void run() {
             setName("ConnectThread");
-            BluetoothService.this.mAdapter.cancelDiscovery();
+            Log.d(TAG, "mState in connectThread==" + mState);
+
+            mAdapter.cancelDiscovery();
             try {
                 this.mmSocket.connect();
+
                 synchronized (BluetoothService.this) {
                     BluetoothService.this.mConnectThread = null;
                 }
-                BluetoothService.this.connected(this.mmSocket, this.mmDevice);
+
+                mDeviceAddresses.set(position, mmDevice.getAddress());
+                mDeviceNames.set(position, mmDevice.getName());
+                mSockets.set(position, mmSocket);
+                connected(mmSocket, mmDevice, position);
+
             } catch (IOException e) {
-                BluetoothService.this.connectionFailed();
+
+                connectionFailed(mmDevice);
+
                 try {
                     this.mmSocket.close();
                 } catch (IOException e2) {
                 }
+
                 BluetoothService.this.start();
             }
+
         }
 
         public void cancel() {
@@ -165,10 +207,15 @@ public class BluetoothService {
                 try {
                     int acceptedLen = this.mmInStream.read(tempInputBuffer);
                     if (acceptedLen > 0) {
-                        BluetoothService.this.CopeSerialData(acceptedLen, tempInputBuffer);
+                        int positionIndex = getPosIndexOfDevice(mmSocket.getRemoteDevice());
+                        if (positionIndex != -1) {
+                            BluetoothService.this.CopeSerialData(acceptedLen, tempInputBuffer, positionIndex);
+                        }
                     }
+
                 } catch (IOException e) {
-                    BluetoothService.this.connectionLost();
+                    Log.e(TAG, "disconnected " + mmSocket.getRemoteDevice(), e);
+                    BluetoothService.this.connectionLost(mmSocket.getRemoteDevice());
                     return;
                 }
             }
@@ -193,13 +240,73 @@ public class BluetoothService {
     public BluetoothService(Context contextIn, Handler handler) {
         this.context = contextIn;
         this.mAdapter = BluetoothAdapter.getDefaultAdapter();
-        this.mState = 0;
+        this.mState = STATE_NONE;
         this.mHandler = handler;
+
+        resetLists();
+    }
+
+    private void resetLists() {
+        mDeviceAddresses = new ArrayList<>(MAX_SENSOR_COUNT);
+        mDeviceNames = new ArrayList<>(MAX_SENSOR_COUNT);
+        mConnThreads = new ArrayList<>(MAX_SENSOR_COUNT);
+        mSockets = new ArrayList<>(MAX_SENSOR_COUNT);
+        mfDatas = new ArrayList<>(MAX_SENSOR_COUNT);
+        mPackBuffers = new ArrayList<>(MAX_SENSOR_COUNT);
+        mQueueBuffers = new ArrayList<>(MAX_SENSOR_COUNT);
+                
+        for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
+            mDeviceAddresses.add(null);
+            mDeviceNames.add(null);
+            mConnThreads.add(null);
+            mSockets.add(null);
+            mfDatas.add(new float[32]);
+            mPackBuffers.add(new byte[11]);
+            mQueueBuffers.add(new LinkedList());
+        }
+    }
+
+    public boolean isDeviceConnectedAtPos(int position) {
+        if (mConnThreads.get(position) == null) {
+            return false;
+        }
+        return true;
+    }
+
+
+    private int getPosIndexOfDevice(BluetoothDevice device) {
+        for (int i = 0; i < mDeviceAddresses.size(); i++) {
+            if (mDeviceAddresses.get(i) != null
+                    && mDeviceAddresses.get(i).equalsIgnoreCase(
+                    device.getAddress()))
+                return i;
+        }
+        return -1;
+    }
+
+    public int getAvailablePosIndexForNewConnection(BluetoothDevice device) {
+        if (getPosIndexOfDevice(device) == -1) {
+            for (int i = 0; i < mDeviceAddresses.size(); i++) {
+                if (mDeviceAddresses.get(i) == null) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     public void Send(byte[] buffer) {
-        if (this.mState == 3) {
-            this.mConnectedThread.write(buffer);
+        for (int i = 0; i < mConnThreads.size(); i++) {
+            try {
+                ConnectedThread r;
+                synchronized (this) {
+                    if (mState != STATE_CONNECTED)
+                        return;
+                    r = mConnThreads.get(i);
+                }
+                r.write(buffer);
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -217,24 +324,60 @@ public class BluetoothService {
             this.mConnectThread.cancel();
             this.mConnectThread = null;
         }
+
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+
         if (this.mAcceptThread == null) {
             this.mAcceptThread = new AcceptThread();
             this.mAcceptThread.start();
         }
-        setState(1);
+        setState(STATE_LISTEN);
     }
 
-    public synchronized void connect(BluetoothDevice device) {
-        if (this.mConnectedThread != null) {
-            this.mConnectedThread.cancel();
-            this.mConnectedThread = null;
+    public synchronized void connect(BluetoothDevice device, int pos) {
+
+        if (getPosIndexOfDevice(device) == -1) {
+
+            Log.d(TAG, "connect to: " + device);
+
+            if (mState == STATE_CONNECTING) {
+                if (mConnectThread != null) {
+                    mConnectThread.cancel();
+                    mConnectThread = null;
+                }
+            }
+
+            if (mConnThreads.get(pos) != null) {
+                mConnThreads.get(pos).cancel();
+                mConnThreads.set(pos, null);
+            }
+
+            try {
+
+                boolean temp = device.fetchUuidsWithSdp();
+                UUID uuid = null;
+                if( temp ){
+                    uuid = device.getUuids()[0].getUuid();
+                }
+
+                Log.d(TAG, "device UUID===" + uuid);
+
+                ConnectThread mConnectThread = new ConnectThread(device, uuid, pos);
+                mConnectThread.start();
+
+                setState(STATE_CONNECTING);
+
+            } catch (Exception e) {
+
+            }
         }
-        this.mConnectThread = new ConnectThread(device);
-        this.mConnectThread.start();
-        setState(2);
     }
 
-    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
+
+    public synchronized void connected(BluetoothSocket socket, BluetoothDevice device, int pos) {
         if (this.mConnectThread != null) {
             this.mConnectThread.cancel();
             this.mConnectThread = null;
@@ -245,12 +388,15 @@ public class BluetoothService {
         }
         this.mConnectedThread = new ConnectedThread(socket);
         this.mConnectedThread.start();
+        mConnThreads.set(pos, mConnectedThread);
+        mSockets.set(pos, socket);
+
         Message msg = this.mHandler.obtainMessage(4);
         Bundle bundle = new Bundle();
         bundle.putString("device_name", device.getName());
         msg.setData(bundle);
         this.mHandler.sendMessage(msg);
-        setState(3);
+        setState(STATE_CONNECTED);
     }
 
     public synchronized void stop() {
@@ -262,25 +408,49 @@ public class BluetoothService {
             this.mAcceptThread.cancel();
             this.mAcceptThread = null;
         }
-        setState(0);
+        for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
+            mDeviceNames.set(i, null);
+            mDeviceAddresses.set(i, null);
+            mSockets.set(i, null);
+
+            if (mConnThreads.get(i) != null) {
+                mConnThreads.get(i).cancel();
+                mConnThreads.set(i, null);
+            }
+        }
+        setState(STATE_NONE);
     }
 
-    private void connectionFailed() {
-        setState(1);
+    private void connectionFailed(BluetoothDevice device) {
+        setState(STATE_LISTEN);
         Message msg = this.mHandler.obtainMessage(5);
         Bundle bundle = new Bundle();
-        bundle.putString("toast", "Failed to connect device");
+        bundle.putString("toast", "Failed to connect device: " + device.getName());
         msg.setData(bundle);
         this.mHandler.sendMessage(msg);
     }
 
-    private void connectionLost() {
-        setState(1);
-        Message msg = this.mHandler.obtainMessage(5);
-        Bundle bundle = new Bundle();
-        bundle.putString("toast", "Device connection was lost");
-        msg.setData(bundle);
-        this.mHandler.sendMessage(msg);
+    private void connectionLost(BluetoothDevice device) {
+        int positionIndex = getPosIndexOfDevice(device);
+        if (positionIndex != -1) {
+
+            Log.i(TAG, "getPosIndexOfDevice(device) ==="
+                    + mDeviceAddresses.get(getPosIndexOfDevice(device)));
+
+            mDeviceAddresses.set(positionIndex, null);
+            mDeviceNames.set(positionIndex, null);
+            mSockets.set(positionIndex, null);
+            mConnThreads.set(positionIndex, null);
+
+            setState(STATE_LISTEN);
+
+            Message msg = this.mHandler.obtainMessage(5);
+            Bundle bundle = new Bundle();
+            bundle.putString("toast", "Device connection was lost from " + device.getName());
+            msg.setData(bundle);
+            mHandler.sendMessage(msg);
+        }
+
     }
 
     public int getBaud() {
@@ -303,92 +473,92 @@ public class BluetoothService {
         mSuspend = state;
     }
 
-    public void CopeSerialData(int acceptedLen, byte[] tempInputBuffer) {
+    public void CopeSerialData(int acceptedLen, byte[] tempInputBuffer, int pos) {
         for (int i = 0; i < acceptedLen; i++) {
-            this.queueBuffer.add(Byte.valueOf(tempInputBuffer[i]));
+            mQueueBuffers.get(pos).add(Byte.valueOf(tempInputBuffer[i]));
         }
-        while (this.queueBuffer.size() >= 11) {
-            if (((Byte) this.queueBuffer.poll()).byteValue() == (byte) 85) {
-                byte sHead = ((Byte) this.queueBuffer.poll()).byteValue();
+        while (mQueueBuffers.get(pos).size() >= 11) {
+            if (((Byte) mQueueBuffers.get(pos).poll()).byteValue() == (byte) 85) {
+                byte sHead = ((Byte) mQueueBuffers.get(pos).poll()).byteValue();
                 if ((sHead & 240) == 80) {
                     this.iError = 0;
                 }
                 for (int j = 0; j < 9; j++) {
-                    this.packBuffer[j] = ((Byte) this.queueBuffer.poll()).byteValue();
+                    mPackBuffers.get(pos)[j] = ((Byte) mQueueBuffers.get(pos).poll()).byteValue();
                 }
                 switch (sHead) {
                     case (byte) 80:
-                        int ms = (((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255);
-                        this.strDate = String.format("20%02d-%02d-%02d", new Object[]{Byte.valueOf(this.packBuffer[0]), Byte.valueOf(this.packBuffer[1]), Byte.valueOf(this.packBuffer[2])});
-                        this.strTime = String.format(" %02d:%02d:%02d.%03d", new Object[]{Byte.valueOf(this.packBuffer[3]), Byte.valueOf(this.packBuffer[4]), Byte.valueOf(this.packBuffer[5]), Integer.valueOf(ms)});
+                        int ms = (((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255);
+                        this.strDate = String.format("20%02d-%02d-%02d", new Object[]{Byte.valueOf(mPackBuffers.get(pos)[0]), Byte.valueOf(mPackBuffers.get(pos)[1]), Byte.valueOf(mPackBuffers.get(pos)[2])});
+                        this.strTime = String.format(" %02d:%02d:%02d.%03d", new Object[]{Byte.valueOf(mPackBuffers.get(pos)[3]), Byte.valueOf(mPackBuffers.get(pos)[4]), Byte.valueOf(mPackBuffers.get(pos)[5]), Integer.valueOf(ms)});
                         //RecordData(sHead, this.strDate + this.strTime);
                         break;
                     case (byte) 81:
-                        this.fData[0] = ((float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255))) / 32768.0f;
-                        this.fData[1] = ((float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255))) / 32768.0f;
-                        this.fData[2] = ((float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255))) / 32768.0f;
-                        this.fData[16] = ((float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255))) / 100.0f;
-                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[0])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[1])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[2])}) + " ");
+                        mfDatas.get(pos)[0] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[1] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[2] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[0])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[1])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[2])}) + " ");
                         break;
                     case (byte) 82:
-                        this.fData[3] = ((float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255))) / 32768.0f;
-                        this.fData[4] = ((float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255))) / 32768.0f;
-                        this.fData[5] = ((float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255))) / 32768.0f;
-                        this.fData[16] = ((float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255))) / 100.0f;
-                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[3])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[4])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[5])}) + " ");
+                        mfDatas.get(pos)[3] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[4] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[5] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[3])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[4])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[5])}) + " ");
                         break;
                     case (byte) 83:
-                        this.fData[6] = (((float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255))) / 32768.0f) * 180.0f;
-                        this.fData[7] = (((float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255))) / 32768.0f) * 180.0f;
-                        this.fData[8] = (((float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255))) / 32768.0f) * 180.0f;
-                        this.fData[16] = ((float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255))) / 100.0f;
-                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[6])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[7])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[8])}));
+                        mfDatas.get(pos)[6] = (((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f) * 180.0f;
+                        mfDatas.get(pos)[7] = (((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f) * 180.0f;
+                        mfDatas.get(pos)[8] = (((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f) * 180.0f;
+                        mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[6])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[7])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[8])}));
                         break;
                     case (byte) 84:
-                        this.fData[9] = (float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255));
-                        this.fData[10] = (float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255));
-                        this.fData[11] = (float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255));
-                        this.fData[16] = ((float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255))) / 100.0f;
-                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[9])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[10])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[11])}));
+                        mfDatas.get(pos)[9] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
+                        mfDatas.get(pos)[10] = (float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255));
+                        mfDatas.get(pos)[11] = (float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255));
+                        mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[9])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[10])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[11])}));
                         break;
                     case (byte) 85:
-                        this.fData[12] = (float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255));
-                        this.fData[13] = (float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255));
-                        this.fData[14] = (float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255));
-                        this.fData[15] = (float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255));
-                        //RecordData(sHead, String.format("% 7.0f", new Object[]{Float.valueOf(this.fData[12])}) + String.format("% 7.0f", new Object[]{Float.valueOf(this.fData[13])}) + String.format("% 7.0f", new Object[]{Float.valueOf(this.fData[14])}) + String.format("% 7.0f", new Object[]{Float.valueOf(this.fData[15])}));
+                        mfDatas.get(pos)[12] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
+                        mfDatas.get(pos)[13] = (float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255));
+                        mfDatas.get(pos)[14] = (float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255));
+                        mfDatas.get(pos)[15] = (float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255));
+                        //RecordData(sHead, String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[12])}) + String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[13])}) + String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[14])}) + String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[15])}));
                         break;
                     case (byte) 86:
-                        this.fData[17] = (float) (((((((long) this.packBuffer[3]) << 24) & -16777216) | ((((long) this.packBuffer[2]) << 16) & 16711680)) | ((((long) this.packBuffer[1]) << 8) & 65280)) | (((long) this.packBuffer[0]) & 255));
-                        this.fData[18] = ((float) (((((((long) this.packBuffer[7]) << 24) & -16777216) | ((((long) this.packBuffer[6]) << 16) & 16711680)) | ((((long) this.packBuffer[5]) << 8) & 65280)) | (((long) this.packBuffer[4]) & 255))) / 100.0f;
-                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[17])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[18])}));
+                        mfDatas.get(pos)[17] = (float) (((((((long) mPackBuffers.get(pos)[3]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[2]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[1]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[0]) & 255));
+                        mfDatas.get(pos)[18] = ((float) (((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[17])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[18])}));
                         break;
                     case (byte) 87:
-                        long Longitude = ((((((long) this.packBuffer[3]) << 24) & -16777216) | ((((long) this.packBuffer[2]) << 16) & 16711680)) | ((((long) this.packBuffer[1]) << 8) & 65280)) | (((long) this.packBuffer[0]) & 255);
-                        this.fData[19] = (float) (((double) (Longitude / 10000000)) + ((((double) ((float) (Longitude % 10000000))) / 100000.0d) / 60.0d));
-                        long Latitude = ((((((long) this.packBuffer[7]) << 24) & -16777216) | ((((long) this.packBuffer[6]) << 16) & 16711680)) | ((((long) this.packBuffer[5]) << 8) & 65280)) | (((long) this.packBuffer[4]) & 255);
-                        this.fData[20] = (float) (((double) (Latitude / 10000000)) + ((((double) ((float) (Latitude % 10000000))) / 100000.0d) / 60.0d));
-                        //RecordData(sHead, String.format("% 14.6f", new Object[]{Float.valueOf(this.fData[19])}) + String.format("% 14.6f", new Object[]{Float.valueOf(this.fData[20])}));
+                        long Longitude = ((((((long) mPackBuffers.get(pos)[3]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[2]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[1]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[0]) & 255);
+                        mfDatas.get(pos)[19] = (float) (((double) (Longitude / 10000000)) + ((((double) ((float) (Longitude % 10000000))) / 100000.0d) / 60.0d));
+                        long Latitude = ((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255);
+                        mfDatas.get(pos)[20] = (float) (((double) (Latitude / 10000000)) + ((((double) ((float) (Latitude % 10000000))) / 100000.0d) / 60.0d));
+                        //RecordData(sHead, String.format("% 14.6f", new Object[]{Float.valueOf(mfDatas.get(pos)[19])}) + String.format("% 14.6f", new Object[]{Float.valueOf(mfDatas.get(pos)[20])}));
                         break;
                     case (byte) 88:
-                        this.fData[21] = ((float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255))) / 10.0f;
-                        this.fData[22] = ((float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255))) / 100.0f;
-                        this.fData[23] = ((float) (((((((long) this.packBuffer[7]) << 24) & -16777216) | ((((long) this.packBuffer[6]) << 16) & 16711680)) | ((((long) this.packBuffer[5]) << 8) & 65280)) | (((long) this.packBuffer[4]) & 255))) / 1000.0f;
-                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[21])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[22])}) + String.format("% 10.2f", new Object[]{Float.valueOf(this.fData[23])}));
+                        mfDatas.get(pos)[21] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 10.0f;
+                        mfDatas.get(pos)[22] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 100.0f;
+                        mfDatas.get(pos)[23] = ((float) (((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255))) / 1000.0f;
+                        //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[21])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[22])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[23])}));
                         break;
                     case (byte) 89:
-                        this.fData[24] = ((float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255))) / 32768.0f;
-                        this.fData[25] = ((float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255))) / 32768.0f;
-                        this.fData[26] = ((float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255))) / 32768.0f;
-                        this.fData[27] = ((float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255))) / 32768.0f;
-                        //RecordData(sHead, String.format("% 7.3f", new Object[]{Float.valueOf(this.fData[24])}) + String.format("% 7.3f", new Object[]{Float.valueOf(this.fData[25])}) + String.format("% 7.3f", new Object[]{Float.valueOf(this.fData[26])}) + String.format("% 7.3f", new Object[]{Float.valueOf(this.fData[27])}));
+                        mfDatas.get(pos)[24] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[25] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[26] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f;
+                        mfDatas.get(pos)[27] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 32768.0f;
+                        //RecordData(sHead, String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[24])}) + String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[25])}) + String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[26])}) + String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[27])}));
                         break;
                     case (byte) 90:
-                        this.fData[28] = (float) ((((short) this.packBuffer[1]) << 8) | (((short) this.packBuffer[0]) & 255));
-                        this.fData[29] = ((float) ((((short) this.packBuffer[3]) << 8) | (((short) this.packBuffer[2]) & 255))) / 100.0f;
-                        this.fData[30] = ((float) ((((short) this.packBuffer[5]) << 8) | (((short) this.packBuffer[4]) & 255))) / 100.0f;
-                        this.fData[31] = ((float) ((((short) this.packBuffer[7]) << 8) | (((short) this.packBuffer[6]) & 255))) / 100.0f;
-                        //RecordData(sHead, String.format("% 5.0f", new Object[]{Float.valueOf(this.fData[28])}) + String.format("% 7.1f", new Object[]{Float.valueOf(this.fData[29])}) + String.format("% 7.1f", new Object[]{Float.valueOf(this.fData[30])}) + String.format("% 7.1f", new Object[]{Float.valueOf(this.fData[31])}));
+                        mfDatas.get(pos)[28] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
+                        mfDatas.get(pos)[29] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 100.0f;
+                        mfDatas.get(pos)[30] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 100.0f;
+                        mfDatas.get(pos)[31] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 5.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[28])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[29])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[30])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[31])}));
                         break;
                     default:
                         break;
@@ -401,7 +571,7 @@ public class BluetoothService {
             this.lLastTime = lTimeNow;
             Message msg = this.mHandler.obtainMessage(2);
             Bundle bundle = new Bundle();
-            bundle.putFloatArray("Data", this.fData);
+            bundle.putFloatArray("Data", mfDatas.get(pos));
             bundle.putString("Date", this.strDate);
             bundle.putString("Time", this.strTime);
             msg.setData(bundle);

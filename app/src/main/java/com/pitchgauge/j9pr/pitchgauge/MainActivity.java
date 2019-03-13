@@ -23,6 +23,9 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int REQ_THROW_ACTIVITY = 10010;
+    private static final int REQ_DATA_ACTIVITY  = 10011;
+
     private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothService mBluetoothService = null;
     public BluetoothDevice device;
@@ -97,12 +100,13 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_throwmeter) {
             Intent intent = new Intent(MainActivity.this, ThrowActivity.class);
-            if (this.device != null)
+            if (this.device != null) {
                 intent.putExtra("btdevice", this.device);
-            startActivityForResult(intent, 2);
+            }
+            startActivityForResult(intent, REQ_THROW_ACTIVITY);
         } else if (id == R.id.nav_BT) {
             Intent intent = new Intent(MainActivity.this, DeviceListActivity.class);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, REQ_DATA_ACTIVITY);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -112,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case 1:
+            case REQ_DATA_ACTIVITY:
                 if (resultCode == -1) {
                     if (this.mBluetoothAdapter == null)
                         return;

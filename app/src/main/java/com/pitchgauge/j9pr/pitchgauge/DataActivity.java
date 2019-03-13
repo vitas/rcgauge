@@ -16,7 +16,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.pitchgauge.j9pr.pitchgauge.databinding.ActivityRawdataBinding;
-import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
 
 import java.util.Locale;
 
@@ -49,7 +48,7 @@ public class DataActivity extends AppCompatActivity {
 
         public void handleMessage(Message msg) {
             byte[] byteReceived = (byte[]) msg.obj;
-            DataActivity.this.mBluetoothService.CopeSerialData(byteReceived.length, byteReceived);
+            DataActivity.this.mBluetoothService.CopeSerialData(byteReceived.length, byteReceived, 0);
         }
     }
 
@@ -224,8 +223,10 @@ public class DataActivity extends AppCompatActivity {
 
         this.RunMode = 0;
 
-        if(getIntent().getExtras() != null)
+        if(getIntent().getExtras() != null) {
             this.device = getIntent().getExtras().getParcelable("btdevice");
+            //mDevices
+        }
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         try {
@@ -234,10 +235,11 @@ public class DataActivity extends AppCompatActivity {
                 //Toast.makeText(this, getString(C0242R.string.Bluetoothbad), 1).show();
                 return;
             }
-            if (this.mBluetoothService == null) {
+            if (mBluetoothService == null) {
                 this.mBluetoothService = new BluetoothService(this, this.mHandler);
-                if(this.mBluetoothService != null && this.device != null)
-                    this.mBluetoothService.connect(this.device);
+                if(this.mBluetoothService != null && this.device != null) {
+                    this.mBluetoothService.connect(this.device, 0);
+                }
             }
             this.writeBuffer = new byte[512];
             this.readBuffer = new byte[512];
