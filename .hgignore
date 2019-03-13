@@ -1,6 +1,0 @@
-syntax: glob
-app/build
-app/build
-.idea*.*
-.idea/
-.gradle/
