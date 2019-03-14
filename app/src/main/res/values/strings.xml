@@ -26,4 +26,14 @@
     <string name="set_max_travels">Max</string>
     <string name="set_min_travels">Min</string>
 
+    <string name="rationale_title">Permission required</string>
+    <string name="rationale_message_storage">System requires granting access to device\'s storage in order to write a calibration dara to external storage.</string>
+    <string name="rationale_request">Proceed</string>
+    <string name="rationale_cancel">Cancel</string>
+    <string name="rationale_permission_denied">Permission denied.</string>
+    <string name="error_no_write_storage_permissions">Operation is not allowed. Missing storage permission</string>
+    <string name="dialog_error_ble_not_supported">Bluetooth LE not available</string>
+    <string name="error_message_bluetooth_le_not_supported">Sorry, this device does not support Bluetooth LE.</string>
+    <string name="dialog_action_ok">OK</string>
+
 </resources>
