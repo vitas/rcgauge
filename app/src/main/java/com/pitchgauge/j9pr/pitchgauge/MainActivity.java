@@ -6,9 +6,6 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,7 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.widget.Toast;
+
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_BT;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,8 +24,7 @@ public class MainActivity extends AppCompatActivity
     private static final int REQ_THROW_ACTIVITY = 10010;
     private static final int REQ_DATA_ACTIVITY  = 10011;
 
-    private BluetoothAdapter mBluetoothAdapter = null;
-    private BluetoothService mBluetoothService = null;
+    private BluetoothAdapter mBluetoothAdapter;
     public BluetoothDevice device;
 
     @Override
@@ -101,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_throwmeter) {
             Intent intent = new Intent(MainActivity.this, ThrowActivity.class);
             if (this.device != null) {
-                intent.putExtra("btdevice", this.device);
+                intent.putExtra(DEVICE_BT, this.device);
             }
             startActivityForResult(intent, REQ_THROW_ACTIVITY);
         } else if (id == R.id.nav_BT) {

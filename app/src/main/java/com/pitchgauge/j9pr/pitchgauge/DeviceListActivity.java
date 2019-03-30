@@ -1,6 +1,5 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -8,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,21 +19,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import java.util.Set;
 
-public class DeviceListActivity extends Activity {
+import static android.bluetooth.BluetoothDevice.BOND_BONDED;
+
+public class DeviceListActivity extends AppCompatActivity {
     /* renamed from: D */
     private static final boolean f36D = true;
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
     private static final String TAG = "DeviceListActivity";
     private BluetoothAdapter mBtAdapter;
-    private OnItemClickListener mDeviceClickListener = new C02372();
+    private OnItemClickListener mDeviceClickListener = new OnDeviceSelectionClick();
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
     private final BroadcastReceiver mReceiver = new C02383();
 
-    /* renamed from: com.example.DeviceListActivity$1 */
-    class C02361 implements OnClickListener {
-        C02361() {
-        }
+    class OnDeviceDiscoveryClick implements OnClickListener {
 
         public void onClick(View v) {
             DeviceListActivity.this.doDiscovery();
@@ -41,16 +40,13 @@ public class DeviceListActivity extends Activity {
         }
     }
 
-    /* renamed from: com.example.DeviceListActivity$2 */
-    class C02372 implements OnItemClickListener {
-        C02372() {
-        }
+    class OnDeviceSelectionClick implements OnItemClickListener {
 
         public void onItemClick(AdapterView<?> adapterView, View v, int arg2, long arg3) {
             DeviceListActivity.this.mBtAdapter.cancelDiscovery();
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
-            Log.e("--", "BT" + info + "~" + address);
+            Log.e(TAG, "BT" + info + "~" + address);
             Intent intent = new Intent();
             intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
             DeviceListActivity.this.setResult(-1, intent);
@@ -67,7 +63,7 @@ public class DeviceListActivity extends Activity {
             String action = intent.getAction();
             if ("android.bluetooth.device.action.FOUND".equals(action)) {
                 BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
-                if (device.getBondState() != 12) {
+                if (device.getBondState() != BOND_BONDED) {
                     DeviceListActivity.this.mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
             } else if ("android.bluetooth.adapter.action.DISCOVERY_FINISHED".equals(action)) {
@@ -85,7 +81,7 @@ public class DeviceListActivity extends Activity {
         requestWindowFeature(5);
         setContentView(R.layout.device_list);
         setResult(0);
-        ((Button) findViewById(R.id.button_scan)).setOnClickListener(new C02361());
+        ((Button) findViewById(R.id.button_scan)).setOnClickListener(new OnDeviceDiscoveryClick());
         this.mPairedDevicesArrayAdapter = new ArrayAdapter(this, R.layout.device_name);
         this.mNewDevicesArrayAdapter = new ArrayAdapter(this, R.layout.device_name);
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
@@ -123,7 +119,6 @@ public class DeviceListActivity extends Activity {
         if(this.mBtAdapter == null)
             return;
 
-        setProgressBarIndeterminateVisibility(f36D);
         setTitle("Scanning");
         findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
         if (this.mBtAdapter.isDiscovering()) {

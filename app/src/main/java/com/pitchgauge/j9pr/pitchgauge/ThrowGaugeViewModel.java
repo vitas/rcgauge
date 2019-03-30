@@ -2,10 +2,7 @@ package com.pitchgauge.j9pr.pitchgauge;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.Observable;
 import android.databinding.PropertyChangeRegistry;
@@ -16,14 +13,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
-import org.joml.Vector3f;
 
 public class ThrowGaugeViewModel extends AndroidViewModel implements Observable {
     private PropertyChangeRegistry callbacks = new PropertyChangeRegistry();
@@ -297,7 +292,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     public void onResetAngleClicked() {
 
-        Message msg = this.mHandler.obtainMessage(1);
+        Message msg = this.mHandler.obtainMessage(BluetoothState.MESSAGE_STATE_CHANGE);
         Bundle bundle = new Bundle();
         bundle.putString("Reset sensor", "New neutral");
         msg.setData(bundle);

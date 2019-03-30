@@ -22,6 +22,8 @@
         </activity>
         <activity android:name="com.pitchgauge.j9pr.pitchgauge.ThrowActivity" />
         <activity android:name="com.pitchgauge.j9pr.pitchgauge.DeviceListActivity" />
-        <activity android:name="com.pitchgauge.j9pr.pitchgauge.DataActivity" />
+        <service
+            android:name=".BluetoothService"
+            android:enabled="true" />
     </application>
 </manifest>

@@ -2,10 +2,6 @@ package com.pitchgauge.j9pr.pitchgauge;
 
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -14,7 +10,6 @@ import android.arch.lifecycle.Observer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.View;
@@ -23,19 +18,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.util.Log;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
-import java.util.Locale;
-import org.joml.Vector3f;
 
-public class ThrowActivity extends AppCompatActivity {
 
-    private ThrowGaugeViewModel mGaugeViewModel = null;
-    private BluetoothAdapter mBluetoothAdapter = null;
-    private BluetoothService mBluetoothService = null;
-    private String mConnectedDeviceName = null;
-    private final Handler mHandler = new C02231();
-    private final Handler handler = new C02314();
+import static android.bluetooth.BluetoothDevice.BOND_BONDED;
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_BT;
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_CONNECT_DEVICE;
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothState.STATE_NONE;
+
+public class ThrowActivity extends BluetoothBaseActivity {
+
+
+    private ThrowGaugeViewModel mGaugeViewModel;
     private final Handler mSendSensor = new SendSensor();
-    public BluetoothDevice device;
     int RunMode = 0;
     private short sOffsetAccX;
     private short sOffsetAccY;
@@ -50,47 +45,31 @@ public class ThrowActivity extends AppCompatActivity {
     private boolean isOpen;
     private EditText input;
 
-    /* renamed from: com.example.DataMonitor$4 */
-    class C02314 extends Handler {
-        C02314() {
-        }
 
-        public void handleMessage(Message msg) {
-            byte[] byteReceived = (byte[]) msg.obj;
-            ThrowActivity.this.mBluetoothService.CopeSerialData(byteReceived.length, byteReceived, 0);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CONNECT_DEVICE) {
+            if(resultCode == Activity.RESULT_OK) {
+                //TODO
+                // mBluetoothPipe.connect(data);
+            }
+        } else if(requestCode == REQUEST_ENABLE_BT) {
+            if(resultCode == Activity.RESULT_OK) {
+                mBluetoothPipe.setupService(mBluetoothService, mHandler);
+            } else {
+                Toast.makeText(getApplicationContext()
+                        , "Bluetooth was not enabled."
+                        , Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 
-    class C02231 extends Handler {
-        C02231() {
-        }
+    class DataHandler extends Handler {
+
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
-                    switch (msg.arg1) {
-                        case 0:
-                        case 1:
-                            //if (DataMonitor.this.mTitle != null) {
-                            //    DataMonitor.this.mTitle.setText(C0242R.string.title_not_connected);
-                            //    return;
-                            //}
-                            return;
-                        case 2:
-                            //if (DataMonitor.this.mTitle != null) {
-                            //    DataMonitor.this.mTitle.setText(C0242R.string.title_connecting);
-                            //    return;
-                            //}
-                            return;
-                        case 3:
-                            //if (DataMonitor.this.mTitle != null) {
-                            //    DataMonitor.this.mTitle.setText(C0242R.string.title_connected_to + DataMonitor.this.mConnectedDeviceName);
-                            //    return;
-                            //}
-                            return;
-                        default:
-                            return;
-                    }
-                case 2:
+
+                case BluetoothState.MESSAGE_READ:
                     try {
                         float[] fData = msg.getData().getFloatArray("Data");
                         switch (ThrowActivity.this.RunMode) {
@@ -141,13 +120,7 @@ public class ThrowActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         return;
                     }
-                case 4:
-                    ThrowActivity.this.mConnectedDeviceName = msg.getData().getString("device_name");
-                    Toast.makeText(ThrowActivity.this.getApplicationContext(), "Connected to " + ThrowActivity.this.mConnectedDeviceName, Toast.LENGTH_LONG).show();
-                    return;
-                case 5:
-                    Toast.makeText(ThrowActivity.this.getApplicationContext(), msg.getData().getString("toast"), Toast.LENGTH_LONG).show();
-                    return;
+
                 default:
                     return;
             }
@@ -161,8 +134,8 @@ public class ThrowActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
 
             switch (msg.what) {
-                case 1:
-                    if (ThrowActivity.this.mBluetoothService != null) {
+                case BluetoothState.MESSAGE_STATE_CHANGE:
+                    if (ThrowActivity.this.mBluetoothPipe.isServiceAvailable()) {
 
                         new Thread(new Runnable() {
                             @Override
@@ -184,9 +157,14 @@ public class ThrowActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getIntent().getExtras() != null) {
+            this.device = getIntent().getExtras().getParcelable(DEVICE_BT);
+        }
 
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
         mGaugeViewModel = ViewModelProviders.of(this).get(ThrowGaugeViewModel.class);
@@ -225,25 +203,8 @@ public class ThrowActivity extends AppCompatActivity {
             this.device = getIntent().getExtras().getParcelable("btdevice");
         }
 
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        try {
-            this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (this.mBluetoothAdapter == null) {
-                //Toast.makeText(this, getString(C0242R.string.Bluetoothbad), 1).show();
-                return;
-            }
-            if (this.mBluetoothService == null) {
-                this.mBluetoothService = new BluetoothService(this, this.mHandler);
-                if(this.mBluetoothService != null && this.device != null)
-                    this.mBluetoothService.connect(this.device, 0);
-            }
-            this.writeBuffer = new byte[512];
-            this.readBuffer = new byte[512];
-            this.isOpen = false;
-            SerialPortOpen();
+        mHandler = new DataHandler();
 
-        } catch (Exception e) {
-        }
     }
 
     public  void resetNeutral(){
@@ -292,66 +253,5 @@ public class ThrowActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public synchronized void onResume() {
-        super.onResume();
-        Log.e("--", "onResume");
-        if (this.mBluetoothAdapter == null)
-            return;
-        if (!this.mBluetoothAdapter.isEnabled()) {
-            this.mBluetoothAdapter.enable();
-        }
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (ThrowActivity.this.mBluetoothService != null && ThrowActivity.this.mBluetoothService.getState() == 0) {
-                    ThrowActivity.this.mBluetoothService.start();
-                }
-            }
-        }, 1000);
-    }
 
-    public synchronized void onPause() {
-        super.onPause();
-        Log.e("--", "onPause");
-    }
-
-    public void onStop() {
-        super.onStop();
-        Log.e("--", "onStop");
-    }
-    public void onDestroy() {
-        super.onDestroy();
-        if (this.mBluetoothService != null) {
-            this.mBluetoothService.stop();
-        }
-    }
-
-    private boolean SerialPortOpen() {
-
-            this.isOpen = true;
-            new readThread().start();
-            return true;
-    }
-
-    private class readThread extends Thread {
-        private readThread() {
-        }
-
-        public void run() {
-            byte[] buffer = new byte[4096];
-            while (true) {
-                Message msg = Message.obtain();
-                if (ThrowActivity.this.isOpen) {
-                        //ThrowActivity.this.handler.sendMessage(msg);
-                    }
-                else {
-                    try {
-                        Thread.sleep(50);
-                        return;
-                    } catch (Exception e) {
-                        return;
-                    }
-                }
-            }
-        }
-    }
 }
