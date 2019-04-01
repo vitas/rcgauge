@@ -1,9 +1,5 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
+import java.util.ArrayList;
+
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_BT;
 
 public class MainActivity extends AppCompatActivity
@@ -24,8 +22,7 @@ public class MainActivity extends AppCompatActivity
     private static final int REQ_THROW_ACTIVITY = 10010;
     private static final int REQ_DATA_ACTIVITY  = 10011;
 
-    private BluetoothAdapter mBluetoothAdapter;
-    public BluetoothDevice device;
+    public ArrayList<DeviceTag> devices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +43,6 @@ public class MainActivity extends AppCompatActivity
         WebView wv = (WebView) findViewById(R.id.throwmeterdoc);
         wv.loadUrl("file:///android_asset/Make your own BlueTooth RC Throwmeter.htm");
 
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        try {
-            this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (this.mBluetoothAdapter == null) {
-                //Toast.makeText(this, getString("No_BT_adapter_found"), 1).show();
-                return;
-            }
-        } catch (Exception e) {
-        }
     }
 
     @Override
@@ -97,8 +85,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_throwmeter) {
             Intent intent = new Intent(MainActivity.this, ThrowActivity.class);
-            if (this.device != null) {
-                intent.putExtra(DEVICE_BT, this.device);
+            if (this.devices != null) {
+                intent.putParcelableArrayListExtra(DEVICE_BT, this.devices );
             }
             startActivityForResult(intent, REQ_THROW_ACTIVITY);
         } else if (id == R.id.nav_BT) {
@@ -114,11 +102,11 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQ_DATA_ACTIVITY:
-                if (resultCode == -1) {
-                    if (this.mBluetoothAdapter == null)
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        this.devices = data.getParcelableArrayListExtra(DEVICE_BT);
                         return;
-                    this.device = this.mBluetoothAdapter.getRemoteDevice(data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS));
-                    return;
+                    }
                 }
                 return;
             default:

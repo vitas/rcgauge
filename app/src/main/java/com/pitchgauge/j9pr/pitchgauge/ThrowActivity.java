@@ -16,15 +16,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.util.Log;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
 
 
-import static android.bluetooth.BluetoothDevice.BOND_BONDED;
-import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_BT;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_CONNECT_DEVICE;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
-import static com.pitchgauge.j9pr.pitchgauge.BluetoothState.STATE_NONE;
 
 public class ThrowActivity extends BluetoothBaseActivity {
 
@@ -162,10 +158,6 @@ public class ThrowActivity extends BluetoothBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getIntent().getExtras() != null) {
-            this.device = getIntent().getExtras().getParcelable(DEVICE_BT);
-        }
-
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
         mGaugeViewModel = ViewModelProviders.of(this).get(ThrowGaugeViewModel.class);
         mGaugeViewModel.SetSendSensorHandler(this.mSendSensor);
@@ -198,10 +190,6 @@ public class ThrowActivity extends BluetoothBaseActivity {
         });
 
         this.RunMode = 0;
-
-        if(getIntent().getExtras() != null) {
-            this.device = getIntent().getExtras().getParcelable("btdevice");
-        }
 
         mHandler = new DataHandler();
 

@@ -1,20 +1,14 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
-public class DeviceTag {
-    String uuid;
+public class DeviceTag implements Parcelable {
     String address;
     String name;
-    int pos;
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+    int pos = -1;
 
     public String getAddress() {
         return address;
@@ -42,11 +36,8 @@ public class DeviceTag {
 
     @Override
     public String toString() {
-        return "DeviceTag{" +
-                "address='" + address + '\'' +
-                ", name='" + name + '\'' +
-                ", pos=" + pos +
-                '}';
+        String p = (pos >=0)?" ("+ (pos+1)+")":"";
+        return name +  p + "\n" + address;
     }
 
     @Override
@@ -57,8 +48,42 @@ public class DeviceTag {
         return Objects.equals(getAddress(), deviceTag.getAddress());
     }
 
+    public DeviceTag() {
+
+    }
+
+    protected DeviceTag(Parcel in) {
+        name = in.readString();
+        address = in.readString();
+        pos = in.readInt();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(getAddress());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeInt(pos);
+    }
+
+    public static final Creator<DeviceTag> CREATOR = new Creator<DeviceTag>() {
+        @Override
+        public DeviceTag createFromParcel(Parcel in) {
+            return new DeviceTag(in);
+        }
+
+        @Override
+        public DeviceTag[] newArray(int size) {
+            return new DeviceTag[size];
+        }
+    };
 }

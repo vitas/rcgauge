@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_ADDRESS;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_NAME;
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_POS;
 
 public class BluetoothService extends Service {
     private static UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -113,8 +114,10 @@ public class BluetoothService extends Service {
         Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
 
-        // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(BluetoothState.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        if (mHandler != null) {
+            // Give the new state to the Handler so the UI Activity can update
+            mHandler.obtainMessage(BluetoothState.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        }
     }
 
     private class AcceptThread extends Thread {
@@ -440,11 +443,11 @@ public class BluetoothService extends Service {
         mConnThreads.set(pos, mConnectedThread);
         mSockets.set(pos, socket);
 
-        //TODO deviceTag
         Message msg = this.mHandler.obtainMessage(BluetoothState.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, device.getName());
         bundle.putString(DEVICE_ADDRESS, device.getAddress());
+        bundle.putInt(DEVICE_POS, pos);
 
         msg.setData(bundle);
         this.mHandler.sendMessage(msg);
@@ -493,7 +496,7 @@ public class BluetoothService extends Service {
         setState(BluetoothState.STATE_LISTEN);
         Message msg = this.mHandler.obtainMessage(BluetoothState.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothPipe.TOAST, "Failed to connect device: " + device.getName()+ " " + device.getAddress());
+        bundle.putString(BluetoothPipe.TOAST, "Failed connect " + device.getName()+ "\n" + device.getAddress());
         msg.setData(bundle);
         this.mHandler.sendMessage(msg);
 
@@ -624,14 +627,16 @@ public class BluetoothService extends Service {
         long lTimeNow = System.currentTimeMillis();
         if (lTimeNow - this.lLastTime > 80) {
             this.lLastTime = lTimeNow;
-            Message msg = this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_READ);
-            Bundle bundle = new Bundle();
-            bundle.putFloatArray("Data", mfDatas.get(pos));
-            bundle.putString("Date", this.strDate);
-            bundle.putString("Time", this.strTime);
-            msg.setData(bundle);
-            if(!mSuspend) {
-                this.mDataHandler.sendMessage(msg);
+            if (mDataHandler != null) {
+                Message msg = this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_READ);
+                Bundle bundle = new Bundle();
+                bundle.putFloatArray("Data", mfDatas.get(pos));
+                bundle.putString("Date", this.strDate);
+                bundle.putString("Time", this.strTime);
+                msg.setData(bundle);
+                if (!mSuspend) {
+                    this.mDataHandler.sendMessage(msg);
+                }
             }
         }
     }

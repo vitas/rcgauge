@@ -12,9 +12,10 @@ import android.widget.Toast;
 public class BluetoothPipe {
 
     public static final String DEVICE_BT = "btdevice";
-
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_ADDRESS = "device_address";
+    public static final String DEVICE_POS = "device_pos";
+
     public static final String TOAST = "toast";
 
     public static final int REQUEST_CONNECT_DEVICE = 1384;
@@ -24,7 +25,6 @@ public class BluetoothPipe {
 
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothService mBluetoothService;
-    private DeviceTag mDeviceTag;
 
     private boolean isConnected;
     private boolean isConnecting;
@@ -38,7 +38,6 @@ public class BluetoothPipe {
     public BluetoothPipe(Context context) {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mDeviceTag = new DeviceTag();
     }
 
     public boolean isBluetoothAvailable() {
@@ -72,12 +71,10 @@ public class BluetoothPipe {
     }
 
     public void setupService(BluetoothService blService, Handler handler) {
-       // mBluetoothService = new BluetoothService(mContext, mHandler);
         mBluetoothService = blService;
         mDataHandler = handler;
         mBluetoothService.setHandler(mHandler);
         mBluetoothService.setDataHandler(mDataHandler);
-
     }
 
 
@@ -150,11 +147,13 @@ public class BluetoothPipe {
                     break;
                 case BluetoothState.MESSAGE_DEVICE_NAME:
 
-                    mDeviceTag.setName(msg.getData().getString(DEVICE_NAME));
-                    mDeviceTag.setAddress(msg.getData().getString(DEVICE_ADDRESS));
+                    DeviceTag tag = new DeviceTag();
+                    tag.setName(msg.getData().getString(DEVICE_NAME));
+                    tag.setAddress(msg.getData().getString(DEVICE_ADDRESS));
+                    tag.setPos(msg.getData().getInt(DEVICE_POS, 0));
 
                     if(mBluetoothConnectionListener != null)
-                        mBluetoothConnectionListener.onDeviceConnected(mDeviceTag);
+                        mBluetoothConnectionListener.onDeviceConnected(tag);
                     isConnected = true;
                     break;
                 case BluetoothState.MESSAGE_TOAST:
@@ -173,8 +172,6 @@ public class BluetoothPipe {
                             autoConnect(keyword);
                         }*/
                         isConnected = false;
-                        mDeviceTag = new DeviceTag();
-
                     }
 
                     if(!isConnecting && msg.arg1 == BluetoothState.STATE_CONNECTING) {
@@ -216,10 +213,6 @@ public class BluetoothPipe {
                 data += "\r\n";
             mBluetoothService.Send(data.getBytes());
         }
-    }
-
-    public DeviceTag getConnectedDeviceTag() {
-        return mDeviceTag;
     }
 
     public void setBluetoothStateListener (BluetoothStateListener listener) {

@@ -25,5 +25,6 @@
     <string name="max_travels">Max travels :</string>
     <string name="set_max_travels">Max</string>
     <string name="set_min_travels">Min</string>
+    <string name="button_select">Select</string>
 
 </resources>

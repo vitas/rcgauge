@@ -15,10 +15,9 @@ import android.widget.Toast;
 
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import static android.bluetooth.BluetoothDevice.BOND_BONDED;
-import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_CONNECT_DEVICE;
+import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_BT;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothState.STATE_NONE;
 
@@ -35,8 +34,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
     protected Handler mHandler ;
     protected boolean mIsBound;
     protected BluetoothPipe mBluetoothPipe;
-    protected BluetoothDevice device;
-    protected DeviceTag mDeviceTag;
+    protected ArrayList<DeviceTag> mDeviceTags;
 
     protected ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -44,19 +42,23 @@ public class BluetoothBaseActivity extends AppCompatActivity {
             if (iBinder instanceof BluetoothService.BackgroundBluetoothBinder) {
                 mBluetoothService = ((BluetoothService.BackgroundBluetoothBinder) iBinder).service();
 
-                if(!mBluetoothPipe.isBluetoothEnabled()) {
-                    mBluetoothPipe.enable();
-                } else if (!mBluetoothPipe.isServiceAvailable()) {
-                    mBluetoothPipe.setupService(mBluetoothService, mHandler);
-                    mBluetoothPipe.startService();
-                    mBluetoothPipe.autoConnect("yoyo");
-                }
-
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        connectDevices();
+                if (mHandler != null) {
+                    if (!mBluetoothPipe.isBluetoothEnabled()) {
+                        mBluetoothPipe.enable();
+                    } else if (!mBluetoothPipe.isServiceAvailable()) {
+                        mBluetoothPipe.setupService(mBluetoothService, mHandler);
+                        mBluetoothPipe.startService();
+                        mBluetoothPipe.autoConnect("yoyo");
                     }
-                }, 5000);
+
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            connectDevices();
+                        }
+                    }, 5000);
+                } else {
+                    Log.w(TAG, "Service is not setup, data handler is null");
+                }
 
             }
         }
@@ -71,50 +73,23 @@ public class BluetoothBaseActivity extends AppCompatActivity {
 
     protected void connectDevices() {
         if (mBluetoothPipe.getServiceState() != STATE_NONE) {
-            if (device != null && device.getBondState() == BOND_BONDED) {
-                boolean temp = device.fetchUuidsWithSdp();
-                UUID uuid = null;
-                if (temp) {
-                    uuid = device.getUuids()[0].getUuid();
-                }
-                int aPos = mBluetoothService.getAvailablePosIndexForNewConnection(device);
-
-                // BluetoothPreferences.setKeyringUUID(getApplicationContext(), uuid.toString());
-                // BluetoothPreferences.setKeyringAddress(getApplicationContext(), device.getAddress());
-                // BluetoothPreferences.setKeyringName(getApplicationContext(), device.getName())
-                //BluetoothPreferences.setKeyringPos(getApplicationContext(), aPos);
-
-                DeviceTag tag = new DeviceTag();
-                tag.setAddress(device.getAddress());
-                tag.setName(device.getName());
-                tag.setPos(aPos);
-                tag.setUuid(uuid.toString());
-
-                ArrayList<DeviceTag> list = new ArrayList<>();
-                list.add(tag);
-
-                BluetoothPreferences.setKeyrings(getApplicationContext(),  list);
-
-                mBluetoothPipe.connect(device, aPos);
-
+            if (mDeviceTags != null) {
+                connectDevicesTags();
             } else {
-
                 connectDevicesFromKeyring();
-
             }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_CONNECT_DEVICE) {
+        if(requestCode == REQUEST_ENABLE_BT) {
             if(resultCode == Activity.RESULT_OK) {
-                //TODO
-                // mBluetoothPipe.connect(data);
-            }
-        } else if(requestCode == REQUEST_ENABLE_BT) {
-            if(resultCode == Activity.RESULT_OK) {
+
                 mBluetoothPipe.setupService(mBluetoothService, mHandler);
+                mBluetoothPipe.startService();
+                mBluetoothPipe.autoConnect("yoyo");
+
             } else {
                 Toast.makeText(getApplicationContext()
                         , "Bluetooth was not enabled."
@@ -159,17 +134,21 @@ public class BluetoothBaseActivity extends AppCompatActivity {
         mBluetoothPipe.setOnDataReceivedListener(new BluetoothPipe.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
 
-                Log.d(TAG, "Rec Message: "+ message + "\n");
+                Log.d(TAG, "Record Message: "+ message + "\n");
 
             }
         });
 
         mBluetoothPipe.setBluetoothConnectionListener(new BluetoothPipe.BluetoothConnectionListener() {
             public void onDeviceConnected(DeviceTag deviceTag) {
-                mDeviceTag = deviceTag;
+
+                if (mDeviceTags == null) {
+                    mDeviceTags = new ArrayList<>();
+                }
+                mDeviceTags.add(deviceTag);
 
                 Toast.makeText(getApplicationContext()
-                        , "Connected to " + deviceTag.getName()+ " " +deviceTag.getAddress()
+                        , "Connected " + deviceTag.getName()+ " (" +(deviceTag.getPos()+1)+")"
                         , Toast.LENGTH_SHORT).show();
 
                 SerialPortOpen();
@@ -189,7 +168,11 @@ public class BluetoothBaseActivity extends AppCompatActivity {
 
         mBluetoothPipe.setAutoConnectionListener(new BluetoothPipe.AutoConnectionListener() {
             public void onNewConnection(DeviceTag deviceTag) {
-                mDeviceTag = deviceTag;
+
+                if (mDeviceTags == null) {
+                    mDeviceTags = new ArrayList<>();
+                }
+                mDeviceTags.add(deviceTag);
 
                 Log.d(TAG, "New Connection - " + deviceTag.getName()+ " " +deviceTag.getAddress());
             }
@@ -199,6 +182,10 @@ public class BluetoothBaseActivity extends AppCompatActivity {
             }
         });
 
+        if(getIntent().getExtras() != null) {
+            mDeviceTags = getIntent().getExtras().getParcelableArrayList(DEVICE_BT);
+        }
+
         doBind();
 
         this.writeBuffer = new byte[512];
@@ -207,32 +194,50 @@ public class BluetoothBaseActivity extends AppCompatActivity {
 
     }
 
+    protected ArrayList<BluetoothDevice> getDevicesFromTags(ArrayList<DeviceTag> tags){
+        ArrayList<BluetoothDevice> devices = new ArrayList<>();
 
+        for (DeviceTag tag : tags) {
+            BluetoothDevice device = mBluetoothPipe.getBluetoothAdapter().getRemoteDevice(tag.getAddress());
+            if (device.getBondState() == BOND_BONDED) {
+                devices.add(device);
+            }
+        }
+        return devices;
+    }
+
+    protected void connectDevicesTags() {
+        if (mDeviceTags == null) {
+            Log.e(TAG, "No devices connect to");
+            return ;
+        }
+        for (DeviceTag tag : mDeviceTags) {
+            if (tag != null) {
+                BluetoothDevice device = mBluetoothPipe.getBluetoothAdapter().getRemoteDevice(tag.getAddress());
+                if (device != null) {
+                    if (device.getBondState() == BOND_BONDED) {
+                        if (tag.getPos() < 0) {
+                            tag.setPos(mBluetoothService.getAvailablePosIndexForNewConnection(device));
+                        }
+                        Log.d(TAG, "connecting to device with address=" + tag.getAddress() + "on pos=" + tag.getPos() + " ");
+                        mBluetoothPipe.connect(device, tag.getPos());
+
+                    } else {
+                        Log.w(TAG, "device address=" + tag.getAddress() + "on pos=" + tag.getPos() + " is not paired");
+                        //TODO auto pairing
+                    }
+                } else {
+                    //TODO remove tag, invalid
+                }
+            }
+        }
+    }
     private void connectDevicesFromKeyring() {
-        BluetoothDevice device = null;
         ArrayList<DeviceTag> devices = BluetoothPreferences.getKeyrings(getApplicationContext());
 
         if (devices.size()>0) {
-            for (DeviceTag tag : devices) {
-                if (tag != null) {
-                    device = mBluetoothPipe.getBluetoothAdapter().getRemoteDevice(tag.getAddress());
-                    if (device != null) {
-                        if (device.getBondState() == BOND_BONDED) {
-                            if (tag.getPos() < 0) {
-                                tag.setPos(mBluetoothService.getAvailablePosIndexForNewConnection(device));
-                            }
-                            Log.d(TAG, "connecting to device with address=" + tag.getAddress() + "on pos=" + tag.getPos() + " ");
-                            mBluetoothPipe.connect(device, tag.getPos());
-
-                        } else {
-                            Log.w(TAG, "device address=" + tag.getAddress() + "on pos=" + tag.getPos() + " is not paired");
-                            //TODO auto pairing
-                        }
-                    } else {
-                        //TODO remove tag, invalid
-                    }
-                }
-            }
+            mDeviceTags = devices;
+            connectDevicesTags();
         } else {
             //TODO
             Log.d(TAG, "no saved devices found. goto selection activity");
@@ -267,6 +272,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
         }
 
     }
+
 
     @Override
     protected void onDestroy() {
