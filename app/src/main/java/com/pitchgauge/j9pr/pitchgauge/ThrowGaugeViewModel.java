@@ -60,6 +60,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public ThrowGaugeViewModel(@NonNull Application application) {
         super(application);
         getThrowGauge().setValue(new ThrowGauge());
+        getThrowGauge2().setValue(new ThrowGauge());
     }
 
     public void SetSendSensorHandler(Handler handler){
@@ -67,11 +68,20 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
 
     private MutableLiveData<ThrowGauge> mThrowGauge;
+    private MutableLiveData<ThrowGauge> mThrowGauge2;
+
     public MutableLiveData<ThrowGauge> getThrowGauge() {
         if (mThrowGauge == null) {
             mThrowGauge = new MutableLiveData<ThrowGauge>();
         }
         return mThrowGauge;
+    }
+
+    public MutableLiveData<ThrowGauge> getThrowGauge2() {
+        if (mThrowGauge2 == null) {
+            mThrowGauge2 = new MutableLiveData<ThrowGauge>();
+        }
+        return mThrowGauge2;
     }
 
     public void setChord(String chord){
@@ -80,25 +90,48 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         if(chord == "")
             return;
         getThrowGauge().getValue().SetChord(Double.parseDouble(chord));
+        getThrowGauge2().getValue().SetChord(Double.parseDouble(chord));
+
         notifyPropertyChanged(BR.travel);
+        notifyPropertyChanged(BR.travel2);
+
     }
 
-    public void setAccelerations(float x, float y, float z){
-        getThrowGauge().getValue().SetAcceleration(x, y, z);
+    public void setAccelerations(int pos, float x, float y, float z){
+        if (pos == 0) {
+            getThrowGauge().getValue().SetAcceleration(x, y, z);
+        } else {
+            getThrowGauge2().getValue().SetAcceleration(x, y, z);
+        }
     }
 
-    public void setVelocities(float x, float y, float z){
-        getThrowGauge().getValue().SetAngularVelocity(x, y, z);
+    public void setVelocities(int pos, float x, float y, float z){
+        if (pos == 0) {
+            getThrowGauge().getValue().SetAngularVelocity(x, y, z);
+        } else {
+            getThrowGauge2().getValue().SetAngularVelocity(x, y, z);
+        }
     }
 
-    public void setAngles(float x, float y, float z){
-        getThrowGauge().getValue().SetAngles(x, y, z);
-        notifyPropertyChanged(BR.angle);
-        notifyPropertyChanged(BR.travel);
-        notifyPropertyChanged(BR.maxTravel);
-        notifyPropertyChanged(BR.minTravel);
-        notifyPropertyChanged(BR.maxTravelColor);
-        notifyPropertyChanged(BR.minTravelColor);
+    public void setAngles(int pos, float x, float y, float z){
+        if (pos == 0) {
+            getThrowGauge().getValue().SetAngles(x, y, z);
+            notifyPropertyChanged(BR.angle);
+            notifyPropertyChanged(BR.travel);
+            notifyPropertyChanged(BR.maxTravel);
+            notifyPropertyChanged(BR.minTravel);
+            notifyPropertyChanged(BR.maxTravelColor);
+            notifyPropertyChanged(BR.minTravelColor);
+        } else {
+            getThrowGauge2().getValue().SetAngles(x, y, z);
+            notifyPropertyChanged(BR.angle2);
+            notifyPropertyChanged(BR.travel2);
+            //notifyPropertyChanged(BR.maxTravel);
+            //notifyPropertyChanged(BR.minTravel);
+            //notifyPropertyChanged(BR.maxTravelColor);
+            //notifyPropertyChanged(BR.minTravelColor);
+        }
+
     }
 
     public void setTemperature(float t){
@@ -127,6 +160,28 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         }
     }
 
+    public void setAngle2(String angle){
+        try {
+            if(!isNumeric(angle))
+                return;
+            if(angle == "")
+                return;
+            double newAngle = parseDecimal(angle);
+            if(Math.abs(newAngle - getThrowGauge2().getValue().GetAngle()) > 0.1f) {
+                getThrowGauge2().getValue().SetAngle(newAngle);
+                notifyPropertyChanged(BR.angle2);
+                notifyPropertyChanged(BR.travel2);
+              //  notifyPropertyChanged(BR.maxTravel);
+              //  notifyPropertyChanged(BR.minTravel);
+              //  notifyPropertyChanged(BR.maxTravelColor);
+              //  notifyPropertyChanged(BR.minTravelColor);
+            }
+        }
+        catch (Exception e){
+
+        }
+    }
+
     public void setCmd(String cmd) {
         try {
 
@@ -144,7 +199,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getAngle() {
-        return "Angle: " + new DecimalFormat("  0.0").format(getThrowGauge().getValue().GetAngle());
+        return "Angle " + new DecimalFormat("  0.0").format(getThrowGauge().getValue().GetAngle());
+    }
+
+    @Bindable
+    public String getAngle2() {
+        return new DecimalFormat("  0.0").format(getThrowGauge2().getValue().GetAngle());
     }
 
     @Bindable
@@ -210,7 +270,14 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getTravel() {
         double res = getThrowGauge().getValue().GetThrow();
-        String str = "Travel: " + new DecimalFormat("  ###0.0").format(res); // rounded to 2 decimal places
+        String str = "Travel " + new DecimalFormat("  ###0.0").format(res); // rounded to 2 decimal places
+        return str;
+    }
+
+    @Bindable
+    public String getTravel2() {
+        double res = getThrowGauge2().getValue().GetThrow();
+        String str = new DecimalFormat("  ###0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 

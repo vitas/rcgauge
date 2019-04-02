@@ -26,5 +26,6 @@
     <string name="set_max_travels">Max</string>
     <string name="set_min_travels">Min</string>
     <string name="button_select">Select</string>
+    <string name="chord">Chord</string>
 
 </resources>

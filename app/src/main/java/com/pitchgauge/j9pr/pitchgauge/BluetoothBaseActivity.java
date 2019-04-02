@@ -219,11 +219,11 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         if (tag.getPos() < 0) {
                             tag.setPos(mBluetoothService.getAvailablePosIndexForNewConnection(device));
                         }
-                        Log.d(TAG, "connecting to device with address=" + tag.getAddress() + "on pos=" + tag.getPos() + " ");
+                        Log.d(TAG, "connecting to device with address=" + tag.getAddress() + " on pos=" + tag.getPos() + " ");
                         mBluetoothPipe.connect(device, tag.getPos());
 
                     } else {
-                        Log.w(TAG, "device address=" + tag.getAddress() + "on pos=" + tag.getPos() + " is not paired");
+                        Log.w(TAG, "device address=" + tag.getAddress() + " on pos=" + tag.getPos() + " is not paired");
                         //TODO auto pairing
                     }
                 } else {

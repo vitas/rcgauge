@@ -148,6 +148,7 @@ public class BluetoothService extends Service {
                 }
 
                 if (socket != null) {
+
                     synchronized (BluetoothService.this) {
                         switch (mState) {
                             case BluetoothState.STATE_LISTEN:
@@ -204,7 +205,7 @@ public class BluetoothService extends Service {
         public void run() {
             setName("ConnectThread");
 
-            mAdapter.cancelDiscovery();
+            //mAdapter.cancelDiscovery();
             try {
                 this.mmSocket.connect();
 
@@ -225,6 +226,7 @@ public class BluetoothService extends Service {
             mDeviceAddresses.set(position, mmDevice.getAddress());
             mDeviceNames.set(position, mmDevice.getName());
             mSockets.set(position, mmSocket);
+
 
             connected(mmSocket, mmDevice, position);
 
@@ -348,17 +350,23 @@ public class BluetoothService extends Service {
     }
 
 
-    public void Send(byte[] buffer) {
+    public void Send(byte[] out) {
+        // When writing, try to write out to all connected threads
+        Log.d(TAG, "Start Writing..." + mConnThreads.size());
         for (int i = 0; i < mConnThreads.size(); i++) {
             try {
+                // Create temporary object
                 ConnectedThread r;
+                // Synchronize a copy of the ConnectedThread
                 synchronized (this) {
-                    if (mState != BluetoothState.STATE_CONNECTED) {
-                        continue;
-                    }
+                    if (mState != BluetoothState.STATE_CONNECTED) return;
                     r = mConnThreads.get(i);
                 }
-                r.write(buffer);
+                // Perform the write unsynchronized
+                if(r.isAlive())
+                    r.write(out);
+                else
+                    r.cancel();
             } catch (Exception e) {
             }
         }
@@ -429,6 +437,11 @@ public class BluetoothService extends Service {
     }
 
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device, int pos) {
+
+        mDeviceAddresses.set(pos, device.getAddress());
+        mDeviceNames.set(pos, device.getName());
+        mSockets.set(pos, socket);
+
         if (this.mConnectThread != null) {
             this.mConnectThread.cancel();
             this.mConnectThread = null;
@@ -439,9 +452,8 @@ public class BluetoothService extends Service {
             this.mAcceptThread = null;
         }
         this.mConnectedThread = new ConnectedThread(socket);
-        this.mConnectedThread.start();
         mConnThreads.set(pos, mConnectedThread);
-        mSockets.set(pos, socket);
+        this.mConnectedThread.start();
 
         Message msg = this.mHandler.obtainMessage(BluetoothState.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
@@ -633,6 +645,7 @@ public class BluetoothService extends Service {
                 bundle.putFloatArray("Data", mfDatas.get(pos));
                 bundle.putString("Date", this.strDate);
                 bundle.putString("Time", this.strTime);
+                bundle.putInt("Pos", pos);
                 msg.setData(bundle);
                 if (!mSuspend) {
                     this.mDataHandler.sendMessage(msg);

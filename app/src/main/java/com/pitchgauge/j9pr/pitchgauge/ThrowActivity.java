@@ -68,6 +68,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 case BluetoothState.MESSAGE_READ:
                     try {
                         float[] fData = msg.getData().getFloatArray("Data");
+                        int pos = msg.getData().getInt("Pos");
                         switch (ThrowActivity.this.RunMode) {
                             case 0:
                                 switch (ThrowActivity.this.iCurrentGroup) {
@@ -81,13 +82,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                         fData[0] = fData[0] * ((float) ThrowActivity.this.ar);
                                         fData[1] = fData[1] * ((float) ThrowActivity.this.ar);
                                         fData[2] = fData[2] * ((float) ThrowActivity.this.ar);
-                                        ThrowActivity.this.mGaugeViewModel.setAccelerations(Float.valueOf(fData[0]), Float.valueOf(fData[1]), Float.valueOf(fData[2]));
+                                        ThrowActivity.this.mGaugeViewModel.setAccelerations(pos, Float.valueOf(fData[0]), Float.valueOf(fData[1]), Float.valueOf(fData[2]));
                                         fData[3] = fData[3] * ((float) ThrowActivity.this.av);
                                         fData[4] = fData[4] * ((float) ThrowActivity.this.av);
                                         fData[5] = fData[5] * ((float) ThrowActivity.this.av);
-                                        ThrowActivity.this.mGaugeViewModel.setVelocities(Float.valueOf(fData[3]), Float.valueOf(fData[4]), Float.valueOf(fData[5]));
+                                        ThrowActivity.this.mGaugeViewModel.setVelocities(pos, Float.valueOf(fData[3]), Float.valueOf(fData[4]), Float.valueOf(fData[5]));
                                         // Roll Pitch Yaw
-                                        ThrowActivity.this.mGaugeViewModel.setAngles(Float.valueOf(fData[6]), Float.valueOf(fData[7]), Float.valueOf(fData[8]));
+                                        ThrowActivity.this.mGaugeViewModel.setAngles(pos, Float.valueOf(fData[6]), Float.valueOf(fData[7]), Float.valueOf(fData[8]));
                                         return;
                                     default:
                                         return;
@@ -182,6 +183,14 @@ public class ThrowActivity extends BluetoothBaseActivity {
         });
 
         mGaugeViewModel.getThrowGauge().observe(this, new Observer<ThrowGauge>() {
+            @Override
+            public void onChanged(@Nullable ThrowGauge user) {
+                if (user.GetAngle() < -90 || user.GetAngle() > 90)
+                    Toast.makeText(getApplicationContext(), "Angle must be -90 < Angle < 90", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mGaugeViewModel.getThrowGauge2().observe(this, new Observer<ThrowGauge>() {
             @Override
             public void onChanged(@Nullable ThrowGauge user) {
                 if (user.GetAngle() < -90 || user.GetAngle() > 90)

@@ -20,7 +20,7 @@
             app:error="@{CommandthrowViewModel.errorChord}"
             app:errorEnabled="true"
             android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/inAngle"
+            app:layout_constraintBottom_toTopOf="@+id/angle_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,48 +30,94 @@
                 android:id="@+id/inChord"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:hint="Chord"
+                android:hint="@string/chord"
                 android:inputType="numberDecimal"
-                android:padding="8dp"
                 android:textSize="40dp"
                 android:text="@={CommandthrowViewModel.Chord}" />
 
         </android.support.design.widget.TextInputLayout>
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/angle_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/travel_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/inAngle"
-                app:layout_constraintBottom_toTopOf="@+id/outTravel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-                android:layout_width="match_parent"
-                android:gravity="center"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="@string/command_angle"
-                android:padding="8dp"
-                android:textSize="40dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="16dp"
+                android:textSize="36dp"
                 android:text="@{CommandthrowViewModel.Angle}" />
 
-        <TextView
+            <TextView
+                android:id="@+id/inAngle2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:hint="@string/command_angle"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="8dp"
+                android:textSize="36dp"
+                android:text="@{CommandthrowViewModel.Angle2}" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/travel_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/maxTravels"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/angle_container"
+            android:gravity="center"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/outTravel"
-                app:layout_constraintBottom_toTopOf="@+id/maxTravels"
-                app:layout_constraintEnd_toStartOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inAngle"
-                android:layout_width="match_parent"
-                android:gravity="center"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="@string/command_throw"
-                android:padding="8dp"
-                android:textSize="40dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="16dp"
+                android:textSize="36dp"
                 android:text="@{CommandthrowViewModel.Travel}" />
+
+            <TextView
+                android:id="@+id/outTravel2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:hint="@string/command_throw"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="8dp"
+                android:textSize="36dp"
+                android:text="@{CommandthrowViewModel.Travel2}" />
+
+       </LinearLayout>
 
         <TextView
             android:id="@+id/maxTravels"
             app:layout_constraintBottom_toTopOf="@+id/inMaxThrow"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outTravel"
+            app:layout_constraintTop_toBottomOf="@+id/travel_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/command_throw"
@@ -144,7 +190,7 @@
             android:layout_height="wrap_content"
             android:text="@string/reset_angle"
             android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
-            android:padding="40dp"
+            android:padding="25dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
