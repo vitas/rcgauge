@@ -236,8 +236,11 @@ public class ThrowActivity extends BluetoothBaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if(treshold == 0){
                     mGaugeViewModel.setMinTravel(input.getText().toString());
+                    mGaugeViewModel.setMinTravel2(input.getText().toString());
+
                 }else{
                     mGaugeViewModel.setMaxTravel(input.getText().toString());
+                    mGaugeViewModel.setMaxTravel2(input.getText().toString());
                 }
             }
         });

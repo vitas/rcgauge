@@ -1,0 +1,5 @@
+# release signing properties
+storeFile=key/keystore_file
+storePassword=keystore_password
+keyAlias=
+keyPassword=

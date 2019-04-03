@@ -7,8 +7,8 @@ android {
         applicationId "com.pitchgauge.j9pr.pitchgauge"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -21,6 +21,25 @@ android {
     }
     dataBinding {
         enabled = true
+    }
+    if (new File("signing.properties").exists()) {
+        Properties signingProperties = new Properties()
+        signingProperties.load(new FileInputStream(new File('signing.properties')))
+
+        signingConfigs {
+            release {
+                storeFile new File(signingProperties['storeFile'])
+                storePassword signingProperties['storePassword']
+                keyAlias signingProperties['keyAlias']
+                keyPassword signingProperties['keyPassword']
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
     }
 }
 dependencies {
