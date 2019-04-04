@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="action_settings">Réglages</string>
-    <string name="sensor_bt">Sensor BT</string>
-    <string name="throw_meter">Throw meter</string>
-    <string name="communicate">Communicate</string>
-    <string name="reset_angle">Remettre angle</string>
-    <string name="command_throw">Déplacer</string>
+    <string name="sensor_bt">Capteur BT</string>
+    <string name="throw_meter">Mesure de débattement</string>
+    <string name="communicate">Connecter</string>
+    <string name="reset_angle">Remettre à zéro</string>
+    <string name="command_throw">Débattement</string>
     <string name="command_angle">Angle</string>
-    <string name="title_paired_devices">Paired device</string>
-    <string name="title_other_devices">Other device</string>
-    <string name="button_scan">Balayage</string>
-    <string name="command_maxthrow">Max UP:</string>
-    <string name="command_minthrow">Max DOWN:</string>
-    <string name="max_travels">Max travels :</string>
-    <string name="set_max_travels">Max</string>
-    <string name="set_min_travels">Min</string>
+    <string name="title_paired_devices">Appareils appairés</string>
+    <string name="title_other_devices">Autres appareils</string>
+    <string name="button_scan">Scanner</string>
+    <string name="command_maxthrow">Max Positif:</string>
+    <string name="command_minthrow">Max Negatif:</string>
+    <string name="max_travels">Débattements Max :</string>
+    <string name="set_max_travels">Configurer Max Positif</string>
+    <string name="set_min_travels">Configurer Max Negatif</string>
     <string name="button_select">Sélectionner</string>
-    <string name="chord">Accord</string>
-
+    <string name="chord">Corde de la gouverne</string>
 </resources>
