@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">RCGauge</string>
+    <string name="app_name" translatable="false">RC Throwmeter</string>
     <string name="app_version" translatable="false">v1.1</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -24,7 +24,7 @@
     <string name="button_scan">Scan</string>
     <string name="command_maxthrow">Max UP:</string>
     <string name="command_minthrow">Max DOWN:</string>
-    <string name="max_travels">Max travels :</string>
+    <string name="max_travels">Max travels</string>
     <string name="set_max_travels">Max</string>
     <string name="set_min_travels">Min</string>
     <string name="button_select">Select</string>

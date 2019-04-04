@@ -135,6 +135,8 @@ public class DeviceListActivity extends BluetoothBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        autoStart = false;
+
         requestWindowFeature(5);
         setContentView(R.layout.device_list);
         setResult(0);

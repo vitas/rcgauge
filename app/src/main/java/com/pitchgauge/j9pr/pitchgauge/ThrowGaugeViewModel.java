@@ -188,12 +188,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getAngle() {
-        return getApplication().getString(R.string.command_angle)+ " " + new DecimalFormat("  0.0").format(getThrowGauge().getValue().GetAngle());
+        return new DecimalFormat("0.0").format(getThrowGauge().getValue().GetAngle());
     }
 
     @Bindable
     public String getAngle2() {
-        return new DecimalFormat("  0.0").format(getThrowGauge2().getValue().GetAngle());
+        return new DecimalFormat("0.0").format(getThrowGauge2().getValue().GetAngle());
     }
 
     @Bindable
@@ -259,21 +259,21 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getTravel() {
         double res = getThrowGauge().getValue().GetThrow();
-        String str = getApplication().getString(R.string.command_throw)+ " " + new DecimalFormat("  ###0.0").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("###0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getTravel2() {
         double res = getThrowGauge2().getValue().GetThrow();
-        String str = new DecimalFormat("  ###0.0").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("###0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMaxTravel() {
         double res = getThrowGauge().getValue().GetMaxThrow();
-        String str = getApplication().getString(R.string.command_maxthrow)+ " " + new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
         return str;
     }
 
@@ -287,7 +287,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMinTravel() {
         double res = getThrowGauge().getValue().GetMinThrow();
-        String str = getApplication().getString(R.string.command_minthrow)+ " " + new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
         return str;
     }
 
@@ -347,22 +347,6 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public void setMaxTravel2(String value){
         int d = Integer.parseInt(value);
         getThrowGauge2().getValue().SetMaxTravel(d);
-    }
-
-    public void onSetMaxTravelClicked() {
-        getThrowGauge().getValue().SetMaxTravel();
-        notifyPropertyChanged(BR.maxTravel);
-        notifyPropertyChanged(BR.minTravel);
-        notifyPropertyChanged(BR.maxTravelColor);
-        notifyPropertyChanged(BR.minTravelColor);
-    }
-
-    public void onSetMinTravelClicked() {
-        getThrowGauge().getValue().SetMinTravel();
-        notifyPropertyChanged(BR.maxTravel);
-        notifyPropertyChanged(BR.minTravel);
-        notifyPropertyChanged(BR.maxTravelColor);
-        notifyPropertyChanged(BR.minTravelColor);
     }
 
     public void resetSensorPosition(){

@@ -159,6 +159,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        autoStart = true;
+
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
         mGaugeViewModel = ViewModelProviders.of(this).get(ThrowGaugeViewModel.class);
         mGaugeViewModel.SetSendSensorHandler(this.mSendSensor);

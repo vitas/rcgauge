@@ -51,7 +51,7 @@ public class BluetoothPipe {
     }
 
     public boolean isBluetoothEnabled() {
-        return mBluetoothAdapter.isEnabled();
+        return mBluetoothAdapter!= null && mBluetoothAdapter.isEnabled();
     }
 
     public boolean isServiceAvailable() {
@@ -189,7 +189,9 @@ public class BluetoothPipe {
     };
 
     public void enable() {
-        mBluetoothAdapter.enable();
+        if (mBluetoothAdapter != null) {
+            mBluetoothAdapter.enable();
+        }
     }
 
     public void send(byte[] data, boolean CRLF) {

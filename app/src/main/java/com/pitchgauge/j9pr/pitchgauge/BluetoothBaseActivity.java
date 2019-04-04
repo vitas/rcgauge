@@ -35,6 +35,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
     protected boolean mIsBound;
     protected BluetoothPipe mBluetoothPipe;
     protected ArrayList<DeviceTag> mDeviceTags;
+    protected boolean autoStart;
 
     protected ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -42,7 +43,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
             if (iBinder instanceof BluetoothService.BackgroundBluetoothBinder) {
                 mBluetoothService = ((BluetoothService.BackgroundBluetoothBinder) iBinder).service();
 
-                if (mHandler != null) {
+                if (mHandler != null && autoStart) {
                     if (!mBluetoothPipe.isBluetoothEnabled()) {
                         mBluetoothPipe.enable();
                     } else if (!mBluetoothPipe.isServiceAvailable()) {
@@ -55,7 +56,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         public void run() {
                             connectDevices();
                         }
-                    }, 5000);
+                    }, 2000);
                 } else {
                     Log.w(TAG, "Service is not setup, data handler is null");
                 }
@@ -252,7 +253,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
             doBind();
         } else {
 
-            if (mBluetoothPipe.isServiceAvailable()) {
+            if (mBluetoothPipe.isServiceAvailable() && autoStart) {
 
                 if (mBluetoothPipe.getServiceState() == STATE_NONE) {
 
@@ -260,14 +261,14 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         public void run() {
                             mBluetoothPipe.startService();
                         }
-                    }, 100);
+                    }, 50);
                 }
 
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         connectDevicesFromKeyring();
                     }
-                }, 3000);
+                }, 2000);
             }
         }
 
