@@ -6,13 +6,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.Bindable;
 import android.databinding.Observable;
 import android.databinding.PropertyChangeRegistry;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -293,7 +292,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getMinTravel2() {
-        double res = getThrowGauge().getValue().GetMinThrow();
+        double res = getThrowGauge2().getValue().GetMinThrow();
         String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
         return str;
     }
@@ -301,33 +300,33 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public Drawable getMinTravelColor() {
         if(getThrowGauge().getValue().IsBelowTravelMin())
-            return new ColorDrawable(Color.parseColor("red"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
         else
-            return new ColorDrawable(Color.parseColor("white"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
     }
 
     @Bindable
     public Drawable getMinTravelColor2() {
         if(getThrowGauge2().getValue().IsBelowTravelMin())
-            return new ColorDrawable(Color.parseColor("red"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
         else
-            return new ColorDrawable(Color.parseColor("white"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
     }
 
     @Bindable
     public Drawable getMaxTravelColor() {
         if(getThrowGauge().getValue().IsAboveTravelMax())
-            return new ColorDrawable(Color.parseColor("red"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
         else
-            return new ColorDrawable(Color.parseColor("white"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
     }
 
     @Bindable
     public Drawable getMaxTravelColor2() {
         if(getThrowGauge2().getValue().IsAboveTravelMax())
-            return new ColorDrawable(Color.parseColor("red"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
         else
-            return new ColorDrawable(Color.parseColor("white"));
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
     }
 
     public void setMinTravel(String value){

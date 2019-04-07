@@ -56,7 +56,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         public void run() {
                             connectDevices();
                         }
-                    }, 2000);
+                    }, 4000);
                 } else {
                     Log.w(TAG, "Service is not setup, data handler is null");
                 }
@@ -261,14 +261,14 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         public void run() {
                             mBluetoothPipe.startService();
                         }
-                    }, 50);
+                    }, 100);
                 }
 
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
                         connectDevicesFromKeyring();
                     }
-                }, 2000);
+                }, 4000);
             }
         }
 

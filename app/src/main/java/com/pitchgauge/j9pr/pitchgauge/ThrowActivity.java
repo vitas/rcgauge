@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
 
-
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_CONNECT_DEVICE;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
 
@@ -53,7 +52,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 mBluetoothPipe.setupService(mBluetoothService, mHandler);
             } else {
                 Toast.makeText(getApplicationContext()
-                        , "Bluetooth was not enabled."
+                        , getApplication().getString(R.string.warning_bluetooth_not_enabled)
                         , Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -222,9 +221,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if(lohi == 0)
-            builder.setTitle("Min negative travel");
+            builder.setTitle(getApplication().getString(R.string.dlg_min_negative_travel));
         else
-            builder.setTitle("Max positive travel");
+            builder.setTitle(getApplication().getString(R.string.dlg_max_positive_travel));
         // Set up the input
         input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -246,7 +245,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getApplication().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

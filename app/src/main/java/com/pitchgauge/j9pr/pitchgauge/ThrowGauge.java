@@ -197,6 +197,11 @@ public class ThrowGauge {
             mMinThrow = mCurrentTravel;
         if(mCurrentTravel > mMaxThrow)
             mMaxThrow = mCurrentTravel;
+
+        //TODO not clear
+     /*   mMaxThrow = mCurrentTravel;
+        mMinThrow = mCurrentTravel;
+*/
         return mCurrentTravel;
     }
 

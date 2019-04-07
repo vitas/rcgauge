@@ -167,10 +167,7 @@ public class BluetoothPipe {
                         if(mBluetoothConnectionListener != null)
                             mBluetoothConnectionListener.onDeviceDisconnected();
                         autoConnect("yoyo");
-                        /*if(isAutoConnectionEnabled) {
-                            isAutoConnectionEnabled = false;
-                            autoConnect(keyword);
-                        }*/
+
                         isConnected = false;
                     }
 

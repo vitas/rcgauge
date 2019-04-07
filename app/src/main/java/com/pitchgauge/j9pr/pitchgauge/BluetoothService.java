@@ -227,7 +227,6 @@ public class BluetoothService extends Service {
             mDeviceNames.set(position, mmDevice.getName());
             mSockets.set(position, mmSocket);
 
-
             connected(mmSocket, mmDevice, position);
 
         }
@@ -321,7 +320,7 @@ public class BluetoothService extends Service {
     }
 
     public boolean isDeviceConnectedAtPos(int position) {
-        if (mConnThreads.get(position) == null) {
+        if (mConnThreads.get(position) == null && mSockets.get(position) != null) {
             return false;
         }
         return true;
@@ -401,6 +400,11 @@ public class BluetoothService extends Service {
         if (getPosIndexOfDevice(device) == -1) {
 
             Log.d(TAG, "connect to: " + device.getName()+ " Address: " + device.getAddress());
+
+            if (isDeviceConnectedAtPos(pos) && mState == BluetoothState.STATE_CONNECTED) {
+                Log.d(TAG, "Already connected to: " + device.getName()+ " Address: " + device.getAddress()+ " ignore");
+                return;
+            }
 
             if (mState == BluetoothState.STATE_CONNECTING) {
                 if (mConnectThread != null) {

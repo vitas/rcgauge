@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="action_settings">Настройки</string>
     <string name="sensor_bt">Сенсоры BT</string>
     <string name="throw_meter">Throw Meter</string>
@@ -18,5 +17,8 @@
     <string name="set_min_travels">Min</string>
     <string name="button_select">Выбрать сенсоры</string>
     <string name="chord">Длина хорды</string>
-
+    <string name="dlg_cancel">Отмена</string>
+    <string name="dlg_max_positive_travel">Максимальные расходы вверх"</string>
+    <string name="dlg_min_negative_travel">Минимальные расходы вниз"</string>
+    <string name="warning_bluetooth_not_enabled">Блутюз не включен</string>
 </resources>

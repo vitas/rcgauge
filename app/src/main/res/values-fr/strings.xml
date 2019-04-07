@@ -17,4 +17,8 @@
     <string name="set_min_travels">Configurer Max Negatif</string>
     <string name="button_select">Sélectionner</string>
     <string name="chord">Corde de la gouverne</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_max_positive_travel">Max positive travel"</string>
+    <string name="dlg_min_negative_travel">Min negative travel"</string>
+    <string name="warning_bluetooth_not_enabled">Bluetooth was not enabled.</string>
 </resources>
