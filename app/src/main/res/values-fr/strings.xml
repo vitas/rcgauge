@@ -13,12 +13,12 @@
     <string name="command_maxthrow">Max Positif:</string>
     <string name="command_minthrow">Max Negatif:</string>
     <string name="max_travels">Débattements Max</string>
-    <string name="set_max_travels">Configurer Max Positif</string>
-    <string name="set_min_travels">Configurer Max Negatif</string>
+    <string name="set_max_travels">Config. Max Positif</string>
+    <string name="set_min_travels">Config. Max Negatif</string>
     <string name="button_select">Sélectionner</string>
-    <string name="chord">Corde de la gouverne</string>
-    <string name="dlg_cancel">Cancel</string>
-    <string name="dlg_max_positive_travel">Max positive travel"</string>
-    <string name="dlg_min_negative_travel">Min negative travel"</string>
-    <string name="warning_bluetooth_not_enabled">Bluetooth was not enabled.</string>
+    <string name="chord">Corde</string>
+    <string name="dlg_cancel">Annuler</string>
+    <string name="dlg_max_positive_travel">Configurer Max Positif"</string>
+    <string name="dlg_min_negative_travel">Configurer Max Négatif"</string>
+    <string name="warning_bluetooth_not_enabled">Bluetooth non activé.</string>
 </resources>
