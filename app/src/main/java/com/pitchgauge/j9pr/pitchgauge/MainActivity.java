@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         WebView wv = (WebView) findViewById(R.id.throwmeterdoc);
-        wv.loadUrl("file:///android_asset/Make your own BlueTooth RC Throwmeter.htm");
+        wv.loadUrl("file:///android_asset/Make-your-own-BlueTooth-RC-Throwmeter-V2.0.htm");
 
     }
 
