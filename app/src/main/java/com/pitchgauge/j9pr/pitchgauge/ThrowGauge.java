@@ -163,6 +163,9 @@ public class ThrowGauge {
     }
 
     public void SetMinTravel(double travel){
+        if (travel > 0) {
+            travel *= -1;
+        }
         mMinTravelAlarm = travel;
     }
 

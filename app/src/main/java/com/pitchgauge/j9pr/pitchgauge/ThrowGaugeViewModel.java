@@ -120,6 +120,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.minTravel);
             notifyPropertyChanged(BR.maxTravelColor);
             notifyPropertyChanged(BR.minTravelColor);
+            notifyPropertyChanged(BR.travelColor);
+
         } else {
             getThrowGauge2().getValue().SetAngles(x, y, z);
             notifyPropertyChanged(BR.angle2);
@@ -128,6 +130,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.minTravel2);
             notifyPropertyChanged(BR.maxTravelColor2);
             notifyPropertyChanged(BR.minTravelColor2);
+            notifyPropertyChanged(BR.travelColor2);
+
         }
 
     }
@@ -151,6 +155,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
                 notifyPropertyChanged(BR.minTravel);
                 notifyPropertyChanged(BR.maxTravelColor);
                 notifyPropertyChanged(BR.minTravelColor);
+                notifyPropertyChanged(BR.travelColor);
+
             }
         }
         catch (Exception e){
@@ -173,6 +179,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
                 notifyPropertyChanged(BR.minTravel2);
                 notifyPropertyChanged(BR.maxTravelColor2);
                 notifyPropertyChanged(BR.minTravelColor2);
+                notifyPropertyChanged(BR.travelColor2);
+
             }
         }
         catch (Exception e){
@@ -285,16 +293,32 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getMinTravel() {
-        double res = getThrowGauge().getValue().GetMinThrow();
+        double res = Math.abs(getThrowGauge().getValue().GetMinThrow());
         String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMinTravel2() {
-        double res = getThrowGauge2().getValue().GetMinThrow();
+        double res = Math.abs(getThrowGauge2().getValue().GetMinThrow());
         String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
         return str;
+    }
+
+    @Bindable
+    public Drawable getTravelColor() {
+        if(getThrowGauge().getValue().IsBelowTravelMin() || getThrowGauge().getValue().IsAboveTravelMax())
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+        else
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
+    }
+
+    @Bindable
+    public Drawable getTravelColor2() {
+        if(getThrowGauge2().getValue().IsBelowTravelMin() || getThrowGauge2().getValue().IsAboveTravelMax())
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+        else
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
     }
 
     @Bindable
@@ -331,11 +355,11 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     public void setMinTravel(String value){
         int d = Integer.parseInt(value);
-        getThrowGauge().getValue().SetMinTravel(-20d);
+        getThrowGauge().getValue().SetMinTravel(d);
     }
     public void setMinTravel2(String value){
         int d = Integer.parseInt(value);
-        getThrowGauge2().getValue().SetMinTravel(-20d);
+        getThrowGauge2().getValue().SetMinTravel(d);
     }
 
     public void setMaxTravel(String value){
@@ -374,6 +398,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         notifyPropertyChanged(BR.minTravel);
         notifyPropertyChanged(BR.maxTravel2);
         notifyPropertyChanged(BR.minTravel2);
+        notifyPropertyChanged(BR.travelColor);
+        notifyPropertyChanged(BR.travelColor2);
         notifyPropertyChanged(BR.chord);
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.arch.lifecycle.Observer;
@@ -85,7 +86,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                         fData[3] = fData[3] * ((float) ThrowActivity.this.av);
                                         fData[4] = fData[4] * ((float) ThrowActivity.this.av);
                                         fData[5] = fData[5] * ((float) ThrowActivity.this.av);
-                                        ThrowActivity.this.mGaugeViewModel.setVelocities(pos, Float.valueOf(fData[3]), Float.valueOf(fData[4]), Float.valueOf(fData[5]));
+                                        ThrowActivity.this.mGaugeViewModel. setVelocities(pos, Float.valueOf(fData[3]), Float.valueOf(fData[4]), Float.valueOf(fData[5]));
                                         // Roll Pitch Yaw
                                         ThrowActivity.this.mGaugeViewModel.setAngles(pos, Float.valueOf(fData[6]), Float.valueOf(fData[7]), Float.valueOf(fData[8]));
                                         return;
@@ -161,6 +162,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
         autoStart = true;
 
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
+
+        try {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } catch (IllegalStateException e) {
+            // Only fullscreen activities can request orientation
+        }
+
         mGaugeViewModel = ViewModelProviders.of(this).get(ThrowGaugeViewModel.class);
         mGaugeViewModel.SetSendSensorHandler(this.mSendSensor);
         binding.setCommandthrowViewModel(mGaugeViewModel);

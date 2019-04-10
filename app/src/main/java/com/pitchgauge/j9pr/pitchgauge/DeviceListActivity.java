@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -139,6 +140,12 @@ public class DeviceListActivity extends BluetoothBaseActivity {
 
         requestWindowFeature(5);
         setContentView(R.layout.device_list);
+
+        try {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } catch (IllegalStateException e) {
+            // Only fullscreen activities can request orientation
+        }
         setResult(0);
 
         ((Button) findViewById(R.id.button_scan)).setOnClickListener(new OnDeviceDiscoveryClick());
