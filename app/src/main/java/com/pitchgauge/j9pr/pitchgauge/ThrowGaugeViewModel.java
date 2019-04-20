@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
+import android.view.View;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -22,6 +23,7 @@ import java.text.ParsePosition;
 public class ThrowGaugeViewModel extends AndroidViewModel implements Observable {
     private PropertyChangeRegistry callbacks = new PropertyChangeRegistry();
     private Handler mHandler;
+    private boolean mMultiDevice;
 
     @Override
     public void addOnPropertyChangedCallback(
@@ -353,6 +355,10 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
     }
 
+    public int getSecondSensorVisible() {
+        return mMultiDevice?View.VISIBLE:View.GONE;
+    }
+
     public void setMinTravel(String value){
         int d = Integer.parseInt(value);
         getThrowGauge().getValue().SetMinTravel(d);
@@ -425,5 +431,9 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             throw new ParseException("Invalid input", parsePosition.getIndex());
         }
         return number.doubleValue();
+    }
+
+    public void setMultiDevice(boolean multiDevice) {
+        mMultiDevice = multiDevice;
     }
 }

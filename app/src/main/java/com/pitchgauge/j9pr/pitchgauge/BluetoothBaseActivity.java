@@ -35,7 +35,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
     protected Handler mHandler ;
     protected boolean mIsBound;
     protected BluetoothPipe mBluetoothPipe;
-    protected ArrayList<DeviceTag> mDeviceTags;
+    protected ArrayList<DeviceTag> mDeviceTags = new ArrayList<>();;
     protected boolean autoStart;
 
     protected ServiceConnection serviceConnection = new ServiceConnection() {
@@ -144,9 +144,6 @@ public class BluetoothBaseActivity extends AppCompatActivity {
         mBluetoothPipe.setBluetoothConnectionListener(new BluetoothPipe.BluetoothConnectionListener() {
             public void onDeviceConnected(DeviceTag deviceTag) {
 
-                if (mDeviceTags == null) {
-                    mDeviceTags = new ArrayList<>();
-                }
                 mDeviceTags.add(deviceTag);
 
                 Toast.makeText(getApplicationContext()

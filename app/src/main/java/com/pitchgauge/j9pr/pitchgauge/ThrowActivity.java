@@ -207,6 +207,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
             }
         });
 
+        mGaugeViewModel.setMultiDevice(mDeviceTags.size()>1);
+
         this.RunMode = 0;
 
         mHandler = new DataHandler();

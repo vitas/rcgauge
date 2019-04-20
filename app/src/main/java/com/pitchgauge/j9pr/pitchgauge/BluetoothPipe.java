@@ -67,7 +67,10 @@ public class BluetoothPipe {
     }
 
     public boolean cancelDiscovery() {
-        return mBluetoothAdapter.cancelDiscovery();
+        if (mBluetoothAdapter != null) {
+            return mBluetoothAdapter.cancelDiscovery();
+        }
+        return false;
     }
 
     public void setupService(BluetoothService blService, Handler handler) {

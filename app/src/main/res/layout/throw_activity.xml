@@ -83,6 +83,7 @@
                 android:gravity="center|center_horizontal"
                 android:padding="4dp"
                 android:text="@{CommandthrowViewModel.Angle2}"
+                android:visibility="@{CommandthrowViewModel.secondSensorVisible}"
                 android:textSize="34sp" />
 
         </LinearLayout>
@@ -132,6 +133,7 @@
                 android:gravity="center|center_horizontal"
                 android:padding="4dp"
                 android:text="@{CommandthrowViewModel.Travel2}"
+                android:visibility="@{CommandthrowViewModel.secondSensorVisible}"
                 android:textColor="@android:color/white"
                 android:textSize="34sp" />
 
@@ -178,6 +180,7 @@
                 android:background="@drawable/rounded_back"
                 android:gravity="center"
                 android:text="@{CommandthrowViewModel.MaxTravel2}"
+                android:visibility="@{CommandthrowViewModel.secondSensorVisible}"
                 android:textSize="24sp" />
 
             <Button
@@ -237,6 +240,7 @@
                 android:background="@drawable/rounded_back"
                 android:gravity="center"
                 android:text="@{CommandthrowViewModel.MinTravel2}"
+                android:visibility="@{CommandthrowViewModel.secondSensorVisible}"
                 android:textSize="24sp" />
 
             <Button
