@@ -172,12 +172,13 @@ public class DeviceListActivity extends BluetoothBaseActivity {
 
                 ArrayList<DeviceTag> savedDevices = BluetoothPreferences.getKeyrings(getApplicationContext());
 
+                int idx = 0;
                 for (BluetoothDevice device : pairedDevices) {
                     boolean found = false;
                     for (DeviceTag sTag: savedDevices) {
                         if (sTag.getAddress().equalsIgnoreCase(device.getAddress())) {
                             this.mPairedDevicesArrayAdapter.add(sTag);
-                            pairedListView.setItemChecked(sTag.getPos(),true); //Don't make the same mistake I did by calling this function before setting the listview adapter.
+                            pairedListView.setItemChecked(idx,true); //Don't make the same mistake I did by calling this function before setting the listview adapter.
                             found = true;
                             break;
                         }
@@ -188,6 +189,7 @@ public class DeviceListActivity extends BluetoothBaseActivity {
                         tag.setAddress(device.getAddress());
                         this.mPairedDevicesArrayAdapter.add(tag);
                     }
+                    idx++;
                 }
             }
         }
