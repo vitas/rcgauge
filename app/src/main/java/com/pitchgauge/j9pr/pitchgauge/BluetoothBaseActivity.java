@@ -35,7 +35,8 @@ public class BluetoothBaseActivity extends AppCompatActivity {
     protected Handler mHandler ;
     protected boolean mIsBound;
     protected BluetoothPipe mBluetoothPipe;
-    protected ArrayList<DeviceTag> mDeviceTags = new ArrayList<>();;
+    protected ArrayList<DeviceTag> mDeviceTags = new ArrayList<>();
+    
     protected boolean autoStart;
 
     protected ServiceConnection serviceConnection = new ServiceConnection() {
@@ -136,7 +137,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
         mBluetoothPipe.setOnDataReceivedListener(new BluetoothPipe.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
 
-                Log.d(TAG, "Record Message: "+ message + "\n");
+                Log.d(TAG, "Record Message: " + message + "\n");
 
             }
         });
@@ -147,7 +148,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                 mDeviceTags.add(deviceTag);
 
                 Toast.makeText(getApplicationContext()
-                        , "Connected " + deviceTag.getName()+ " (" +(deviceTag.getPos()+1)+")"
+                        , "Connected " + deviceTag.getName() + " (" + (deviceTag.getPos() + 1) + ")"
                         , Toast.LENGTH_SHORT).show();
 
                 SerialPortOpen();
