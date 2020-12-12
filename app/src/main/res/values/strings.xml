@@ -29,7 +29,7 @@
     <string name="set_max_travels">Max</string>
     <string name="set_min_travels">Min</string>
     <string name="button_select">Select</string>
-    <string name="chord">Chord</string>
+    <string name="chord">Rudder Chord</string>
     <string name="dlg_cancel">Cancel</string>
     <string name="dlg_max_positive_travel">Max positive travel"</string>
     <string name="dlg_min_negative_travel">Min negative travel"</string>
