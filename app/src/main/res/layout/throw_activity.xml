@@ -216,7 +216,7 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:padding="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintBottom_toTopOf="@+id/buttonResetAngle"
             app:layout_constraintTop_toBottomOf="@+id/maxTravelsDown">
 
 
@@ -258,7 +258,7 @@
 
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buttonResetAngle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_margin="4dp"
@@ -268,11 +268,29 @@
             android:gravity="center|center_horizontal"
             android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
             android:padding="16dp"
-            android:text="@string/reset_angle"
+            android:text="@string/txtResetAngle"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inMinThrow_container" />
+
+        <Button
+            android:id="@+id/buttonCalibrate"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_margin="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_rounded_back"
+            android:backgroundTint="@color/colorLightYellow"
+            android:gravity="center|center_horizontal"
+            android:onClick="@{()-> CommandthrowViewModel.onCalibrateClicked()}"
+            android:padding="16dp"
+            android:text="@string/txtCalibrate"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonResetAngle" />
 
     </android.support.constraint.ConstraintLayout>
 

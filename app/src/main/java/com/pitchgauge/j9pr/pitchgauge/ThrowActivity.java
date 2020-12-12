@@ -133,19 +133,35 @@ public class ThrowActivity extends BluetoothBaseActivity {
             switch (msg.what) {
                 case BluetoothState.MESSAGE_STATE_CHANGE:
                     if (ThrowActivity.this.mBluetoothPipe.isServiceAvailable()) {
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                byte[] ResetZaxis = {(byte)0xFF, (byte)0xAA, (byte)0x52};
-                                ThrowActivity.this.mBluetoothService.Suspend(true);
-                                ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-                                ThrowActivity.this.resetSensor();
-                                ThrowActivity.this.mBluetoothService.Suspend(false);
-                                while(!ThrowActivity.this.hasResumed());
-                                ThrowActivity.this.resetNeutral();
+                        Bundle command = msg.getData();
+                        if (command.getString("Reset sensor") == "New neutral") {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                    ThrowActivity.this.mBluetoothService.Suspend(true);
+                                    ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                    ThrowActivity.this.resetSensor();
+                                    ThrowActivity.this.mBluetoothService.Suspend(false);
+                                    while (!ThrowActivity.this.hasResumed()) ;
+                                    ThrowActivity.this.resetNeutral();
                                 }
-                        }).start();
+                            }).start();
+                        }
+                        if (command.getString("Reset sensor") == "Calibrate") {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
+                                    ThrowActivity.this.mBluetoothService.Suspend(true);
+                                    ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
+                                    ThrowActivity.this.resetSensor();
+                                    ThrowActivity.this.mBluetoothService.Suspend(false);
+                                    while (!ThrowActivity.this.hasResumed()) ;
+                                    ThrowActivity.this.resetNeutral();
+                                }
+                            }).start();
+                        }
                     }
                     break;
                 default:
