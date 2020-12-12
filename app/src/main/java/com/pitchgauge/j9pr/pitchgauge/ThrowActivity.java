@@ -141,6 +141,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
                                     ThrowActivity.this.mBluetoothService.Suspend(true);
                                     ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
                                     ThrowActivity.this.mBluetoothService.Suspend(false);
                                     while (!ThrowActivity.this.hasResumed()) ;
@@ -155,6 +156,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
                                     ThrowActivity.this.mBluetoothService.Suspend(true);
                                     ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
+                                    try { Thread.sleep(5000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
                                     ThrowActivity.this.mBluetoothService.Suspend(false);
                                     while (!ThrowActivity.this.hasResumed()) ;
