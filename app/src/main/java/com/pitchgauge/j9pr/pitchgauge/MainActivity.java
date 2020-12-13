@@ -96,8 +96,17 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, ThrowActivity.class);
             if (this.devices != null) {
                 intent.putParcelableArrayListExtra(DEVICE_BT, this.devices );
+                startActivityForResult(intent, REQ_THROW_ACTIVITY);
+            } else {
+                ArrayList<DeviceTag> savedTags = BluetoothPreferences.getKeyrings(getApplicationContext());
+                if (!savedTags.isEmpty()) {
+                    intent.putParcelableArrayListExtra(DEVICE_BT, savedTags );
+                    startActivityForResult(intent, REQ_THROW_ACTIVITY);
+                } else {
+                    intent.setClass(MainActivity.this, DeviceListActivity.class);
+                    startActivityForResult(intent, REQ_DATA_ACTIVITY);
+                }
             }
-            startActivityForResult(intent, REQ_THROW_ACTIVITY);
         } else if (id == R.id.nav_BT) {
             Intent intent = new Intent(MainActivity.this, DeviceListActivity.class);
             startActivityForResult(intent, REQ_DATA_ACTIVITY);
