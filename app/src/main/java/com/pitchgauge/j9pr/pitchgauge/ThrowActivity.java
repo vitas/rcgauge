@@ -139,11 +139,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 @Override
                                 public void run() {
                                     byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
-                                    ThrowActivity.this.mBluetoothService.Suspend(true);
                                     ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                    try { Thread.sleep(800); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
-                                    ThrowActivity.this.mBluetoothService.Suspend(false);
                                     while (!ThrowActivity.this.hasResumed()) ;
                                     ThrowActivity.this.resetNeutral();
                                 }
@@ -154,13 +152,10 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 @Override
                                 public void run() {
                                     byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
-                                    ThrowActivity.this.mBluetoothService.Suspend(true);
                                     ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
-                                    try { Thread.sleep(5000); } catch(InterruptedException e) { }
+                                    try { Thread.sleep(8000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
-                                    ThrowActivity.this.mBluetoothService.Suspend(false);
                                     while (!ThrowActivity.this.hasResumed()) ;
-                                    ThrowActivity.this.resetNeutral();
                                 }
                             }).start();
                         }
