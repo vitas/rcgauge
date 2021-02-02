@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.arch.lifecycle.Observer;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -41,6 +43,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private boolean isOpen;
     private EditText input;
 
+    private btStatusWatcherClass btWatcher = new btStatusWatcherClass();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CONNECT_DEVICE) {
@@ -226,6 +229,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         mHandler = new DataHandler();
 
+		// watch BT activity and display status line
+        btWatcher.start();
     }
 
     public  void resetNeutral(){
@@ -277,5 +282,117 @@ public class ThrowActivity extends BluetoothBaseActivity {
         builder.show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregisterReceiver(this.mReceiver);
 
+        if (mBluetoothPipe != null) {
+            mBluetoothPipe.cancelDiscovery();
+            mBluetoothPipe.stopService();
+        }
+    }
+
+    class btStatusWatcherClass extends Thread
+    {
+        private String btText[] = new String[2];
+        private String btTextAlt[] = new String[2];
+        private Drawable btColor[] = new Drawable[2];
+        private boolean btShowAlt[] = new boolean[2];
+
+        public void run()
+        {
+            setName("btStatusWatcher");
+            if (mDeviceTags.size() > 0) {
+                btText[0] = mDeviceTags.get(0).name + " (" + mDeviceTags.get(0).address + ")";
+            }
+            if (mDeviceTags.size() > 1) {
+                btText[1] = mDeviceTags.get(1).name + " (" + mDeviceTags.get(1).address + ")";
+            }
+
+            while (true) {
+                setTextAndColor(0);
+                setTextAndColor(1);
+                mGaugeViewModel.setBtStatus(btText[0]);
+                mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                mGaugeViewModel.setBtStatusCol(btColor[0]);
+                mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
+
+                mGaugeViewModel.setBtStatus2(btText[1]);
+                mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                mGaugeViewModel.setBtStatusCol2(btColor[1]);
+                mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+
+                if (btShowAlt[0]) {
+                    mGaugeViewModel.setBtStatus(btTextAlt[0]);
+                    mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+
+                }
+                if (btShowAlt[1]) {
+                    mGaugeViewModel.setBtStatus2(btTextAlt[1]);
+                    mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                }
+
+                if (btShowAlt[0] || btShowAlt[1]) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                }
+
+            }
+        }
+        private Drawable getWitColor(int channel) {
+            Drawable color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+            switch (mGaugeViewModel.getWitLinkStatus(channel)) {
+                case BluetoothState.WIT_IDLE:
+                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    break;
+                case BluetoothState.WIT_DATA_ARRIVING:
+                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
+                    break;
+                default:
+            }
+            mGaugeViewModel.setWitLinkStatus(channel, BluetoothState.WIT_IDLE);
+            return color;
+        }
+
+        private void setTextAndColor (int channel) {
+            int st;
+            // mBluetoothService.getState() might be called before method is available
+            try {
+                st = mBluetoothService.getState();
+            } catch  (Exception e) {
+                st = BluetoothState.STATE_NONE;
+            }
+            switch (st) {
+                case BluetoothState.STATE_CONNECTED:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
+                    btTextAlt[channel] = "connected";
+                    btShowAlt[channel] = false;
+                    break;
+                case BluetoothState.STATE_CONNECTING:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    btTextAlt[channel] = "connecting";
+                    btShowAlt[channel] = true;
+                    break;
+                case BluetoothState.STATE_LISTEN:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    btTextAlt[channel] = "listening";
+                    btShowAlt[channel] = true;
+                    break;
+
+                 default:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    btTextAlt[channel] = "opening";
+                    btShowAlt[channel] = true;
+                    break;
+            }
+        }
+    }
 }

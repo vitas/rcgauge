@@ -6,11 +6,14 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.Bindable;
 import android.databinding.Observable;
 import android.databinding.PropertyChangeRegistry;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 
@@ -24,6 +27,22 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     private PropertyChangeRegistry callbacks = new PropertyChangeRegistry();
     private Handler mHandler;
     private boolean mMultiDevice;
+
+    private String btStatusStr = "BT1";
+    private String btStatusStr2 = "BT2";
+
+    private Drawable btStatusCol = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+    private Drawable btStatusCol2 = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+
+    private int witLinkStatus[] = {BluetoothState.WIT_IDLE, BluetoothState.WIT_IDLE};
+
+    public void setBtStatusCol(Drawable btStatusCol) {
+        this.btStatusCol = btStatusCol;
+    }
+
+    public void setBtStatusCol2(Drawable btStatusCol) {
+        this.btStatusCol2 = btStatusCol;
+    }
 
     @Override
     public void addOnPropertyChangedCallback(
@@ -116,6 +135,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public void setAngles(int pos, float x, float y, float z){
         if (pos == 0) {
             getThrowGauge().getValue().SetAngles(x, y, z);
+            setWitLinkStatus(0, BluetoothState.WIT_DATA_ARRIVING);
             notifyPropertyChanged(BR.angle);
             notifyPropertyChanged(BR.travel);
             notifyPropertyChanged(BR.maxTravel);
@@ -123,9 +143,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.maxTravelColor);
             notifyPropertyChanged(BR.minTravelColor);
             notifyPropertyChanged(BR.travelColor);
+            notifyPropertyChanged(BR.btStatusColor);
+
 
         } else {
             getThrowGauge2().getValue().SetAngles(x, y, z);
+            setWitLinkStatus(1, BluetoothState.WIT_DATA_ARRIVING);
             notifyPropertyChanged(BR.angle2);
             notifyPropertyChanged(BR.travel2);
             notifyPropertyChanged(BR.maxTravel2);
@@ -133,6 +156,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.maxTravelColor2);
             notifyPropertyChanged(BR.minTravelColor2);
             notifyPropertyChanged(BR.travelColor2);
+            notifyPropertyChanged(BR.btStatusColor2);
 
         }
 
@@ -264,6 +288,40 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public String getNeutralQuatW(){
         return "NeutralQuatW: " + new DecimalFormat("#0.0#").format(getThrowGauge().getValue().GetNeutralQuatW());
     }
+
+
+    @Bindable
+    public String getBtStatus() {
+        String str = btStatusStr;
+        return str;
+    }
+
+    public void setBtStatus(String str) {
+        btStatusStr = str;
+        notifyPropertyChanged(BR.btStatus);
+    }
+
+    @Bindable
+    public String getBtStatus2() {
+        String str = btStatusStr2;
+        return str;
+    }
+
+    public void setBtStatus2(String str) {
+        btStatusStr2 = str;
+        notifyPropertyChanged(BR.btStatus2);
+    }
+
+    @Bindable
+    public Drawable getBtStatusColor() {
+        return btStatusCol;
+    }
+
+    @Bindable
+    public Drawable getBtStatusColor2() {
+        return btStatusCol;
+    }
+
 
     @Bindable
     public String getTravel() {
@@ -444,5 +502,13 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     public void setMultiDevice(boolean multiDevice) {
         mMultiDevice = multiDevice;
+    }
+
+    public int getWitLinkStatus(int channel) {
+        return witLinkStatus[channel];
+    }
+
+    public void setWitLinkStatus(int channel, int witLinkStatus) {
+        this.witLinkStatus[channel] = witLinkStatus;
     }
 }

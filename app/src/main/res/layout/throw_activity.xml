@@ -15,6 +15,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:id="@+id/status_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/textInputLayout">
+
+            <TextView
+                android:id="@+id/outBTStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@{CommandthrowViewModel.btStatusColor}"
+                android:gravity="center|center_horizontal"
+                android:padding="4dp"
+                android:text="@{CommandthrowViewModel.btStatus}"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                tools:layout_editor_absoluteX="6dp"
+                />
+
+            <TextView
+                android:id="@+id/outBTStatus2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="1"
+                android:background="@{CommandthrowViewModel.btStatusColor2}"
+                android:gravity="center|center_horizontal"
+                android:padding="4dp"
+                android:text="@{CommandthrowViewModel.btStatus2}"
+                android:visibility="@{CommandthrowViewModel.secondSensorVisible}"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                tools:layout_editor_absoluteX="6dp" />
+
+        </LinearLayout>
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayout"
             android:layout_width="match_parent"
@@ -23,7 +65,6 @@
             app:error="@{CommandthrowViewModel.errorChord}"
             app:errorEnabled="true"
             app:layout_constraintBottom_toTopOf="@+id/outAngelLabel"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread_inside">
 
             <EditText
@@ -37,7 +78,8 @@
                 android:minWidth="160dp"
                 android:padding="4dp"
                 android:text="@={CommandthrowViewModel.Chord}"
-                android:textSize="36sp" />
+                android:textSize="36sp"
+                android:autofillHints="" />
 
         </android.support.design.widget.TextInputLayout>
 

@@ -14,4 +14,8 @@ public class BluetoothState {
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
 
+    // status of data reception from WIT
+    public static final int WIT_IDLE = 0;
+    public static final int WIT_DATA_ARRIVING = 1;
+
 }
