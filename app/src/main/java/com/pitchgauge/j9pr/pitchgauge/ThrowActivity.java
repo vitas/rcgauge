@@ -291,14 +291,19 @@ public class ThrowActivity extends BluetoothBaseActivity {
             mBluetoothPipe.cancelDiscovery();
             mBluetoothPipe.stopService();
         }
+
+        // get rid of remaining thread
+        btWatcher.cancel();
     }
 
     class btStatusWatcherClass extends Thread
     {
+        private volatile boolean exit = false;
         private String btText[] = new String[2];
         private String btTextAlt[] = new String[2];
         private Drawable btColor[] = new Drawable[2];
         private boolean btShowAlt[] = new boolean[2];
+
 
         public void run()
         {
@@ -310,7 +315,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 btText[1] = mDeviceTags.get(1).name + " (" + mDeviceTags.get(1).address + ")";
             }
 
-            while (true) {
+
+            while (!exit) {
                 setTextAndColor(0);
                 setTextAndColor(1);
                 mGaugeViewModel.setBtStatus(btText[0]);
@@ -344,9 +350,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
                     } catch (InterruptedException e) {
                     }
                 }
-
             }
         }
+
+        public void cancel() {
+            exit = true;
+        }
+
         private Drawable getWitColor(int channel) {
             Drawable color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
             switch (mGaugeViewModel.getWitLinkStatus(channel)) {
