@@ -111,15 +111,17 @@ public class BluetoothPipe {
         if (mBluetoothService != null) {
             isServiceRunning = false;
             mBluetoothService.stop();
+            mBluetoothService = null; // AHa: I guess, mBluetoothService is not set to null on destroy?
         }
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                if (mBluetoothService != null) {
-                    isServiceRunning = false;
-                    mBluetoothService.stop();
-                }
-            }
-        }, 500);
+		// TODO: check AHa, not needed
+//        new Handler().postDelayed(new Runnable() {
+//            public void run() {
+//                if (mBluetoothService != null) {
+//                    isServiceRunning = false;
+//                    mBluetoothService.stop();
+//                }
+//            }
+//        }, 1000);
     }
 
     public void disconnect() {
