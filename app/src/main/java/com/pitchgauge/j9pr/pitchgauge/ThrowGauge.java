@@ -192,10 +192,10 @@ public class ThrowGauge {
     public double ResolveQuatsThrow() {
         toQuaternion(mQBoard, mEulerYaw, mEulerPitch, mEulerRoll);
         Vector3d delta = EulerAnglesBetween(mQBoard, mQBoardNeutral);
-        int sign = delta.y > 0 ? 1 : -1;
+        int sign = delta.y > 0 ? -1 : 1;
         mQBoard.difference(mQBoardNeutral);
-        mQuatAngle = mQBoard.angle();
-        mCurrentTravel = - mChord * Math.sin(mQuatAngle)* sign;
+        mQuatAngle = mQBoard.angle() * sign;
+        mCurrentTravel = mChord * Math.sin(mQuatAngle);
         if(mCurrentTravel < mMinThrow)
             mMinThrow = mCurrentTravel;
         if(mCurrentTravel > mMaxThrow)
