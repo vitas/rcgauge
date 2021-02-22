@@ -7,7 +7,7 @@
     <string name="txtResetAngle">Сброс расходов</string>
     <string name="txtCalibrate">откалибровать</string>
     <string name="command_throw">Расходы</string>
-    <string name="command_angle">Углы</string>
+    <string name="command_angle">Углы (\u00B0)</string>
     <string name="title_paired_devices">Подключеные устройства</string>
     <string name="title_other_devices">Прочие устройства</string>
     <string name="button_scan">Сканировать</string>

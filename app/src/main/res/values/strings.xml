@@ -19,7 +19,7 @@
     <string name="txtResetAngle">Reset angle</string>
     <string name="txtCalibrate">Calibrate</string>
     <string name="command_throw">Travel</string>
-    <string name="command_angle">Angle</string>
+    <string name="command_angle">Angle (\u00B0)</string>
     <string name="title_paired_devices">Paired device</string>
     <string name="title_other_devices">Other device</string>
     <string name="button_scan">Scan</string>

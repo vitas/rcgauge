@@ -7,7 +7,7 @@
     <string name="txtResetAngle">Remettre à zéro</string>
     <string name="txtCalibrate">Calibrer</string>
     <string name="command_throw">Débattement</string>
-    <string name="command_angle">Angle</string>
+    <string name="command_angle">Angle (\u00B0)</string>
     <string name="title_paired_devices">Appareils appairés</string>
     <string name="title_other_devices">Autres appareils</string>
     <string name="button_scan">Scanner</string>
