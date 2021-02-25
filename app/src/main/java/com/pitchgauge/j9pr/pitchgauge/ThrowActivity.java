@@ -147,7 +147,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     ThrowActivity.this.busyReset = true;
                                     byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
                                     ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-                                    try { Thread.sleep(800); } catch(InterruptedException e) { }
+                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
                                     while (!ThrowActivity.this.hasResumed()) ;
                                     ThrowActivity.this.resetNeutral();
@@ -163,9 +163,12 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     ThrowActivity.this.busyCalibration = true;
                                     byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
                                     ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
-                                    try { Thread.sleep(8000); } catch(InterruptedException e) { }
+                                    try { Thread.sleep(10000); } catch(InterruptedException e) { }
+                                    ThrowActivity.this.resetSensor();
+                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
                                     while (!ThrowActivity.this.hasResumed()) ;
+                                    ThrowActivity.this.resetNeutral();
                                     ThrowActivity.this.busyCalibration = false;
                                 }
                             }).start();
