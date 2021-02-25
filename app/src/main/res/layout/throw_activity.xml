@@ -5,7 +5,6 @@
     android:id="@+id/layout">
 
     <data>
-
         <variable
             name="CommandthrowViewModel"
             type="com.pitchgauge.j9pr.pitchgauge.ThrowGaugeViewModel" />
@@ -309,6 +308,7 @@
             android:background="@drawable/btn_rounded_back"
             android:gravity="center|center_horizontal"
             android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
+            android:enabled="@{CommandthrowViewModel.buttonResetAngleEnable}"
             android:padding="16dp"
             android:text="@string/txtResetAngle"
             android:textSize="18sp"
@@ -327,6 +327,7 @@
             android:backgroundTint="@color/colorLightYellow"
             android:gravity="center|center_horizontal"
             android:onClick="@{()-> CommandthrowViewModel.onCalibrateClicked()}"
+            android:enabled="@{CommandthrowViewModel.buttonCalibrateEnable}"
             android:padding="16dp"
             android:text="@string/txtCalibrate"
             android:textSize="18sp"

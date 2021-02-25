@@ -43,6 +43,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private boolean isOpen;
     private EditText input;
 
+    private boolean busyReset = false;
+    private boolean busyCalibration = false;
+
     private btStatusWatcherClass btWatcher = new btStatusWatcherClass();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -141,24 +144,29 @@ public class ThrowActivity extends BluetoothBaseActivity {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    ThrowActivity.this.busyReset = true;
                                     byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
                                     ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
                                     try { Thread.sleep(800); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
                                     while (!ThrowActivity.this.hasResumed()) ;
                                     ThrowActivity.this.resetNeutral();
+                                    ThrowActivity.this.busyReset = false;
                                 }
                             }).start();
+
                         }
                         if (command.getString("Reset sensor") == "Calibrate") {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    ThrowActivity.this.busyCalibration = true;
                                     byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
                                     ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
                                     try { Thread.sleep(8000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
                                     while (!ThrowActivity.this.hasResumed()) ;
+                                    ThrowActivity.this.busyCalibration = false;
                                 }
                             }).start();
                         }
@@ -304,6 +312,10 @@ public class ThrowActivity extends BluetoothBaseActivity {
         private Drawable btColor[] = new Drawable[2];
         private boolean btShowAlt[] = new boolean[2];
 
+        private boolean buttonResetEnabled[] = new boolean[2];
+        private boolean buttonCalEnabled[] = new boolean[2];
+
+        private int tick = 0;
 
         public void run()
         {
@@ -315,41 +327,59 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 btText[1] = mDeviceTags.get(1).name + " (" + mDeviceTags.get(1).address + ")";
             }
 
-
             while (!exit) {
-                setTextAndColor(0);
-                setTextAndColor(1);
-                mGaugeViewModel.setBtStatus(btText[0]);
-                mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
-                mGaugeViewModel.setBtStatusCol(btColor[0]);
-                mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
-
-                mGaugeViewModel.setBtStatus2(btText[1]);
-                mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
-                mGaugeViewModel.setBtStatusCol2(btColor[1]);
-                mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
-
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                 }
 
-                if (btShowAlt[0]) {
-                    mGaugeViewModel.setBtStatus(btTextAlt[0]);
-                    mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                setTextAndColor(0);
+                setTextAndColor(1);
 
-                }
-                if (btShowAlt[1]) {
-                    mGaugeViewModel.setBtStatus2(btTextAlt[1]);
-                    mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
-                }
+                // enable/disable buttons
+                mGaugeViewModel.setButtonResetAngleEnable(
+                        !(busyReset || busyCalibration) && (buttonResetEnabled[0]) && buttonResetEnabled[1]);
+                mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
+                mGaugeViewModel.setButtonCalibrateEnable(
+                        !(busyReset || busyCalibration) && buttonCalEnabled[0] && buttonCalEnabled[1]);
+                mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
 
-                if (btShowAlt[0] || btShowAlt[1]) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                    }
+                switch (tick) {
+                    case 0:
+                        mGaugeViewModel.setBtStatus(btText[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                        mGaugeViewModel.setBtStatusCol(btColor[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
+
+                        mGaugeViewModel.setBtStatus2(btText[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                        mGaugeViewModel.setBtStatusCol2(btColor[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
+
+                        if (btShowAlt[0]) {
+                            mGaugeViewModel.setBtStatus(btTextAlt[0]);
+                            mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                        }
+                        if (btShowAlt[1]) {
+                            mGaugeViewModel.setBtStatus2(btTextAlt[1]);
+                            mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                        }
+                        break;
+                    case 10:
+                        mGaugeViewModel.setBtStatus(btText[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                        mGaugeViewModel.setBtStatusCol(btColor[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
+
+                        mGaugeViewModel.setBtStatus2(btText[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                        mGaugeViewModel.setBtStatusCol2(btColor[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
+                        break;
+                    default:
+                        break;
                 }
+                tick = (tick >= 20) ? 0 : tick + 1;
             }
         }
 
@@ -385,22 +415,30 @@ public class ThrowActivity extends BluetoothBaseActivity {
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
                     btTextAlt[channel] = "connected";
                     btShowAlt[channel] = false;
+                    buttonResetEnabled[channel] = true;
+                    buttonCalEnabled[channel] = true;
                     break;
                 case BluetoothState.STATE_CONNECTING:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "connecting";
                     btShowAlt[channel] = true;
+                    buttonResetEnabled[channel] = false;
+                    buttonCalEnabled[channel] = false;
                     break;
                 case BluetoothState.STATE_LISTEN:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "listening";
                     btShowAlt[channel] = true;
+                    buttonResetEnabled[channel] = false;
+                    buttonCalEnabled[channel] = false;
                     break;
 
                  default:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "opening";
                     btShowAlt[channel] = true;
+                     buttonResetEnabled[channel] = false;
+                     buttonCalEnabled[channel] = false;
                     break;
             }
         }

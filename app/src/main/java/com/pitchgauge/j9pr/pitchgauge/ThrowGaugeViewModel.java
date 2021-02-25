@@ -41,8 +41,11 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
 
     public void setBtStatusCol2(Drawable btStatusCol) {
-        this.btStatusCol2 = btStatusCol;
+        this.btStatusCol2 = btStatusCol2;
     }
+
+    private boolean buttonResetAngleEnable = true;
+    private boolean buttonCalibrateEnable = true;
 
     @Override
     public void addOnPropertyChangedCallback(
@@ -320,6 +323,24 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public Drawable getBtStatusColor2() {
         return btStatusCol;
+    }
+
+    @Bindable
+    public boolean getButtonResetAngleEnable() {
+        return buttonResetAngleEnable;
+    }
+
+    public void setButtonResetAngleEnable(boolean enable) {
+         buttonResetAngleEnable = enable;
+    }
+
+    @Bindable
+    public boolean getButtonCalibrateEnable() {
+        return buttonCalibrateEnable;
+    }
+
+    public void setButtonCalibrateEnable(boolean enable) {
+        buttonCalibrateEnable = enable;
     }
 
 
