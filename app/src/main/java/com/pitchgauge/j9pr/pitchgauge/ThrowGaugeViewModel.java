@@ -47,6 +47,19 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     private boolean buttonResetAngleEnable = true;
     private boolean buttonCalibrateEnable = true;
 
+
+    // parse number string using language specfic number format (comma separator , or .)
+    // get rid of number dialog sending . instead of , (android bug)
+    private double parseStringDouble(String s) {
+        double d;
+        try {
+            d = Double.parseDouble(s.toString().replace(',', '.'));
+        } catch (NumberFormatException e) {
+            d = 0.0;
+        }
+        return d;
+    }
+
     @Override
     public void addOnPropertyChangedCallback(
             Observable.OnPropertyChangedCallback callback) {
@@ -106,17 +119,16 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         return mThrowGauge2;
     }
 
-    public void setChord(String chord){
-        if(!isNumeric(chord))
-            return;
-        if(chord == "")
-            return;
-        getThrowGauge().getValue().SetChord(Double.parseDouble(chord));
-        getThrowGauge2().getValue().SetChord(Double.parseDouble(chord));
+    public void setChordValue(String chord) {
+    }
 
+    public void setChordValueDia(String chord) {
+        double d = parseStringDouble(chord);
+        getThrowGauge().getValue().SetChord(d);
+        getThrowGauge2().getValue().SetChord(d);
+        notifyPropertyChanged(BR.chordValue);
         notifyPropertyChanged(BR.travel);
         notifyPropertyChanged(BR.travel2);
-
     }
 
     public void setAccelerations(int pos, float x, float y, float z){
@@ -143,12 +155,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.travel);
             notifyPropertyChanged(BR.maxTravel);
             notifyPropertyChanged(BR.minTravel);
+            notifyPropertyChanged(BR.maxTravelSet);
+            notifyPropertyChanged(BR.minTravelSet);
             notifyPropertyChanged(BR.maxTravelColor);
             notifyPropertyChanged(BR.minTravelColor);
             notifyPropertyChanged(BR.travelColor);
             notifyPropertyChanged(BR.btStatusColor);
-
-
         } else {
             getThrowGauge2().getValue().SetAngles(x, y, z);
             setWitLinkStatus(1, BluetoothState.WIT_DATA_ARRIVING);
@@ -156,13 +168,13 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.travel2);
             notifyPropertyChanged(BR.maxTravel2);
             notifyPropertyChanged(BR.minTravel2);
+            notifyPropertyChanged(BR.maxTravelSet);
+            notifyPropertyChanged(BR.minTravelSet);
             notifyPropertyChanged(BR.maxTravelColor2);
             notifyPropertyChanged(BR.minTravelColor2);
             notifyPropertyChanged(BR.travelColor2);
             notifyPropertyChanged(BR.btStatusColor2);
-
         }
-
     }
 
     public void setTemperature(float t){
@@ -185,11 +197,9 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
                 notifyPropertyChanged(BR.maxTravelColor);
                 notifyPropertyChanged(BR.minTravelColor);
                 notifyPropertyChanged(BR.travelColor);
-
             }
         }
         catch (Exception e){
-            
         }
     }
 
@@ -209,11 +219,9 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
                 notifyPropertyChanged(BR.maxTravelColor2);
                 notifyPropertyChanged(BR.minTravelColor2);
                 notifyPropertyChanged(BR.travelColor2);
-
             }
         }
         catch (Exception e){
-
         }
     }
 
@@ -233,8 +241,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
 
     @Bindable
-    public String getChord() {
-        return Double.toString(getThrowGauge().getValue().GetChord());
+    public String getChordValue() {
+        return new DecimalFormat("0.0").format(getThrowGauge().getValue().GetChord());
     }
 
     @Bindable
@@ -347,42 +355,68 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getTravel() {
         double res = getThrowGauge().getValue().GetThrow();
-        String str = new DecimalFormat("###0.0").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getTravel2() {
         double res = getThrowGauge2().getValue().GetThrow();
-        String str = new DecimalFormat("###0.0").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMaxTravel() {
         double res = getThrowGauge().getValue().GetMaxThrow();
-        String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMaxTravel2() {
         double res = getThrowGauge2().getValue().GetMaxThrow();
-        String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMinTravel() {
         double res = Math.abs(getThrowGauge().getValue().GetMinThrow());
-        String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMinTravel2() {
         double res = Math.abs(getThrowGauge2().getValue().GetMinThrow());
-        String str = new DecimalFormat("###.#").format(res); // rounded to 2 decimal places
+        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
+        return str;
+    }
+
+    @Bindable
+    public String getMaxTravelSet() {
+        double res = getThrowGauge().getValue().GetSetMaxThrow();
+        String str = "Max " + new DecimalFormat("0.0").format(res);
+        return str;
+    }
+
+    public String getMaxTravelSetN() {
+        double res = getThrowGauge().getValue().GetSetMaxThrow();
+        String str = new DecimalFormat("0.0").format(res);
+        return str;
+    }
+
+    @Bindable
+    public String getMinTravelSet() {
+        double res = getThrowGauge().getValue().GetSetMinThrow();
+        String str = "Min " + new DecimalFormat("0.0").format(res);
+        return str;
+    }
+
+    public String getMinTravelSetN() {
+        double res = getThrowGauge().getValue().GetSetMinThrow();
+        String str = new DecimalFormat("0.0").format(res);
         return str;
     }
 
@@ -438,22 +472,21 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         return mMultiDevice?View.VISIBLE:View.GONE;
     }
 
-    public void setMinTravel(String value){
-        int d = Integer.parseInt(value);
+    public void setMinTravelDia(String value){
+        double d = parseStringDouble(value);
         getThrowGauge().getValue().SetMinTravel(d);
     }
-    public void setMinTravel2(String value){
-        int d = Integer.parseInt(value);
+    public void setMinTravelDia2(String value){
+        double d = parseStringDouble(value);
         getThrowGauge2().getValue().SetMinTravel(d);
     }
 
-    public void setMaxTravel(String value){
-        int d = Integer.parseInt(value);
+    public void setMaxTravelDia(String value){
+        double d = parseStringDouble(value);
         getThrowGauge().getValue().SetMaxTravel(d);
     }
-
-    public void setMaxTravel2(String value){
-        int d = Integer.parseInt(value);
+    public void setMaxTravelDia2(String value){
+        double d = parseStringDouble(value);
         getThrowGauge2().getValue().SetMaxTravel(d);
     }
 
@@ -485,7 +518,6 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         notifyPropertyChanged(BR.minTravel2);
         notifyPropertyChanged(BR.travelColor);
         notifyPropertyChanged(BR.travelColor2);
-        notifyPropertyChanged(BR.chord);
     }
 
     public void onResetAngleClicked() {
@@ -532,4 +564,5 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public void setWitLinkStatus(int channel, int witLinkStatus) {
         this.witLinkStatus[channel] = witLinkStatus;
     }
+
 }

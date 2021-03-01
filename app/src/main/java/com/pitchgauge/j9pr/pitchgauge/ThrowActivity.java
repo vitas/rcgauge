@@ -43,6 +43,10 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private boolean isOpen;
     private EditText input;
 
+    private enum dialogType {
+        T_LIMIT, T_CHORD
+    }
+
     private boolean busyReset = false;
     private boolean busyCalibration = false;
 
@@ -207,16 +211,25 @@ public class ThrowActivity extends BluetoothBaseActivity {
         minAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                onOpenDialogThresholdAlert(0);
+                onOpenDialogThresholdAlert(dialogType.T_LIMIT,0);
             }
         });
 
         maxAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                onOpenDialogThresholdAlert(1);
+                onOpenDialogThresholdAlert(dialogType.T_LIMIT,1);
             }
         });
+
+        // chord button
+        final Button button = findViewById(R.id.inChordButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_CHORD,0);
+            }
+        });
+
 
         mGaugeViewModel.getThrowGauge().observe(this, new Observer<ThrowGauge>() {
             @Override
@@ -256,31 +269,59 @@ public class ThrowActivity extends BluetoothBaseActivity {
         return mGaugeViewModel.HasResumed();
     }
 
-    private void onOpenDialogThresholdAlert(int lohi){
+    // dialog for MaxTravel, MinTravel and Chord
+    private void onOpenDialogThresholdAlert(final dialogType t, final int lohi) {
+
+        String strTitle = "";
+        String strValue = "";
+        switch (t) {
+            case T_LIMIT:
+                if(lohi == 0) {
+                    strTitle = "Min travel limit";
+                    strValue = mGaugeViewModel.getMinTravelSetN();
+
+                } else {
+                    strTitle = "Max travel limit";
+                    strValue = mGaugeViewModel.getMaxTravelSetN();
+                }
+                break;
+            case T_CHORD:
+                strTitle = "Chord length";
+                strValue = mGaugeViewModel.getChordValue();
+                break;
+            default:
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if(lohi == 0)
-            builder.setTitle(getApplication().getString(R.string.dlg_min_negative_travel));
-        else
-            builder.setTitle(getApplication().getString(R.string.dlg_max_positive_travel));
+        builder.setTitle(strTitle);
+
         // Set up the input
         input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setText(strValue); // show actual value
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         builder.setView(input);
 
-        final int treshold = lohi;
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(treshold == 0){
-                    mGaugeViewModel.setMinTravel(input.getText().toString());
-                    mGaugeViewModel.setMinTravel2(input.getText().toString());
-
-                }else{
-                    mGaugeViewModel.setMaxTravel(input.getText().toString());
-                    mGaugeViewModel.setMaxTravel2(input.getText().toString());
+                switch (t) {
+                    case T_LIMIT:
+                        if (lohi == 0) {
+                            mGaugeViewModel.setMinTravelDia(input.getText().toString());
+                            mGaugeViewModel.setMinTravelDia2(input.getText().toString());
+                            mGaugeViewModel.notifyPropertyChanged(BR.minTravelSet);
+                        } else {
+                            mGaugeViewModel.setMaxTravelDia(input.getText().toString());
+                            mGaugeViewModel.setMaxTravelDia2(input.getText().toString());
+                            mGaugeViewModel.notifyPropertyChanged(BR.maxTravelSet);
+                        }
+                        break;
+                    case T_CHORD:
+                        mGaugeViewModel.setChordValueDia(input.getText().toString());
+                        break;
+                    default:
                 }
             }
         });
@@ -292,6 +333,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
         });
         builder.show();
     }
+
 
     @Override
     protected void onDestroy() {

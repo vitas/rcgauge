@@ -66,19 +66,27 @@
             app:layout_constraintBottom_toTopOf="@+id/outAngelLabel"
             app:layout_constraintVertical_chainStyle="spread_inside">
 
-            <EditText
+            <TextView
                 android:id="@+id/inChord"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
-                android:hint="@string/chord"
-                android:inputType="numberDecimal"
+                android:text="@string/chord"
                 android:minWidth="160dp"
-                android:padding="4dp"
-                android:text="@={CommandthrowViewModel.Chord}"
-                android:textSize="36sp"
-                android:autofillHints="" />
+                android:padding="6dp" />
+
+            <Button
+                android:id="@+id/inChordButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/btn_rounded_back"
+                android:gravity="center"
+                android:minWidth="160dp"
+                android:text="@={CommandthrowViewModel.chordValue}"
+                android:textAllCaps="false"
+                android:textSize="22sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -89,7 +97,7 @@
             android:gravity="center_horizontal"
             android:padding="2dp"
             android:text="@string/command_angle"
-            android:textSize="30sp"
+            android:textSize="17sp"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
         <LinearLayout
@@ -135,8 +143,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="2dp"
-            android:text="@string/command_throw"
-            android:textSize="30sp"
+            android:text="Travel"
+            android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/travel_container"
             app:layout_constraintTop_toBottomOf="@+id/angle_container" />
 
@@ -184,10 +192,10 @@
             android:id="@+id/maxTravelsUP"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="left"
             android:padding="4dp"
             android:text="@string/command_maxthrow"
-            android:textSize="22sp"
+            android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/inMaxThrow_container"
             app:layout_constraintTop_toBottomOf="@+id/travel_container" />
 
@@ -232,8 +240,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/btn_rounded_back"
                 android:gravity="center"
-                android:text="@string/set_max_travels"
-                android:textSize="18sp" />
+                android:text="@{CommandthrowViewModel.MaxTravelSet}"
+                android:textAllCaps="false"
+                android:textSize="17sp" />
 
         </LinearLayout>
 
@@ -242,10 +251,10 @@
             android:id="@+id/maxTravelsDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="left"
             android:padding="4dp"
             android:text="@string/command_minthrow"
-            android:textSize="22sp"
+            android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/inMinThrow_container"
             app:layout_constraintTop_toBottomOf="@+id/inMaxThrow_container" />
 
@@ -292,8 +301,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/btn_rounded_back"
                 android:gravity="center"
-                android:text="@string/set_min_travels"
-                android:textSize="18sp" />
+                android:text="@{CommandthrowViewModel.MinTravelSet}"
+                android:textAllCaps="false"
+                android:textSize="17sp" />
 
         </LinearLayout>
 
@@ -309,9 +319,10 @@
             android:gravity="center|center_horizontal"
             android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
             android:enabled="@{CommandthrowViewModel.buttonResetAngleEnable}"
-            android:padding="16dp"
-            android:text="@string/txtResetAngle"
-            android:textSize="18sp"
+            android:padding="17dp"
+            android:text="Reset Angle"
+            android:textAllCaps="false"
+            android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inMinThrow_container" />
@@ -328,9 +339,10 @@
             android:gravity="center|center_horizontal"
             android:onClick="@{()-> CommandthrowViewModel.onCalibrateClicked()}"
             android:enabled="@{CommandthrowViewModel.buttonCalibrateEnable}"
-            android:padding="16dp"
+            android:padding="17dp"
             android:text="@string/txtCalibrate"
-            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttonResetAngle" />
