@@ -5,15 +5,20 @@ import android.os.Parcelable;
 
 import java.util.Objects;
 
+
 public class DeviceTag implements Parcelable {
     String address;
     String name;
     int pos = -1;
+    // extra preferences
+    double chord = 0.0;
+    double travelMax = 0.0;
+    double travelMin = 0.0;
+    String units = "mm";
 
     public String getAddress() {
         return address;
     }
-
     public void setAddress(String address) {
         this.address = address;
     }
@@ -21,7 +26,6 @@ public class DeviceTag implements Parcelable {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -29,9 +33,36 @@ public class DeviceTag implements Parcelable {
     public int getPos() {
         return pos;
     }
-
     public void setPos(int pos) {
         this.pos = pos;
+    }
+
+    public double getChord() {
+        return chord;
+    }
+    public void setChord(double chord) {
+        this.chord = chord;
+    }
+
+    public double getTravelMax() {
+        return travelMax;
+    }
+    public void setTravelMax(double travelMax) {
+        this.travelMax = travelMax;
+    }
+
+    public double getTravelMin() {
+        return travelMin;
+    }
+    public void setTravelMin(double travelMin) {
+        this.travelMin = travelMin;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+    public void setUnits(String units) {
+        this.units = units;
     }
 
     @Override

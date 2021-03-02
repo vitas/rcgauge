@@ -84,24 +84,37 @@ public class DeviceListActivity extends BluetoothBaseActivity {
 
                 SparseBooleanArray sparseBooleanArray = pairedListView.getCheckedItemPositions();
 
-                ArrayList<DeviceTag> tags = new ArrayList<>();
+                // get the saved tags
+                ArrayList<DeviceTag> savedTags = BluetoothPreferences.getKeyrings(getApplicationContext());
+
+                ArrayList<DeviceTag> stags = new ArrayList<>();
                 int pos = 0;
                 for (int i = 0; i < cntChoice; i++) {
                     if (sparseBooleanArray.get(i)) {
-                        DeviceTag tag = (DeviceTag) pairedListView.getItemAtPosition(i);
-                        tag.setPos(pos);
-                        tags.add(tag);
+                        DeviceTag stag = new DeviceTag();
+                        DeviceTag tagSelected = (DeviceTag) pairedListView.getItemAtPosition(i);
+                        if (BluetoothPreferences.getTag(tagSelected.hashCode(), savedTags).hashCode() != 31 ) {
+                            // in saved list
+                            stag =  BluetoothPreferences.getTag(tagSelected.hashCode(), savedTags);
+                            stag.setAddress(tagSelected.getAddress());
+                            stag.setName(tagSelected.getName());
+                        } else {
+                            // not in saved list
+                            stag = tagSelected;
+                        }
+                        stag.setPos(pos);
+                        stags.add(stag);
                         pos++;
                     }
                 }
 
                 mBluetoothPipe.cancelDiscovery();
 
-                BluetoothPreferences.setKeyrings(getApplicationContext(),  tags);
+                BluetoothPreferences.setKeyrings(getApplicationContext(),  stags);
 
-                if (!tags.isEmpty()) {
+                if (!stags.isEmpty()) {
                     Intent intent = new Intent();
-                    intent.putParcelableArrayListExtra(DEVICE_BT, tags );
+                    intent.putParcelableArrayListExtra(DEVICE_BT, stags );
 
                     setResult(RESULT_OK, intent);
                     finish();

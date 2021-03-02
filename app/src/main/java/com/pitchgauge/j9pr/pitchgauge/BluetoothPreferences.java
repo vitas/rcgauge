@@ -14,9 +14,18 @@ import java.util.List;
 
 public class BluetoothPreferences {
 
-
     public static final String LIST_INFO = "list_info";
 
+	// fetch tag from list of tags
+    public static DeviceTag getTag(int inhash, ArrayList<DeviceTag> l) {
+        DeviceTag result = new DeviceTag();
+        for (DeviceTag sTag: l) {
+            if (sTag.hashCode() == inhash) {
+                return sTag;
+            }
+        }
+        return new DeviceTag();
+    }
 
     public static void setKeyrings(Context context, ArrayList<DeviceTag> arrPackage) {
         final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
