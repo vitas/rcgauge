@@ -4,6 +4,8 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Quaterniond;
 
+import static java.lang.Math.abs;
+
 public class ThrowGauge {
 
     boolean mResetArmed = false;
@@ -103,7 +105,7 @@ public class ThrowGauge {
     }
 
     public double GetSetMinThrow() {
-    	return mMinTravelAlarm;
+    	return abs(mMinTravelAlarm);
     }
 
     public double GetAngle(){
@@ -171,9 +173,7 @@ public class ThrowGauge {
     }
 
     public void SetMinTravel(double travel){
-        if (travel > 0) {
-            travel *= -1;
-        }
+        travel = -1 * abs(travel);
         mMinTravelAlarm = travel;
     }
 
