@@ -401,7 +401,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         return str;
     }
 
-    public String getMaxTravelSetN() {
+    public String getMaxTravelSetNum() {
         double res = getThrowGauge().getValue().GetSetMaxThrow();
         String str = new DecimalFormat("0.0").format(res);
         return str;
@@ -414,7 +414,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         return str;
     }
 
-    public String getMinTravelSetN() {
+    public String getMinTravelSetNum() {
         double res = getThrowGauge().getValue().GetSetMinThrow();
         String str = new DecimalFormat("0.0").format(res);
         return str;

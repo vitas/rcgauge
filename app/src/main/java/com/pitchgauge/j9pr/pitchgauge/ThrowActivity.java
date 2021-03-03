@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
 
+import java.util.ArrayList;
+
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_CONNECT_DEVICE;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
 
@@ -46,6 +48,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private enum dialogType {
         T_LIMIT, T_CHORD
     }
+
+    ArrayList<DeviceTag> devicePrefs = new ArrayList<DeviceTag>();
 
     private boolean busyReset = false;
     private boolean busyCalibration = false;
@@ -253,7 +257,19 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         mHandler = new DataHandler();
 
-		// watch BT activity and display status line
+        // read preference
+        devicePrefs = BluetoothPreferences.getKeyrings(getApplicationContext());
+        for (int i = 0; i < devicePrefs.size(); i++) {
+            DeviceTag tag = devicePrefs.get(i);
+            if (tag.getChord() != "0.0") {
+                mGaugeViewModel.setChordValueDia(tag.getChord());
+                mGaugeViewModel.setMaxTravelDia(tag.getTravelMax());
+                mGaugeViewModel.setMaxTravelDia2(tag.getTravelMax());
+                mGaugeViewModel.setMinTravelDia(tag.getTravelMin());
+                mGaugeViewModel.setMinTravelDia2(tag.getTravelMin());
+            }
+        }
+        // watch BT activity and display status line
         btWatcher.start();
     }
 
@@ -278,11 +294,11 @@ public class ThrowActivity extends BluetoothBaseActivity {
             case T_LIMIT:
                 if(lohi == 0) {
                     strTitle = "Min travel limit";
-                    strValue = mGaugeViewModel.getMinTravelSetN();
+                    strValue = mGaugeViewModel.getMinTravelSetNum();
 
                 } else {
                     strTitle = "Max travel limit";
-                    strValue = mGaugeViewModel.getMaxTravelSetN();
+                    strValue = mGaugeViewModel.getMaxTravelSetNum();
                 }
                 break;
             case T_CHORD:
@@ -344,6 +360,15 @@ public class ThrowActivity extends BluetoothBaseActivity {
             mBluetoothPipe.cancelDiscovery();
             mBluetoothPipe.stopService();
         }
+        
+        // save the preference to each registered device
+        for (int i = 0; i < devicePrefs.size(); i++) {
+            DeviceTag tag = devicePrefs.get(i);
+            tag.setChord(mGaugeViewModel.getChordValue());
+            tag.setTravelMax(mGaugeViewModel.getMaxTravelSetNum());
+            tag.setTravelMin(mGaugeViewModel.getMinTravelSetNum());
+        }
+        BluetoothPreferences.setKeyrings(getApplicationContext(), devicePrefs);
 
         // get rid of remaining thread
         btWatcher.cancel();

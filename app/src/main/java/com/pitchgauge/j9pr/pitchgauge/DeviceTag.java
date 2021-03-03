@@ -10,10 +10,10 @@ public class DeviceTag implements Parcelable {
     String address;
     String name;
     int pos = -1;
-    // extra preferences
-    double chord = 0.0;
-    double travelMax = 0.0;
-    double travelMin = 0.0;
+    // extra preferences, use strings as used in dialogs
+    String chord = "0.0";
+    String travelMax = "0.0";
+    String travelMin = "0.0";
     String units = "mm";
 
     public String getAddress() {
@@ -37,24 +37,24 @@ public class DeviceTag implements Parcelable {
         this.pos = pos;
     }
 
-    public double getChord() {
+    public String getChord() {
         return chord;
     }
-    public void setChord(double chord) {
+    public void setChord(String chord) {
         this.chord = chord;
     }
 
-    public double getTravelMax() {
+    public String getTravelMax() {
         return travelMax;
     }
-    public void setTravelMax(double travelMax) {
+    public void setTravelMax(String travelMax) {
         this.travelMax = travelMax;
     }
 
-    public double getTravelMin() {
+    public String getTravelMin() {
         return travelMin;
     }
-    public void setTravelMin(double travelMin) {
+    public void setTravelMin(String travelMin) {
         this.travelMin = travelMin;
     }
 
