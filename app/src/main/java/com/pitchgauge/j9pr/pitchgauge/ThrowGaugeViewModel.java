@@ -36,12 +36,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     private int witLinkStatus[] = {BluetoothState.WIT_IDLE, BluetoothState.WIT_IDLE};
 
-    public void setBtStatusCol(Drawable btStatusCol) {
-        this.btStatusCol = btStatusCol;
+    public void setBtStatusColor(Drawable colour) {
+        this.btStatusCol = colour;
     }
 
-    public void setBtStatusCol2(Drawable btStatusCol) {
-        this.btStatusCol2 = btStatusCol2;
+    public void setBtStatusColor2(Drawable colour) {
+        this.btStatusCol2 = colour;
     }
 
     private boolean buttonResetAngleEnable = true;
@@ -334,7 +334,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public Drawable getBtStatusColor2() {
-        return btStatusCol;
+        return btStatusCol2;
     }
 
     @Bindable

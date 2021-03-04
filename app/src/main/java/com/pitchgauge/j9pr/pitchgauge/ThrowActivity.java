@@ -434,12 +434,12 @@ public class ThrowActivity extends BluetoothBaseActivity {
                     case 0:
                         mGaugeViewModel.setBtStatus(btText[0]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
-                        mGaugeViewModel.setBtStatusCol(btColor[0]);
+                        mGaugeViewModel.setBtStatusColor(btColor[0]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
 
                         mGaugeViewModel.setBtStatus2(btText[1]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
-                        mGaugeViewModel.setBtStatusCol2(btColor[1]);
+                        mGaugeViewModel.setBtStatusColor2(btColor[1]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
 
                         if (btShowAlt[0]) {
@@ -454,12 +454,12 @@ public class ThrowActivity extends BluetoothBaseActivity {
                     case 10:
                         mGaugeViewModel.setBtStatus(btText[0]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
-                        mGaugeViewModel.setBtStatusCol(btColor[0]);
+                        mGaugeViewModel.setBtStatusColor(btColor[0]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
 
                         mGaugeViewModel.setBtStatus2(btText[1]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
-                        mGaugeViewModel.setBtStatusCol2(btColor[1]);
+                        mGaugeViewModel.setBtStatusColor2(btColor[1]);
                         mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
                         break;
                     default:
@@ -473,36 +473,50 @@ public class ThrowActivity extends BluetoothBaseActivity {
             exit = true;
         }
 
-        private Drawable getWitColor(int channel) {
-            Drawable color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
-            switch (mGaugeViewModel.getWitLinkStatus(channel)) {
-                case BluetoothState.WIT_IDLE:
-                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
-                    break;
-                case BluetoothState.WIT_DATA_ARRIVING:
-                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
-                    break;
-                default:
-            }
-            mGaugeViewModel.setWitLinkStatus(channel, BluetoothState.WIT_IDLE);
-            return color;
-        }
+        // TODO AHa: not used
+//        private Drawable getWitColor(int channel) {
+//            Drawable color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+//            switch (mGaugeViewModel.getWitLinkStatus(channel)) {
+//                case BluetoothState.WIT_IDLE:
+//                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+//                    break;
+//                case BluetoothState.WIT_DATA_ARRIVING:
+//                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
+//                    break;
+//                default:
+//            }
+//            mGaugeViewModel.setWitLinkStatus(channel, BluetoothState.WIT_IDLE);
+//            return color;
+//        }
 
         private void setTextAndColor (int channel) {
-            int st;
+            int linkState;
+            int witState;
+
             // mBluetoothService.getState() might be called before method is available
             try {
-                st = mBluetoothService.getState();
+                linkState = mBluetoothService.getState();
             } catch  (Exception e) {
-                st = BluetoothState.STATE_NONE;
+                linkState = BluetoothState.STATE_NONE;
             }
-            switch (st) {
+            // witmotion data status
+            witState = mGaugeViewModel.getWitLinkStatus(channel);
+            // TODO AHa: states should not combined for both sensors
+            switch (linkState) {
                 case BluetoothState.STATE_CONNECTED:
-                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
-                    btTextAlt[channel] = "connected";
-                    btShowAlt[channel] = false;
-                    buttonResetEnabled[channel] = true;
-                    buttonCalEnabled[channel] = true;
+                    if (witState == BluetoothState.WIT_DATA_ARRIVING) {
+                        btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
+                        btTextAlt[channel] = "connected";
+                        btShowAlt[channel] = false;
+                        buttonResetEnabled[channel] = true;
+                        buttonCalEnabled[channel] = true;
+                    } else {
+                        btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                        btTextAlt[channel] = "connected wait";
+                        btShowAlt[channel] = true;
+                        buttonResetEnabled[channel] = false;
+                        buttonCalEnabled[channel] = false;
+                    }
                     break;
                 case BluetoothState.STATE_CONNECTING:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
@@ -523,8 +537,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "opening";
                     btShowAlt[channel] = true;
-                     buttonResetEnabled[channel] = false;
-                     buttonCalEnabled[channel] = false;
+                    buttonResetEnabled[channel] = false;
+                    buttonCalEnabled[channel] = false;
                     break;
             }
         }

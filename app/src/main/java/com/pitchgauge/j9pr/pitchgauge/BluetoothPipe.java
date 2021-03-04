@@ -113,7 +113,7 @@ public class BluetoothPipe {
             mBluetoothService.stop();
             mBluetoothService = null; // AHa: I guess, mBluetoothService is not set to null on destroy?
         }
-		// TODO: check AHa, not needed
+		// TODO AHa: check, is not needed
 //        new Handler().postDelayed(new Runnable() {
 //            public void run() {
 //                if (mBluetoothService != null) {

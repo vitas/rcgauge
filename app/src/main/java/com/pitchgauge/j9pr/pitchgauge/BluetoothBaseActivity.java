@@ -239,7 +239,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
             mDeviceTags = devices;
             connectDevicesTags();
         } else {
-            //TODO
+            //TODO AHa: no action, only message displayed
             Log.d(TAG, "no saved devices found. goto selection activity");
         }
     }
