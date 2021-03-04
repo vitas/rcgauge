@@ -303,7 +303,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 break;
             case T_CHORD:
                 strTitle = "Chord length";
-                strValue = mGaugeViewModel.getChordValue();
+                strValue = mGaugeViewModel.getChordValueNum();
                 break;
             default:
         }

@@ -244,6 +244,10 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public String getChordValue() {
         return new DecimalFormat("0.0").format(getThrowGauge().getValue().GetChord());
     }
+    // this version of getChordValue does not show decimal point, if not needed, for dialog
+    public String getChordValueNum() {
+        return new DecimalFormat("#.#").format(getThrowGauge().getValue().GetChord());
+    }
 
     @Bindable
     public String getEulerRoll(){
@@ -403,7 +407,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     public String getMaxTravelSetNum() {
         double res = getThrowGauge().getValue().GetSetMaxThrow();
-        String str = new DecimalFormat("0.0").format(res);
+        String str = new DecimalFormat("#.#").format(res);
         return str;
     }
 
@@ -416,7 +420,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     public String getMinTravelSetNum() {
         double res = getThrowGauge().getValue().GetSetMinThrow();
-        String str = new DecimalFormat("0.0").format(res);
+        String str = new DecimalFormat("#.#").format(res);
         return str;
     }
 
