@@ -46,7 +46,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private EditText input;
 
     private enum dialogType {
-        T_LIMIT, T_CHORD
+        T_LIMIT, T_CHORD, T_CALIBRATE
     }
 
     ArrayList<DeviceTag> devicePrefs = new ArrayList<DeviceTag>();
@@ -209,8 +209,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
         binding.setCommandthrowViewModel(mGaugeViewModel);
         binding.setLifecycleOwner(this);
 
-        Button minAlert = (Button)findViewById(R.id.buttonSetMinTravel);
-        Button maxAlert = (Button)findViewById(R.id.buttonSetMaxTravel);
+        final Button minAlert = (Button)findViewById(R.id.buttonSetMinTravel);
+        final Button maxAlert = (Button)findViewById(R.id.buttonSetMaxTravel);
 
         minAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
@@ -219,7 +219,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
             }
         });
 
-        maxAlert.setOnClickListener(new View.OnClickListener() {
+         maxAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
                 onOpenDialogThresholdAlert(dialogType.T_LIMIT,1);
@@ -227,10 +227,18 @@ public class ThrowActivity extends BluetoothBaseActivity {
         });
 
         // chord button
-        final Button button = findViewById(R.id.inChordButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button chordButton = findViewById(R.id.inChordButton);
+        chordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 onOpenDialogThresholdAlert(dialogType.T_CHORD,0);
+            }
+        });
+
+        // calibration confirm box
+        final Button calibrateButton = (Button)findViewById(R.id.buttonCalibrate);
+        calibrateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0);
             }
         });
 
@@ -292,7 +300,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
         String strValue = "";
         switch (t) {
             case T_LIMIT:
-                if(lohi == 0) {
+                if (lohi == 0) {
                     strTitle = "Min travel limit";
                     strValue = mGaugeViewModel.getMinTravelSetNum();
 
@@ -305,6 +313,10 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 strTitle = "Chord length";
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
+            case T_CALIBRATE:
+                strTitle = "Keep sensor horizontal and do not move";
+                strValue = "";
+                break;
             default:
         }
 
@@ -314,10 +326,11 @@ public class ThrowActivity extends BluetoothBaseActivity {
         // Set up the input
         input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setText(strValue); // show actual value
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        builder.setView(input);
-
+        if (strValue != "") {
+            input.setText(strValue); // show actual value
+            input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            builder.setView(input);
+        }
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -336,6 +349,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
                         break;
                     case T_CHORD:
                         mGaugeViewModel.setChordValueDia(input.getText().toString());
+                        break;
+                    case T_CALIBRATE:
+                        mGaugeViewModel.onCalibrateClicked();
                         break;
                     default:
                 }

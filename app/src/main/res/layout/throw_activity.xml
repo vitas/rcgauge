@@ -337,7 +337,6 @@
             android:background="@drawable/btn_rounded_back"
             android:backgroundTint="@color/colorLightYellow"
             android:gravity="center|center_horizontal"
-            android:onClick="@{()-> CommandthrowViewModel.onCalibrateClicked()}"
             android:enabled="@{CommandthrowViewModel.buttonCalibrateEnable}"
             android:padding="17dp"
             android:text="@string/txtCalibrate"
