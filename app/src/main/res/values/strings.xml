@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">RC Throwmeter</string>
-    <string name="app_version" translatable="false">v1.2</string>
+    <string name="app_version" translatable="false">v1.2 (2021-03-04 testing Pierre)</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_title" translatable="false">Android Studio</string>
