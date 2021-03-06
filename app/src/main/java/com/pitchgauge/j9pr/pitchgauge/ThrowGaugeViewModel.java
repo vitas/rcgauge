@@ -561,6 +561,10 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         mMultiDevice = multiDevice;
     }
 
+    public boolean getMultiDevice() {
+        return mMultiDevice;
+    }
+
     public int getWitLinkStatus(int channel) {
         return witLinkStatus[channel];
     }

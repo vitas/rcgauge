@@ -423,12 +423,21 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 setTextAndColor(1);
 
                 // enable/disable buttons
-                mGaugeViewModel.setButtonResetAngleEnable(
-                        !(busyReset || busyCalibration) && (buttonResetEnabled[0]) && buttonResetEnabled[1]);
-                mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
-                mGaugeViewModel.setButtonCalibrateEnable(
-                        !(busyReset || busyCalibration) && buttonCalEnabled[0] && buttonCalEnabled[1]);
-                mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                if (mGaugeViewModel.getMultiDevice()) {
+                    mGaugeViewModel.setButtonResetAngleEnable(
+                            !(busyReset || busyCalibration) && (buttonResetEnabled[0] && buttonResetEnabled[1]));
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
+                    mGaugeViewModel.setButtonCalibrateEnable(
+                            !(busyReset || busyCalibration) && (buttonCalEnabled[0] && buttonCalEnabled[1]));
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                } else {
+                    mGaugeViewModel.setButtonResetAngleEnable(
+                            !(busyReset || busyCalibration) && buttonResetEnabled[0]);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
+                    mGaugeViewModel.setButtonCalibrateEnable(
+                            !(busyReset || busyCalibration) && buttonCalEnabled[0]);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                }
 
                 switch (tick) {
                     case 0:
