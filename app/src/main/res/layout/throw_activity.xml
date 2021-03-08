@@ -310,7 +310,7 @@
 
         <Button
             android:id="@+id/buttonResetAngle"
-            android:layout_width="wrap_content"
+            android:layout_width="140dp"
             android:layout_height="0dp"
             android:layout_margin="4dp"
             android:layout_marginStart="8dp"
@@ -329,15 +329,16 @@
 
         <Button
             android:id="@+id/buttonCalibrate"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="140dp"
+            android:layout_height="62dp"
+            android:layout_alignLeft="@+id/buttonResetAngle"
+            android:layout_alignRight="@+id/buttonResetAngle"
             android:layout_margin="4dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/btn_rounded_back"
-            android:backgroundTint="@color/colorLightYellow"
-            android:gravity="center|center_horizontal"
+            android:background="@drawable/btn_rounded_back_bold"
             android:enabled="@{CommandthrowViewModel.buttonCalibrateEnable}"
+            android:gravity="center|center_horizontal"
             android:padding="17dp"
             android:text="@string/txtCalibrate"
             android:textAllCaps="false"
