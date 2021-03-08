@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="2dp"
-            android:text="Travel"
+            android:text="@string/travel"
             android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/travel_container"
             app:layout_constraintTop_toBottomOf="@+id/angle_container" />
@@ -310,7 +310,7 @@
 
         <Button
             android:id="@+id/buttonResetAngle"
-            android:layout_width="140dp"
+            android:layout_width="180dp"
             android:layout_height="0dp"
             android:layout_margin="4dp"
             android:layout_marginStart="8dp"
@@ -320,7 +320,7 @@
             android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
             android:enabled="@{CommandthrowViewModel.buttonResetAngleEnable}"
             android:padding="17dp"
-            android:text="Reset Angle"
+            android:text="@string/txtResetAngle"
             android:textAllCaps="false"
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -329,7 +329,7 @@
 
         <Button
             android:id="@+id/buttonCalibrate"
-            android:layout_width="140dp"
+            android:layout_width="180dp"
             android:layout_height="62dp"
             android:layout_alignLeft="@+id/buttonResetAngle"
             android:layout_alignRight="@+id/buttonResetAngle"

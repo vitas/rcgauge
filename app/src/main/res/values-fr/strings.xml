@@ -11,8 +11,8 @@
     <string name="title_paired_devices">Appareils appairés</string>
     <string name="title_other_devices">Autres appareils</string>
     <string name="button_scan">Scanner</string>
-    <string name="command_maxthrow">Max Positif:</string>
-    <string name="command_minthrow">Max Negatif:</string>
+    <string name="command_maxthrow">Max Positif</string>
+    <string name="command_minthrow">Max Negatif</string>
     <string name="max_travels">Débattements Max</string>
     <string name="set_max_travels">Config. Max Positif</string>
     <string name="set_min_travels">Config. Max Negatif</string>
@@ -21,5 +21,7 @@
     <string name="dlg_cancel">Annuler</string>
     <string name="dlg_max_positive_travel">Configurer Max Positif"</string>
     <string name="dlg_min_negative_travel">Configurer Max Négatif"</string>
+    <string name="dlg_keep_horizontal">Tenez le capteur horizontalement et ne bougez pas</string>
     <string name="warning_bluetooth_not_enabled">Bluetooth non activé.</string>
+    <string name="travel">Débattement</string>
 </resources>

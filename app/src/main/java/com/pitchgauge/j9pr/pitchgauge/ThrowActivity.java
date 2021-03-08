@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -296,25 +297,26 @@ public class ThrowActivity extends BluetoothBaseActivity {
     // dialog for MaxTravel, MinTravel and Chord
     private void onOpenDialogThresholdAlert(final dialogType t, final int lohi) {
 
+        Resources res = getResources();
         String strTitle = "";
         String strValue = "";
         switch (t) {
             case T_LIMIT:
                 if (lohi == 0) {
-                    strTitle = "Min travel limit";
+                    strTitle = res.getString(R.string.dlg_min_negative_travel);
                     strValue = mGaugeViewModel.getMinTravelSetNum();
 
                 } else {
-                    strTitle = "Max travel limit";
+                    strTitle = res.getString(R.string.dlg_max_positive_travel);
                     strValue = mGaugeViewModel.getMaxTravelSetNum();
                 }
                 break;
             case T_CHORD:
-                strTitle = "Chord length";
+                strTitle = res.getString(R.string.chord);
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
             case T_CALIBRATE:
-                strTitle = "Keep sensor horizontal and do not move";
+                strTitle = res.getString(R.string.dlg_keep_horizontal);
                 strValue = "";
                 break;
             default:

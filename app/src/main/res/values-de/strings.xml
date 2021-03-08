@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Einstellungen</string>
+    <string name="sensor_bt">BT Sensor</string>
+    <string name="throw_meter">Ruder Anzeige</string>
+    <string name="communicate">Verbindung</string>
+    <string name="txtResetAngle">Winkel Reset</string>
+    <string name="txtCalibrate">Kalibrieren</string>
+    <string name="command_throw">Ausschlag</string>
+    <string name="command_angle">Winkel (\u00B0)</string>
+    <string name="title_paired_devices">Gepaarte BT Geräte</string>
+    <string name="title_other_devices">Andere Geräte</string>
+    <string name="button_scan">Suchen</string>
+    <string name="command_maxthrow">Max pos. Ausschlag</string>
+    <string name="command_minthrow">Max neg. Ausschlag</string>
+    <string name="max_travels">Max Ausschlag</string>
+    <string name="set_max_travels">Max Limit</string>
+    <string name="set_min_travels">Min Limit</string>
+    <string name="button_select">Auswählen</string>
+    <string name="chord">Rudertiefe</string>
+    <string name="dlg_cancel">Cancel</string>
+    <string name="dlg_max_positive_travel">Max pos Ausschlag"</string>
+    <string name="dlg_min_negative_travel">Min neg Ausschlag"</string>
+    <string name="dlg_keep_horizontal">Sensor horizontal halten und nicht bewegen</string>
+    <string name="warning_bluetooth_not_enabled">Bluetooth nicht aktiv.</string>
+    <string name="travel">Ausschlag</string>
+
+</resources>
