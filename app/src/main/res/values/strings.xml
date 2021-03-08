@@ -11,30 +11,29 @@
     <string name="euler_pitch" translatable="false">Euler pitch</string>
     <string name="euler_roll" translatable="false">Euler roll</string>
     <string name="euler_yaw" translatable="false">Euler yaw</string>
-    <string name="txtBTStatus" translatable="false">BTStatus</string>
-    <string name="action_settings">Settings</string>
-    <string name="sensor_bt">Sensor BT</string>
-    <string name="throw_meter">Throw meter</string>
-    <string name="communicate">Communicate</string>
-    <string name="txtResetAngle">Reset angle</string>
-    <string name="txtCalibrate">Calibrate</string>
-    <string name="command_throw">Travel</string>
-    <string name="command_angle">Angle (\u00B0)</string>
-    <string name="title_paired_devices">Paired device</string>
-    <string name="title_other_devices">Other device</string>
-    <string name="button_scan">Scan</string>
-    <string name="command_maxthrow">Max UP</string>
-    <string name="command_minthrow">Max DOWN</string>
-    <string name="max_travels">Max travels</string>
-    <string name="set_max_travels">Max</string>
-    <string name="set_min_travels">Min</string>
-    <string name="button_select">Select</string>
-    <string name="chord">Rudder Chord</string>
-    <string name="dlg_cancel">Cancel</string>
-    <string name="dlg_max_positive_travel">Max positive travel"</string>
-    <string name="dlg_min_negative_travel">Min negative travel"</string>
-    <string name="dlg_keep_horizontal">Keep sensor horizontal and do not move</string>
-    <string name="warning_bluetooth_not_enabled">Bluetooth was not enabled.</string>
-    <string name="travel">Travel</string>
-
+    <string name="txt_bt_status" translatable="false">BTStatus</string>
+    <string name="txt_action_settings">Settings</string>
+    <string name="txt_sensor_bt">BT Sensors</string>
+    <string name="txt_throw_meter">Throw meter</string>
+    <string name="txt_communicate">Communicate</string>
+    <string name="txt_reset_angle">Reset angle</string>
+    <string name="txt_calibrate">Calibrate</string>
+    <string name="txt_command_throw">Travel</string>
+    <string name="txt_command_angle">Angle (\u00B0)</string>
+    <string name="txt_title_paired_devices">Paired device</string>
+    <string name="txt_title_other_devices">Other device</string>
+    <string name="txt_button_scan">Scan</string>
+    <string name="txt_command_maxthrow">Max UP</string>
+    <string name="txt_command_minthrow">Max DOWN</string>
+    <string name="txt_max_travels">Max travels</string>
+    <string name="txt_set_max_travels">Max</string>
+    <string name="txt_set_min_travels">Min</string>
+    <string name="txt_button_select">Select</string>
+    <string name="txt_chord">Rudder Chord</string>
+    <string name="txt_dlg_cancel">Cancel</string>
+    <string name="txt_dlg_max_positive_travel">Max positive travel"</string>
+    <string name="txt_dlg_min_negative_travel">Min negative travel"</string>
+    <string name="txt_dlg_keep_horizontal">Keep sensor horizontal and do not move</string>
+    <string name="txt_warning_bluetooth_not_enabled">Bluetooth was not enabled.</string>
+    <string name="txt_travel">Travel</string>
 </resources>

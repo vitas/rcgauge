@@ -68,7 +68,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 mBluetoothPipe.setupService(mBluetoothService, mHandler);
             } else {
                 Toast.makeText(getApplicationContext()
-                        , getApplication().getString(R.string.warning_bluetooth_not_enabled)
+                        , getApplication().getString(R.string.txt_warning_bluetooth_not_enabled)
                         , Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -303,20 +303,20 @@ public class ThrowActivity extends BluetoothBaseActivity {
         switch (t) {
             case T_LIMIT:
                 if (lohi == 0) {
-                    strTitle = res.getString(R.string.dlg_min_negative_travel);
+                    strTitle = res.getString(R.string.txt_dlg_min_negative_travel);
                     strValue = mGaugeViewModel.getMinTravelSetNum();
 
                 } else {
-                    strTitle = res.getString(R.string.dlg_max_positive_travel);
+                    strTitle = res.getString(R.string.txt_dlg_max_positive_travel);
                     strValue = mGaugeViewModel.getMaxTravelSetNum();
                 }
                 break;
             case T_CHORD:
-                strTitle = res.getString(R.string.chord);
+                strTitle = res.getString(R.string.txt_chord);
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
             case T_CALIBRATE:
-                strTitle = res.getString(R.string.dlg_keep_horizontal);
+                strTitle = res.getString(R.string.txt_dlg_keep_horizontal);
                 strValue = "";
                 break;
             default:
@@ -359,7 +359,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 }
             }
         });
-        builder.setNegativeButton(getApplication().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getApplication().getString(R.string.txt_dlg_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

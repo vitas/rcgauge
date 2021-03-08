@@ -72,7 +72,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
-                android:text="@string/chord"
+                android:text="@string/txt_chord"
                 android:minWidth="160dp"
                 android:padding="6dp" />
 
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="2dp"
-            android:text="@string/command_angle"
+            android:text="@string/txt_command_angle"
             android:textSize="17sp"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="2dp"
-            android:text="@string/travel"
+            android:text="@string/txt_travel"
             android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/travel_container"
             app:layout_constraintTop_toBottomOf="@+id/angle_container" />
@@ -194,7 +194,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:padding="4dp"
-            android:text="@string/command_maxthrow"
+            android:text="@string/txt_command_maxthrow"
             android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/inMaxThrow_container"
             app:layout_constraintTop_toBottomOf="@+id/travel_container" />
@@ -253,7 +253,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:padding="4dp"
-            android:text="@string/command_minthrow"
+            android:text="@string/txt_command_minthrow"
             android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/inMinThrow_container"
             app:layout_constraintTop_toBottomOf="@+id/inMaxThrow_container" />
@@ -320,7 +320,7 @@
             android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
             android:enabled="@{CommandthrowViewModel.buttonResetAngleEnable}"
             android:padding="17dp"
-            android:text="@string/txtResetAngle"
+            android:text="@string/txt_reset_angle"
             android:textAllCaps="false"
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -340,7 +340,7 @@
             android:enabled="@{CommandthrowViewModel.buttonCalibrateEnable}"
             android:gravity="center|center_horizontal"
             android:padding="17dp"
-            android:text="@string/txtCalibrate"
+            android:text="@string/txt_calibrate"
             android:textAllCaps="false"
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
