@@ -4,6 +4,8 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Quaterniond;
 
+import static java.lang.Math.abs;
+
 public class ThrowGauge {
 
     boolean mResetArmed = false;
@@ -39,19 +41,19 @@ public class ThrowGauge {
         toQuaternion(mQBoardNeutral, mEulerYaw, mEulerPitch, mEulerRoll);
     }
 
-    public boolean HasResumed(){
+    public boolean HasResumed() {
         return !mResetArmed;
     }
 
-    public void ResetMath(){
+    public void ResetMath() {
         mResetArmed = true;
     }
 
-    public void SetChord(double chord){
+    public void SetChord(double chord) {
         mChord = chord;
     }
 
-    public double GetChord(){
+    public double GetChord() {
         return mChord;
     }
 
@@ -90,12 +92,20 @@ public class ThrowGauge {
         return mTemperature;
     }
 
-    public double GetMinThrow(){
+    public double GetMinThrow() {
         return mMinThrow;
     }
 
-    public double GetMaxThrow(){
+    public double GetMaxThrow() {
         return mMaxThrow;
+    }
+
+    public double GetSetMaxThrow() {
+        return mMaxTravelAlarm;
+    }
+
+    public double GetSetMinThrow() {
+    	return abs(mMinTravelAlarm);
     }
 
     public double GetAngle(){
@@ -149,7 +159,7 @@ public class ThrowGauge {
         return mQBoardNeutral.w;
     }
 
-    public double ResolveSimpleThrow(){
+    public double ResolveSimpleThrow() {
         mCurrentTravel = - mChord * Math.sin( Math.toRadians(mAngle));
         if(mCurrentTravel < mMinThrow)
             mMinThrow = mCurrentTravel;
@@ -158,22 +168,20 @@ public class ThrowGauge {
         return mCurrentTravel;
     }
 
-    public void SetMaxTravel(double travel){
+    public void SetMaxTravel(double travel) {
         mMaxTravelAlarm = travel;
     }
 
     public void SetMinTravel(double travel){
-        if (travel > 0) {
-            travel *= -1;
-        }
+        travel = -1 * abs(travel);
         mMinTravelAlarm = travel;
     }
 
-    public void SetMaxTravel(){
+    public void SetMaxTravel() {
         mMaxTravelAlarm = mMaxThrow;
     }
 
-    public void SetMinTravel(){
+    public void SetMinTravel() {
         mMinTravelAlarm = mMinThrow;
     }
 
@@ -192,16 +200,16 @@ public class ThrowGauge {
     public double ResolveQuatsThrow() {
         toQuaternion(mQBoard, mEulerYaw, mEulerPitch, mEulerRoll);
         Vector3d delta = EulerAnglesBetween(mQBoard, mQBoardNeutral);
-        int sign = delta.y > 0 ? 1 : -1;
+        int sign = delta.y > 0 ? -1 : 1;
         mQBoard.difference(mQBoardNeutral);
-        mQuatAngle = mQBoard.angle();
-        mCurrentTravel = - mChord * Math.sin(mQuatAngle)* sign;
+        mQuatAngle = mQBoard.angle() * sign;
+        mCurrentTravel = mChord * Math.sin(mQuatAngle);
         if(mCurrentTravel < mMinThrow)
             mMinThrow = mCurrentTravel;
         if(mCurrentTravel > mMaxThrow)
             mMaxThrow = mCurrentTravel;
 
-        //TODO not clear
+        //TODO AHa: purpose not clear
      /*   mMaxThrow = mCurrentTravel;
         mMinThrow = mCurrentTravel;
 */

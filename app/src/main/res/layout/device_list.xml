@@ -10,7 +10,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_paired_devices"/>
+        android:text="@string/txt_title_paired_devices"/>
     <ListView android:id="@+id/paired_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
     <Button android:id="@+id/button_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_select"/>
+        android:text="@string/txt_button_select"/>
     <TextView android:textColor="#fff"
         android:id="@+id/title_new_devices"
         android:background="#666"
@@ -27,7 +27,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_other_devices"/>
+        android:text="@string/txt_title_other_devices"/>
     <ListView android:id="@+id/new_devices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,5 +36,5 @@
     <Button android:id="@+id/button_scan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_scan"/>
+        android:text="@string/txt_button_scan"/>
 </LinearLayout>

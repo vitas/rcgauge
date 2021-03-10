@@ -19,7 +19,7 @@
             app:layout_constraintTop_toBottomOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/command_angle"
+            android:hint="@string/txt_command_angle"
             android:padding="8dp"
             android:textSize="30dp"
             android:text="@{CommandthrowViewModel.Angle}" />

@@ -5,11 +5,14 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.arch.lifecycle.Observer;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -18,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
+
+import java.util.ArrayList;
 
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_CONNECT_DEVICE;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
@@ -41,6 +46,16 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private boolean isOpen;
     private EditText input;
 
+    private enum dialogType {
+        T_LIMIT, T_CHORD, T_CALIBRATE
+    }
+
+    ArrayList<DeviceTag> devicePrefs = new ArrayList<DeviceTag>();
+
+    private boolean busyReset = false;
+    private boolean busyCalibration = false;
+
+    private btStatusWatcherClass btWatcher = new btStatusWatcherClass();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CONNECT_DEVICE) {
@@ -53,7 +68,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 mBluetoothPipe.setupService(mBluetoothService, mHandler);
             } else {
                 Toast.makeText(getApplicationContext()
-                        , getApplication().getString(R.string.warning_bluetooth_not_enabled)
+                        , getApplication().getString(R.string.txt_warning_bluetooth_not_enabled)
                         , Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -133,19 +148,40 @@ public class ThrowActivity extends BluetoothBaseActivity {
             switch (msg.what) {
                 case BluetoothState.MESSAGE_STATE_CHANGE:
                     if (ThrowActivity.this.mBluetoothPipe.isServiceAvailable()) {
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                byte[] ResetZaxis = {(byte)0xFF, (byte)0xAA, (byte)0x52};
-                                ThrowActivity.this.mBluetoothService.Suspend(true);
-                                ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-                                ThrowActivity.this.resetSensor();
-                                ThrowActivity.this.mBluetoothService.Suspend(false);
-                                while(!ThrowActivity.this.hasResumed());
-                                ThrowActivity.this.resetNeutral();
+                        Bundle command = msg.getData();
+                        if (command.getString("Reset sensor") == "New neutral") {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ThrowActivity.this.busyReset = true;
+                                    byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                    ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
+                                    ThrowActivity.this.resetSensor();
+                                    while (!ThrowActivity.this.hasResumed()) ;
+                                    ThrowActivity.this.resetNeutral();
+                                    ThrowActivity.this.busyReset = false;
                                 }
-                        }).start();
+                            }).start();
+
+                        }
+                        if (command.getString("Reset sensor") == "Calibrate") {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ThrowActivity.this.busyCalibration = true;
+                                    byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
+                                    ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
+                                    try { Thread.sleep(10000); } catch(InterruptedException e) { }
+                                    ThrowActivity.this.resetSensor();
+                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
+                                    ThrowActivity.this.resetSensor();
+                                    while (!ThrowActivity.this.hasResumed()) ;
+                                    ThrowActivity.this.resetNeutral();
+                                    ThrowActivity.this.busyCalibration = false;
+                                }
+                            }).start();
+                        }
                     }
                     break;
                 default:
@@ -174,22 +210,39 @@ public class ThrowActivity extends BluetoothBaseActivity {
         binding.setCommandthrowViewModel(mGaugeViewModel);
         binding.setLifecycleOwner(this);
 
-        Button minAlert = (Button)findViewById(R.id.buttonSetMinTravel);
-        Button maxAlert = (Button)findViewById(R.id.buttonSetMaxTravel);
+        final Button minAlert = (Button)findViewById(R.id.buttonSetMinTravel);
+        final Button maxAlert = (Button)findViewById(R.id.buttonSetMaxTravel);
 
         minAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                onOpenDialogThresholdAlert(0);
+                onOpenDialogThresholdAlert(dialogType.T_LIMIT,0);
             }
         });
 
-        maxAlert.setOnClickListener(new View.OnClickListener() {
+         maxAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                onOpenDialogThresholdAlert(1);
+                onOpenDialogThresholdAlert(dialogType.T_LIMIT,1);
             }
         });
+
+        // chord button
+        final Button chordButton = findViewById(R.id.inChordButton);
+        chordButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_CHORD,0);
+            }
+        });
+
+        // calibration confirm box
+        final Button calibrateButton = (Button)findViewById(R.id.buttonCalibrate);
+        calibrateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0);
+            }
+        });
+
 
         mGaugeViewModel.getThrowGauge().observe(this, new Observer<ThrowGauge>() {
             @Override
@@ -213,6 +266,20 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         mHandler = new DataHandler();
 
+        // read preference
+        devicePrefs = BluetoothPreferences.getKeyrings(getApplicationContext());
+        for (int i = 0; i < devicePrefs.size(); i++) {
+            DeviceTag tag = devicePrefs.get(i);
+            if (tag.getChord() != "0.0") {
+                mGaugeViewModel.setChordValueDia(tag.getChord());
+                mGaugeViewModel.setMaxTravelDia(tag.getTravelMax());
+                mGaugeViewModel.setMaxTravelDia2(tag.getTravelMax());
+                mGaugeViewModel.setMinTravelDia(tag.getTravelMin());
+                mGaugeViewModel.setMinTravelDia2(tag.getTravelMin());
+            }
+        }
+        // watch BT activity and display status line
+        btWatcher.start();
     }
 
     public  void resetNeutral(){
@@ -227,35 +294,72 @@ public class ThrowActivity extends BluetoothBaseActivity {
         return mGaugeViewModel.HasResumed();
     }
 
-    private void onOpenDialogThresholdAlert(int lohi){
+    // dialog for MaxTravel, MinTravel and Chord
+    private void onOpenDialogThresholdAlert(final dialogType t, final int lohi) {
+
+        Resources res = getResources();
+        String strTitle = "";
+        String strValue = "";
+        switch (t) {
+            case T_LIMIT:
+                if (lohi == 0) {
+                    strTitle = res.getString(R.string.txt_dlg_min_negative_travel);
+                    strValue = mGaugeViewModel.getMinTravelSetNum();
+
+                } else {
+                    strTitle = res.getString(R.string.txt_dlg_max_positive_travel);
+                    strValue = mGaugeViewModel.getMaxTravelSetNum();
+                }
+                break;
+            case T_CHORD:
+                strTitle = res.getString(R.string.txt_chord);
+                strValue = mGaugeViewModel.getChordValueNum();
+                break;
+            case T_CALIBRATE:
+                strTitle = res.getString(R.string.txt_dlg_keep_horizontal);
+                strValue = "";
+                break;
+            default:
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if(lohi == 0)
-            builder.setTitle(getApplication().getString(R.string.dlg_min_negative_travel));
-        else
-            builder.setTitle(getApplication().getString(R.string.dlg_max_positive_travel));
+        builder.setTitle(strTitle);
+
         // Set up the input
         input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
-
-        final int treshold = lohi;
+        if (strValue != "") {
+            input.setText(strValue); // show actual value
+            input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            builder.setView(input);
+        }
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(treshold == 0){
-                    mGaugeViewModel.setMinTravel(input.getText().toString());
-                    mGaugeViewModel.setMinTravel2(input.getText().toString());
-
-                }else{
-                    mGaugeViewModel.setMaxTravel(input.getText().toString());
-                    mGaugeViewModel.setMaxTravel2(input.getText().toString());
+                switch (t) {
+                    case T_LIMIT:
+                        if (lohi == 0) {
+                            mGaugeViewModel.setMinTravelDia(input.getText().toString());
+                            mGaugeViewModel.setMinTravelDia2(input.getText().toString());
+                            mGaugeViewModel.notifyPropertyChanged(BR.minTravelSet);
+                        } else {
+                            mGaugeViewModel.setMaxTravelDia(input.getText().toString());
+                            mGaugeViewModel.setMaxTravelDia2(input.getText().toString());
+                            mGaugeViewModel.notifyPropertyChanged(BR.maxTravelSet);
+                        }
+                        break;
+                    case T_CHORD:
+                        mGaugeViewModel.setChordValueDia(input.getText().toString());
+                        break;
+                    case T_CALIBRATE:
+                        mGaugeViewModel.onCalibrateClicked();
+                        break;
+                    default:
                 }
             }
         });
-        builder.setNegativeButton(getApplication().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getApplication().getString(R.string.txt_dlg_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -265,4 +369,189 @@ public class ThrowActivity extends BluetoothBaseActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregisterReceiver(this.mReceiver);
+
+        if (mBluetoothPipe != null) {
+            mBluetoothPipe.cancelDiscovery();
+            mBluetoothPipe.stopService();
+        }
+        
+        // save the preference to each registered device
+        for (int i = 0; i < devicePrefs.size(); i++) {
+            DeviceTag tag = devicePrefs.get(i);
+            tag.setChord(mGaugeViewModel.getChordValue());
+            tag.setTravelMax(mGaugeViewModel.getMaxTravelSetNum());
+            tag.setTravelMin(mGaugeViewModel.getMinTravelSetNum());
+        }
+        BluetoothPreferences.setKeyrings(getApplicationContext(), devicePrefs);
+
+        // get rid of remaining thread
+        btWatcher.cancel();
+    }
+
+    class btStatusWatcherClass extends Thread
+    {
+        private volatile boolean exit = false;
+        private String btText[] = new String[2];
+        private String btTextAlt[] = new String[2];
+        private Drawable btColor[] = new Drawable[2];
+        private boolean btShowAlt[] = new boolean[2];
+
+        private boolean buttonResetEnabled[] = new boolean[2];
+        private boolean buttonCalEnabled[] = new boolean[2];
+
+        private int tick = 0;
+
+        public void run()
+        {
+            setName("btStatusWatcher");
+            if (mDeviceTags.size() > 0) {
+                btText[0] = mDeviceTags.get(0).name + " (" + mDeviceTags.get(0).address + ")";
+            }
+            if (mDeviceTags.size() > 1) {
+                btText[1] = mDeviceTags.get(1).name + " (" + mDeviceTags.get(1).address + ")";
+            }
+
+            while (!exit) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                }
+
+                setTextAndColor(0);
+                setTextAndColor(1);
+
+                // enable/disable buttons
+                if (mGaugeViewModel.getMultiDevice()) {
+                    mGaugeViewModel.setButtonResetAngleEnable(
+                            !(busyReset || busyCalibration) && (buttonResetEnabled[0] && buttonResetEnabled[1]));
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
+                    mGaugeViewModel.setButtonCalibrateEnable(
+                            !(busyReset || busyCalibration) && (buttonCalEnabled[0] && buttonCalEnabled[1]));
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                } else {
+                    mGaugeViewModel.setButtonResetAngleEnable(
+                            !(busyReset || busyCalibration) && buttonResetEnabled[0]);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
+                    mGaugeViewModel.setButtonCalibrateEnable(
+                            !(busyReset || busyCalibration) && buttonCalEnabled[0]);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                }
+
+                switch (tick) {
+                    case 0:
+                        mGaugeViewModel.setBtStatus(btText[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                        mGaugeViewModel.setBtStatusColor(btColor[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
+
+                        mGaugeViewModel.setBtStatus2(btText[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                        mGaugeViewModel.setBtStatusColor2(btColor[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
+
+                        if (btShowAlt[0]) {
+                            mGaugeViewModel.setBtStatus(btTextAlt[0]);
+                            mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                        }
+                        if (btShowAlt[1]) {
+                            mGaugeViewModel.setBtStatus2(btTextAlt[1]);
+                            mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                        }
+                        break;
+                    case 10:
+                        mGaugeViewModel.setBtStatus(btText[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus);
+                        mGaugeViewModel.setBtStatusColor(btColor[0]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor);
+
+                        mGaugeViewModel.setBtStatus2(btText[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatus2);
+                        mGaugeViewModel.setBtStatusColor2(btColor[1]);
+                        mGaugeViewModel.notifyPropertyChanged(BR.btStatusColor2);
+                        break;
+                    default:
+                        break;
+                }
+                tick = (tick >= 20) ? 0 : tick + 1;
+            }
+        }
+
+        public void cancel() {
+            exit = true;
+        }
+
+        // TODO AHa: not used
+//        private Drawable getWitColor(int channel) {
+//            Drawable color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+//            switch (mGaugeViewModel.getWitLinkStatus(channel)) {
+//                case BluetoothState.WIT_IDLE:
+//                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+//                    break;
+//                case BluetoothState.WIT_DATA_ARRIVING:
+//                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
+//                    break;
+//                default:
+//            }
+//            mGaugeViewModel.setWitLinkStatus(channel, BluetoothState.WIT_IDLE);
+//            return color;
+//        }
+
+        private void setTextAndColor (int channel) {
+            int linkState;
+            int witState;
+
+            // mBluetoothService.getState() might be called before method is available
+            try {
+                linkState = mBluetoothService.getState();
+            } catch  (Exception e) {
+                linkState = BluetoothState.STATE_NONE;
+            }
+            // witmotion data status
+            witState = mGaugeViewModel.getWitLinkStatus(channel);
+            // TODO AHa: states should not combined for both sensors
+            switch (linkState) {
+                case BluetoothState.STATE_CONNECTED:
+                    if (witState == BluetoothState.WIT_DATA_ARRIVING) {
+                        btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
+                        btTextAlt[channel] = "connected";
+                        btShowAlt[channel] = false;
+                        buttonResetEnabled[channel] = true;
+                        buttonCalEnabled[channel] = true;
+                    } else {
+                        btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                        btTextAlt[channel] = "connected wait";
+                        btShowAlt[channel] = true;
+                        buttonResetEnabled[channel] = false;
+                        buttonCalEnabled[channel] = false;
+                    }
+                    break;
+                case BluetoothState.STATE_CONNECTING:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    btTextAlt[channel] = "connecting";
+                    btShowAlt[channel] = true;
+                    buttonResetEnabled[channel] = false;
+                    buttonCalEnabled[channel] = false;
+                    break;
+                case BluetoothState.STATE_LISTEN:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    btTextAlt[channel] = "listening";
+                    btShowAlt[channel] = true;
+                    buttonResetEnabled[channel] = false;
+                    buttonCalEnabled[channel] = false;
+                    break;
+
+                 default:
+                    btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
+                    btTextAlt[channel] = "opening";
+                    btShowAlt[channel] = true;
+                    buttonResetEnabled[channel] = false;
+                    buttonCalEnabled[channel] = false;
+                    break;
+            }
+        }
+    }
 }

@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -56,6 +57,8 @@ public class BluetoothService extends Service {
     private List<String> mDeviceAddresses;
     private List<String> mDeviceNames;
     private List<ConnectedThread> mConnThreads;
+    private static ArrayList<ConnectedThread> activeConnectedThreads=new ArrayList<ConnectedThread>();
+
     private List<BluetoothSocket> mSockets;
     private List<float[]> mfDatas;
     private List<Queue<Byte>> mQueueBuffers;
@@ -105,7 +108,6 @@ public class BluetoothService extends Service {
 
     @Override
     public void onDestroy() {
-        this.stop();
         super.onDestroy();
     }
 
@@ -172,12 +174,14 @@ public class BluetoothService extends Service {
         }
 
         public void cancel() {
-            try {
-                this.mmServerSocket.close();
-                mmServerSocket = null;
+            if (mmServerSocket != null) {
+	            try {
+	                this.mmServerSocket.close();
+	                mmServerSocket = null;
 
-            } catch (IOException e) {
-            }
+	            } catch (IOException e) {
+	            }
+			}
         }
 
         public void kill() {
@@ -203,7 +207,7 @@ public class BluetoothService extends Service {
         }
 
         public void run() {
-            setName("ConnectThread");
+            setName("ConnectThread" + position);
 
             //mAdapter.cancelDiscovery();
             try {
@@ -243,9 +247,13 @@ public class BluetoothService extends Service {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private final BluetoothSocket mmSocket;
+        private boolean isRunningConnectedThread = true;
+        private int position;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        public ConnectedThread(BluetoothSocket socket, int pos) {
+            activeConnectedThreads.add(this);
             this.mmSocket = socket;
+            this.position = pos;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
             try {
@@ -259,7 +267,9 @@ public class BluetoothService extends Service {
 
         public void run() {
             byte[] tempInputBuffer = new byte[1024];
-            while (true) {
+            setName("ConnectedThread" + position);
+
+            while (isRunningConnectedThread) {
                 try {
                     int acceptedLen = this.mmInStream.read(tempInputBuffer);
                     if (acceptedLen > 0) {
@@ -275,6 +285,10 @@ public class BluetoothService extends Service {
                     return;
                 }
             }
+            try {
+                this.mmSocket.close();
+            } catch (IOException e) {
+            }
         }
 
         public void write(byte[] buffer) {
@@ -286,10 +300,7 @@ public class BluetoothService extends Service {
         }
 
         public void cancel() {
-            try {
-                this.mmSocket.close();
-            } catch (IOException e) {
-            }
+            isRunningConnectedThread = false;
         }
     }
 
@@ -399,7 +410,7 @@ public class BluetoothService extends Service {
 
         if (getPosIndexOfDevice(device) == -1) {
 
-            Log.d(TAG, "connect to: " + device.getName()+ " Address: " + device.getAddress());
+            Log.d(TAG, "BluetoothService connect(): connect to: " + device.getName() + " Address: " + device.getAddress());
 
             if (isDeviceConnectedAtPos(pos) && mState == BluetoothState.STATE_CONNECTED) {
                 Log.d(TAG, "Already connected to: " + device.getName()+ " Address: " + device.getAddress()+ " ignore");
@@ -426,7 +437,7 @@ public class BluetoothService extends Service {
                     uuid = device.getUuids()[0].getUuid();
                 }
 
-                Log.d(TAG, "device UUID===" + uuid);
+                Log.d(TAG, "BluetoothService connect(): Connect device UUID===" + uuid);
 
                 ConnectThread mConnectThread = new ConnectThread(device, uuid, pos);
                 mConnectThread.start();
@@ -450,12 +461,14 @@ public class BluetoothService extends Service {
             this.mConnectThread.cancel();
             this.mConnectThread = null;
         }
+
+		// TODO AHa: why kill mAcceptThread so early, exit from blocking accept()
         if (this.mAcceptThread != null) {
             this.mAcceptThread.cancel();
             this.mAcceptThread.kill();
             this.mAcceptThread = null;
         }
-        this.mConnectedThread = new ConnectedThread(socket);
+        this.mConnectedThread = new ConnectedThread(socket, pos);
         mConnThreads.set(pos, mConnectedThread);
         this.mConnectedThread.start();
 
@@ -471,23 +484,27 @@ public class BluetoothService extends Service {
     }
 
     private void stopping() {
-        if (this.mConnectedThread != null) {
-            this.mConnectedThread.cancel();
-            this.mConnectedThread = null;
+
+        // stop all ConnectedThreads
+        Iterator<ConnectedThread> itr = activeConnectedThreads.iterator();
+        while (itr.hasNext()) {
+            ConnectedThread t = itr.next();
+            if (t.isAlive()) {
+                t.cancel();
+                Log.d(TAG, "BTService.stopped() id=" + t.getId() + " t=" + t.toString());
+            }
+            itr.remove();
         }
+		
         if (this.mAcceptThread != null) {
             this.mAcceptThread.cancel();
             this.mAcceptThread = null;
         }
+
         for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
             mDeviceNames.set(i, null);
             mDeviceAddresses.set(i, null);
             mSockets.set(i, null);
-
-            if (mConnThreads.get(i) != null) {
-                mConnThreads.get(i).cancel();
-                mConnThreads.set(i, null);
-            }
         }
 
         if (mAdapter != null){
@@ -540,6 +557,7 @@ public class BluetoothService extends Service {
             mHandler.sendMessage(msg);
         }
 
+        // TODO AHa: restart not working as expected, connectionLost is called on destroy/stop also
         BluetoothService.this.start();
     }
 
