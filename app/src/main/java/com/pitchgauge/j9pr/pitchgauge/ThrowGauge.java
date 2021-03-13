@@ -203,6 +203,9 @@ public class ThrowGauge {
         int sign = delta.y > 0 ? -1 : 1;
         mQBoard.difference(mQBoardNeutral);
         mQuatAngle = mQBoard.angle() * sign;
+        if (Double.isNaN(mQuatAngle)) {
+            mQuatAngle = 0;
+        }
         mCurrentTravel = mChord * Math.sin(mQuatAngle);
         if(mCurrentTravel < mMinThrow)
             mMinThrow = mCurrentTravel;
