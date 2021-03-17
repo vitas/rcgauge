@@ -11,8 +11,7 @@
     <string name="txt_title_paired_devices">Подключеные устройства</string>
     <string name="txt_title_other_devices">Прочие устройства</string>
     <string name="txt_button_scan">Сканировать</string>
-    <string name="txt_command_maxthrow">Maксимально Вверх</string>
-    <string name="txt_command_minthrow">Maксимально Вниз</string>
+    <string name="txt_command_maxthrow">Maксимально Вверх/Вниз</string>
     <string name="txt_max_travels">Maксимальные Расходы</string>
     <string name="txt_set_max_travels">Max</string>
     <string name="txt_set_min_travels">Min</string>

@@ -11,8 +11,7 @@
     <string name="txt_title_paired_devices">Appareils appairés</string>
     <string name="txt_title_other_devices">Autres appareils</string>
     <string name="txt_button_scan">Scanner</string>
-    <string name="txt_command_maxthrow">Max Positif</string>
-    <string name="txt_command_minthrow">Max Negatif</string>
+    <string name="txt_command_maxthrow">Max Positif/Negatif</string>
     <string name="txt_max_travels">Débattements Max</string>
     <string name="txt_set_max_travels">Config. Max Positif</string>
     <string name="txt_set_min_travels">Config. Max Negatif</string>

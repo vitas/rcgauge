@@ -11,8 +11,7 @@
     <string name="txt_title_paired_devices">Gepaarte BT Geräte</string>
     <string name="txt_title_other_devices">Andere Geräte</string>
     <string name="txt_button_scan">Suchen</string>
-    <string name="txt_command_maxthrow">Max pos. Ausschlag</string>
-    <string name="txt_command_minthrow">Max neg. Ausschlag</string>
+    <string name="txt_command_maxthrow">Max pos/neg Ausschlag</string>
     <string name="txt_max_travels">Max Ausschlag</string>
     <string name="txt_set_max_travels">Max Limit</string>
     <string name="txt_set_min_travels">Min Limit</string>
