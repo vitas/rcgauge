@@ -1,20 +1,20 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
 import android.app.Activity;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
