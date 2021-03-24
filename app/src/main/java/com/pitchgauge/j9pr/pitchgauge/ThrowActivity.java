@@ -266,7 +266,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         mHandler = new DataHandler();
 
-        // read preference
+        // read device preference
         devicePrefs = BluetoothPreferences.getKeyrings(getApplicationContext());
         for (int i = 0; i < devicePrefs.size(); i++) {
             DeviceTag tag = devicePrefs.get(i);
@@ -278,6 +278,17 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 mGaugeViewModel.setMinTravelDia2(tag.getTravelMin());
             }
         }
+		
+        // read main preferences
+        MainPrefs mainPreferences = BluetoothPreferences.getMainPrefs(getApplicationContext());
+        if (mainPreferences.zMode == MainPrefs.zmodeT.IGNORE) {
+            mGaugeViewModel.setIgnoreZ(true);
+        } else {
+            mGaugeViewModel.setIgnoreZ(false);
+        }
+        String lu = mainPreferences.units.toString();
+        mGaugeViewModel.setLengthUnits(lu);
+
         // watch BT activity and display status line
         btWatcher.start();
     }

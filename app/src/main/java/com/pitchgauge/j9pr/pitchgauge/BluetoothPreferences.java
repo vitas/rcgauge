@@ -15,6 +15,7 @@ import java.util.List;
 public class BluetoothPreferences {
 
     public static final String LIST_INFO = "list_info";
+    public static final String MAIN_PREFS = "main_prefs";
 
 	// fetch tag from list of tags
     public static DeviceTag getTag(int inhash, ArrayList<DeviceTag> l) {
@@ -47,4 +48,25 @@ public class BluetoothPreferences {
         }
         return new ArrayList<>();
     }
+
+    public static void setMainPrefs(Context context, MainPrefs prefs) {
+        final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        Gson gson = new Gson();
+        String json = gson.toJson(prefs);
+        defaultSharedPreferences.edit().putString(MAIN_PREFS, json).commit();
+    }
+
+    public static MainPrefs getMainPrefs(Context context) {
+        final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        String json = defaultSharedPreferences.getString(MAIN_PREFS, null);
+        if (json != null) {
+            if (!json.isEmpty()) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<MainPrefs>() {}.getType();
+                return gson.fromJson(json, type);
+            }
+        }
+        return new MainPrefs();
+    }
+
 }

@@ -28,6 +28,13 @@ public class ThrowGauge {
     Quaterniond mQBoard = new Quaterniond();
     Quaterniond mQBoardNeutral = new Quaterniond();
 
+
+    boolean ignoreZ;
+    public void setIgnoreZ(boolean ignoreZ) {
+        this.ignoreZ = ignoreZ;
+    }
+
+
     public void SetNeutral()
     {
         mCurrentTravel = 0;
@@ -198,7 +205,11 @@ public class ThrowGauge {
     }
 
     public double ResolveQuatsThrow() {
-        toQuaternion(mQBoard, mEulerYaw, mEulerPitch, mEulerRoll);
+        if (ignoreZ) {
+            toQuaternion(mQBoard, 0, mEulerPitch, mEulerRoll);
+        } else {
+            toQuaternion(mQBoard, mEulerYaw, mEulerPitch, mEulerRoll);
+        }
         Vector3d delta = EulerAnglesBetween(mQBoard, mQBoardNeutral);
         int sign = delta.y > 0 ? -1 : 1;
         mQBoard.difference(mQBoardNeutral);

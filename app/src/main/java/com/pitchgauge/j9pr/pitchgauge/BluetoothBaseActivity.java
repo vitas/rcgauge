@@ -35,6 +35,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
     protected boolean mIsBound;
     protected BluetoothPipe mBluetoothPipe;
     protected ArrayList<DeviceTag> mDeviceTags = new ArrayList<>();
+    protected MainPrefs mMainPrefs;
     
     protected boolean autoStart;
 

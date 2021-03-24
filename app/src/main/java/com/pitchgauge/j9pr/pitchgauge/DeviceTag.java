@@ -14,7 +14,6 @@ public class DeviceTag implements Parcelable {
     String chord = "0.0";
     String travelMax = "0.0";
     String travelMin = "0.0";
-    String units = "mm";
 
     public String getAddress() {
         return address;
@@ -56,13 +55,6 @@ public class DeviceTag implements Parcelable {
     }
     public void setTravelMin(String travelMin) {
         this.travelMin = travelMin;
-    }
-
-    public String getUnits() {
-        return units;
-    }
-    public void setUnits(String units) {
-        this.units = units;
     }
 
     @Override
@@ -118,3 +110,4 @@ public class DeviceTag implements Parcelable {
         }
     };
 }
+

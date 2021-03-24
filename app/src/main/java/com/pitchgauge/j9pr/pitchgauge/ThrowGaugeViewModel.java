@@ -46,6 +46,18 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     private boolean buttonResetAngleEnable = true;
     private boolean buttonCalibrateEnable = true;
 
+    public void setIgnoreZ(boolean ignoreZ) {
+        getThrowGauge().getValue().setIgnoreZ(ignoreZ);
+        getThrowGauge2().getValue().setIgnoreZ(ignoreZ);
+    }
+
+    private String lengthUnits = "mm";
+    public String getLengthUnits() {
+        return lengthUnits;
+    }
+    public void setLengthUnits(String lengthUnits) {
+        this.lengthUnits = lengthUnits;
+    }
 
     // parse number string using language specfic number format (comma separator , or .)
     // get rid of number dialog sending . instead of , (android bug)
