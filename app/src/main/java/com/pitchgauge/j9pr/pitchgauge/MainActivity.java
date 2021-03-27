@@ -109,6 +109,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_BT) {
             Intent intent = new Intent(MainActivity.this, DeviceListActivity.class);
             startActivityForResult(intent, REQ_DATA_ACTIVITY);
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(MainActivity.this, MainSettings.class);
+            startActivityForResult(intent, REQ_DATA_ACTIVITY);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

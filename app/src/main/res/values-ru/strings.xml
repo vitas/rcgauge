@@ -24,4 +24,10 @@
     <string name="txt_dlg_calibrate_desc">Держите датчик горизонтально и не двигайтесь</string>
     <string name="txt_warning_bluetooth_not_enabled">Блутюз не включен</string>
     <string name="txt_travel">Расходы</string>
+    <string name="txt_settings_head">Инструменты</string>
+    <string name="txt_preferences">Предпочтения</string>
+    <string name="txt_use_xy_axes_default">Использовать оси XY (default)</string>
+    <string name="txt_use_xyz_axes">Использовать оси XYZ</string>
+    <string name="txt_display">Показать</string>
+    <string name="txt_sensor_settings">Настройки датчиков</string>
 </resources>

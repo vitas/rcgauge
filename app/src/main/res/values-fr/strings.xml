@@ -24,4 +24,10 @@
     <string name="txt_dlg_calibrate_desc">Tenez le capteur horizontalement et ne bougez pas</string>
     <string name="txt_warning_bluetooth_not_enabled">Bluetooth non activé.</string>
     <string name="txt_travel">Débattement</string>
+    <string name="txt_settings_head">Outils</string>
+    <string name="txt_preferences">Configuration de base</string>
+    <string name="txt_use_xy_axes_default">Utiliser les axes XY (default)</string>
+    <string name="txt_use_xyz_axes">Utiliser les axes XYZ</string>
+    <string name="txt_display">Afficher</string>
+    <string name="txt_sensor_settings">Paramètres du capteur</string>
 </resources>

@@ -24,4 +24,10 @@
     <string name="txt_dlg_calibrate_desc">Sensor horizontal halten und nicht bewegen</string>
     <string name="txt_warning_bluetooth_not_enabled">Bluetooth nicht aktiv.</string>
     <string name="txt_travel">Ausschlag</string>
+    <string name="txt_settings_head">Werkzeuge</string>
+    <string name="txt_preferences">Voreinstellungen</string>
+    <string name="txt_use_xy_axes_default">Verwende XY Axen (default)</string>
+    <string name="txt_use_xyz_axes">Verwende XYZ Axen</string>
+    <string name="txt_display">Anzeige</string>
+    <string name="txt_sensor_settings">Sensor Einstellungen</string>
 </resources>
