@@ -4,7 +4,7 @@
     <string name="txt_sensor_bt">Capteur BT</string>
     <string name="txt_throw_meter">Mesure de débattement</string>
     <string name="txt_communicate">Connecter</string>
-    <string name="txt_reset_angle">Remettre à zéro</string>
+    <string name="txt_reset_angle">Remettre/Calib</string>
     <string name="txt_calibrate">Calibrer</string>
     <string name="txt_command_throw">Débattement</string>
     <string name="txt_command_angle">Angle (\u00B0)</string>
@@ -20,7 +20,8 @@
     <string name="txt_dlg_cancel">Annuler</string>
     <string name="txt_dlg_max_positive_travel">Configurer Max Positif"</string>
     <string name="txt_dlg_min_negative_travel">Configurer Max Négatif"</string>
-    <string name="txt_dlg_keep_horizontal">Tenez le capteur horizontalement et ne bougez pas</string>
+    <string name="txt_dlg_calibrate">Calibrate le capteur</string>
+    <string name="txt_dlg_calibrate_desc">Tenez le capteur horizontalement et ne bougez pas</string>
     <string name="txt_warning_bluetooth_not_enabled">Bluetooth non activé.</string>
     <string name="txt_travel">Débattement</string>
 </resources>

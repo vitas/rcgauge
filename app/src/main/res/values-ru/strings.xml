@@ -4,7 +4,7 @@
     <string name="txt_sensor_bt">Сенсоры BT</string>
     <string name="txt_throw_meter">Throw Meter</string>
     <string name="txt_communicate">Communicate</string>
-    <string name="txt_reset_angle">Сброс расходов</string>
+    <string name="txt_reset_angle">Сброс/Kалибровка</string>
     <string name="txt_calibrate">откалибровать</string>
     <string name="txt_command_throw">Расходы</string>
     <string name="txt_command_angle">Углы (\u00B0)</string>
@@ -20,7 +20,8 @@
     <string name="txt_dlg_cancel">Отмена</string>
     <string name="txt_dlg_max_positive_travel">Максимальные расходы вверх"</string>
     <string name="txt_dlg_min_negative_travel">Минимальные расходы вниз"</string>
-    <string name="txt_dlg_keep_horizontal">Держите датчик горизонтально и не двигайтесь</string>
+    <string name="txt_dlg_calibrate">Калибровать датчик</string>
+    <string name="txt_dlg_calibrate_desc">Держите датчик горизонтально и не двигайтесь</string>
     <string name="txt_warning_bluetooth_not_enabled">Блутюз не включен</string>
     <string name="txt_travel">Расходы</string>
 </resources>

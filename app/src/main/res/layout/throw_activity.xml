@@ -336,6 +336,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/btn_rounded_back_bold"
                 android:enabled="@{CommandthrowViewModel.buttonCalibrateEnable}"
+                android:visibility="invisible"
                 android:gravity="center|center_horizontal"
                 android:padding="17dp"
                 android:text="@string/txt_calibrate"

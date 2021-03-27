@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">RC Throwmeter</string>
-    <string name="app_version" translatable="false">v1.4 (24-Mar-2021 Test)</string>
+    <string name="app_version" translatable="false">v1.4 (26-Mar-2021)</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_title" translatable="false">Android Studio</string>
@@ -16,7 +16,7 @@
     <string name="txt_sensor_bt">BT Sensors</string>
     <string name="txt_throw_meter">Throw meter</string>
     <string name="txt_communicate">Communicate</string>
-    <string name="txt_reset_angle">Reset angle</string>
+    <string name="txt_reset_angle">Reset/Calib</string>
     <string name="txt_calibrate">Calibrate</string>
     <string name="txt_command_throw">Travel</string>
     <string name="txt_command_angle">Angle (\u00B0)</string>
@@ -32,7 +32,8 @@
     <string name="txt_dlg_cancel">Cancel</string>
     <string name="txt_dlg_max_positive_travel">Max positive travel"</string>
     <string name="txt_dlg_min_negative_travel">Min negative travel"</string>
-    <string name="txt_dlg_keep_horizontal">Keep sensor horizontal and do not move</string>
+    <string name="txt_dlg_calibrate">Sensor calibration</string>
+    <string name="txt_dlg_calibrate_desc">Keep sensor horizontal and do not move</string>
     <string name="txt_warning_bluetooth_not_enabled">Bluetooth was not enabled.</string>
     <string name="txt_travel">Travel</string>
 </resources>

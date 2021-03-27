@@ -4,7 +4,7 @@
     <string name="txt_sensor_bt">BT Sensoren</string>
     <string name="txt_throw_meter">Ruder Anzeige</string>
     <string name="txt_communicate">Verbindung</string>
-    <string name="txt_reset_angle">Winkel Reset</string>
+    <string name="txt_reset_angle">Reset/Kalib</string>
     <string name="txt_calibrate">Kalibrieren</string>
     <string name="txt_command_throw">Ausschlag</string>
     <string name="txt_command_angle">Winkel (\u00B0)</string>
@@ -20,7 +20,8 @@
     <string name="txt_dlg_cancel">Cancel</string>
     <string name="txt_dlg_max_positive_travel">Max pos Ausschlag"</string>
     <string name="txt_dlg_min_negative_travel">Min neg Ausschlag"</string>
-    <string name="txt_dlg_keep_horizontal">Sensor horizontal halten und nicht bewegen</string>
+    <string name="txt_dlg_calibrate">Sensor Kalibrieren</string>
+    <string name="txt_dlg_calibrate_desc">Sensor horizontal halten und nicht bewegen</string>
     <string name="txt_warning_bluetooth_not_enabled">Bluetooth nicht aktiv.</string>
     <string name="txt_travel">Ausschlag</string>
 </resources>

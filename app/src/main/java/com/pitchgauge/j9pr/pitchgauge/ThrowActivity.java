@@ -235,6 +235,16 @@ public class ThrowActivity extends BluetoothBaseActivity {
             }
         });
 
+        // calibration confirm box (at longclick reset)
+        final Button resetButton = findViewById(R.id.buttonResetAngle);
+        resetButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0);
+                return true;
+            }
+        });
+
         // calibration confirm box
         final Button calibrateButton = (Button)findViewById(R.id.buttonCalibrate);
         calibrateButton.setOnClickListener(new View.OnClickListener() {
@@ -310,6 +320,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         Resources res = getResources();
         String strTitle = "";
+        String strDescription = "";
         String strValue = "";
         switch (t) {
             case T_LIMIT:
@@ -327,7 +338,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
             case T_CALIBRATE:
-                strTitle = res.getString(R.string.txt_dlg_keep_horizontal);
+                strTitle = res.getString(R.string.txt_dlg_calibrate);
+                strDescription = res.getString(R.string.txt_dlg_calibrate_desc);
                 strValue = "";
                 break;
             default:
@@ -335,7 +347,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(strTitle);
-
+        if (strDescription != "") {
+            builder.setMessage(strDescription);
+        }
         // Set up the input
         input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
