@@ -257,7 +257,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
     // this version of getChordValue does not show decimal point, if not needed, for dialog
     public String getChordValueNum() {
-        return new DecimalFormat("#.#").format(getThrowGauge().getValue().GetChord());
+        return new DecimalFormat("#.#").format(Math.abs(getThrowGauge().getValue().GetChord()));
     }
 
     @Bindable
@@ -397,22 +397,22 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getMinTravel() {
-        double res = Math.abs(getThrowGauge().getValue().GetMinThrow());
+        double res = getThrowGauge().getValue().GetMinThrow();
         String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMinTravel2() {
-        double res = Math.abs(getThrowGauge2().getValue().GetMinThrow());
+        double res = getThrowGauge2().getValue().GetMinThrow();
         String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMaxTravelSet() {
-        double res = getThrowGauge().getValue().GetSetMaxThrow();
-        String str = "Max " + new DecimalFormat("0.0").format(res);
+        double res = Math.abs(getThrowGauge().getValue().GetSetMaxThrow());
+        String str = new DecimalFormat("0.0").format(res) + " Max";
         return str;
     }
 
@@ -425,12 +425,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMinTravelSet() {
         double res = getThrowGauge().getValue().GetSetMinThrow();
-        String str = "Min " + new DecimalFormat("0.0").format(res);
+        String str = new DecimalFormat("0.0").format(res) + " Min";
         return str;
     }
 
     public String getMinTravelSetNum() {
-        double res = getThrowGauge().getValue().GetSetMinThrow();
+        double res = Math.abs(getThrowGauge().getValue().GetSetMinThrow());
         String str = new DecimalFormat("#.#").format(res);
         return str;
     }
