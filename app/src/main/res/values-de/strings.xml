@@ -30,4 +30,6 @@
     <string name="txt_use_xyz_axes">Verwende XYZ Axen</string>
     <string name="txt_display">Anzeige</string>
     <string name="txt_sensor_settings">Sensor Einstellungen</string>
+    <string name="txt_remind_sensor_power">Ausschalten der WitMotion Sensor(en) nicht vergessen!</string>
+    <string name="txt_closing">Beende</string>
 </resources>

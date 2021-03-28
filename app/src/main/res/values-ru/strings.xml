@@ -30,4 +30,6 @@
     <string name="txt_use_xyz_axes">Использовать оси XYZ</string>
     <string name="txt_display">Показать</string>
     <string name="txt_sensor_settings">Настройки датчиков</string>
+    <string name="txt_remind_sensor_power">Не забудьте выключить датчик(и) WitMotion!</string>
+    <string name="txt_closing">Выход</string>
 </resources>

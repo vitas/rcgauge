@@ -30,4 +30,6 @@
     <string name="txt_use_xyz_axes">Utiliser les axes XYZ</string>
     <string name="txt_display">Afficher</string>
     <string name="txt_sensor_settings">Paramètres du capteur</string>
+    <string name="txt_remind_sensor_power">N\'oubliez pas d\'éteindre le(s) capteur(s) WitMotion!</string>
+    <string name="txt_closing">Quitter</string>
 </resources>
