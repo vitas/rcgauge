@@ -4,7 +4,7 @@
     <string name="txt_sensor_bt">Capteur BT</string>
     <string name="txt_throw_meter">Mesure de débattement</string>
     <string name="txt_communicate">Connecter</string>
-    <string name="txt_reset_angle">Remettre/Calib</string>
+    <string name="txt_reset_angle">Zero/Calib</string>
     <string name="txt_calibrate">Calibrer</string>
     <string name="txt_command_throw">Débattement</string>
     <string name="txt_command_angle">Angle (\u00B0)</string>
