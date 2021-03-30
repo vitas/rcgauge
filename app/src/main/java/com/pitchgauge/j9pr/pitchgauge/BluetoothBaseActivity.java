@@ -5,12 +5,11 @@ import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,6 +35,7 @@ public class BluetoothBaseActivity extends AppCompatActivity {
     protected boolean mIsBound;
     protected BluetoothPipe mBluetoothPipe;
     protected ArrayList<DeviceTag> mDeviceTags = new ArrayList<>();
+    protected MainPrefs mMainPrefs;
     
     protected boolean autoStart;
 

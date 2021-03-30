@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">RC Throwmeter</string>
-    <string name="app_version" translatable="false">v1.2 (9-Mar-2021)</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_title" translatable="false">Android Studio</string>
@@ -16,15 +15,14 @@
     <string name="txt_sensor_bt">BT Sensors</string>
     <string name="txt_throw_meter">Throw meter</string>
     <string name="txt_communicate">Communicate</string>
-    <string name="txt_reset_angle">Reset angle</string>
+    <string name="txt_reset_angle">Reset/Calib</string>
     <string name="txt_calibrate">Calibrate</string>
     <string name="txt_command_throw">Travel</string>
     <string name="txt_command_angle">Angle (\u00B0)</string>
     <string name="txt_title_paired_devices">Paired device</string>
     <string name="txt_title_other_devices">Other device</string>
     <string name="txt_button_scan">Scan</string>
-    <string name="txt_command_maxthrow">Max UP</string>
-    <string name="txt_command_minthrow">Max DOWN</string>
+    <string name="txt_command_maxthrow">Max UP/DOWN</string>
     <string name="txt_max_travels">Max travels</string>
     <string name="txt_set_max_travels">Max</string>
     <string name="txt_set_min_travels">Min</string>
@@ -33,7 +31,16 @@
     <string name="txt_dlg_cancel">Cancel</string>
     <string name="txt_dlg_max_positive_travel">Max positive travel"</string>
     <string name="txt_dlg_min_negative_travel">Min negative travel"</string>
-    <string name="txt_dlg_keep_horizontal">Keep sensor horizontal and do not move</string>
+    <string name="txt_dlg_calibrate">Sensor calibration</string>
+    <string name="txt_dlg_calibrate_desc">Keep sensor horizontal and do not move</string>
     <string name="txt_warning_bluetooth_not_enabled">Bluetooth was not enabled.</string>
     <string name="txt_travel">Travel</string>
+    <string name="txt_settings_head">Tools</string>
+    <string name="txt_preferences">Preferences</string>
+    <string name="txt_use_xy_axes_default">Use XY axes (default)</string>
+    <string name="txt_use_xyz_axes">Use XYZ axes</string>
+    <string name="txt_display">Display</string>
+    <string name="txt_sensor_settings">Sensor Settings</string>
+    <string name="txt_remind_sensor_power">Do not forget to switch OFF the WitMotion Sensor(s)</string>
+    <string name="txt_closing">Exit</string>
 </resources>

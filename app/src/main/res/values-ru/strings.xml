@@ -4,15 +4,14 @@
     <string name="txt_sensor_bt">Сенсоры BT</string>
     <string name="txt_throw_meter">Throw Meter</string>
     <string name="txt_communicate">Communicate</string>
-    <string name="txt_reset_angle">Сброс расходов</string>
+    <string name="txt_reset_angle">Сброс/Kалибровка</string>
     <string name="txt_calibrate">откалибровать</string>
     <string name="txt_command_throw">Расходы</string>
     <string name="txt_command_angle">Углы (\u00B0)</string>
     <string name="txt_title_paired_devices">Подключеные устройства</string>
     <string name="txt_title_other_devices">Прочие устройства</string>
     <string name="txt_button_scan">Сканировать</string>
-    <string name="txt_command_maxthrow">Maксимально Вверх</string>
-    <string name="txt_command_minthrow">Maксимально Вниз</string>
+    <string name="txt_command_maxthrow">Maксимально Вверх/Вниз</string>
     <string name="txt_max_travels">Maксимальные Расходы</string>
     <string name="txt_set_max_travels">Max</string>
     <string name="txt_set_min_travels">Min</string>
@@ -21,7 +20,16 @@
     <string name="txt_dlg_cancel">Отмена</string>
     <string name="txt_dlg_max_positive_travel">Максимальные расходы вверх"</string>
     <string name="txt_dlg_min_negative_travel">Минимальные расходы вниз"</string>
-    <string name="txt_dlg_keep_horizontal">Держите датчик горизонтально и не двигайтесь</string>
+    <string name="txt_dlg_calibrate">Калибровать датчик</string>
+    <string name="txt_dlg_calibrate_desc">Держите датчик горизонтально и не двигайтесь</string>
     <string name="txt_warning_bluetooth_not_enabled">Блутюз не включен</string>
     <string name="txt_travel">Расходы</string>
+    <string name="txt_settings_head">Инструменты</string>
+    <string name="txt_preferences">Предпочтения</string>
+    <string name="txt_use_xy_axes_default">Использовать оси XY (default)</string>
+    <string name="txt_use_xyz_axes">Использовать оси XYZ</string>
+    <string name="txt_display">Показать</string>
+    <string name="txt_sensor_settings">Настройки датчиков</string>
+    <string name="txt_remind_sensor_power">Не забудьте выключить датчик(и) WitMotion!</string>
+    <string name="txt_closing">Выход</string>
 </resources>

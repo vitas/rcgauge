@@ -1,20 +1,19 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.MutableLiveData;
-import android.databinding.Bindable;
-import android.databinding.Observable;
-import android.databinding.PropertyChangeRegistry;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.databinding.Bindable;
+import androidx.databinding.Observable;
+import androidx.databinding.PropertyChangeRegistry;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import android.view.View;
 
 import java.text.DecimalFormat;
@@ -47,6 +46,18 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     private boolean buttonResetAngleEnable = true;
     private boolean buttonCalibrateEnable = true;
 
+    public void setIgnoreZ(boolean ignoreZ) {
+        getThrowGauge().getValue().setIgnoreZ(ignoreZ);
+        getThrowGauge2().getValue().setIgnoreZ(ignoreZ);
+    }
+
+    private String lengthUnits = "mm";
+    public String getLengthUnits() {
+        return lengthUnits;
+    }
+    public void setLengthUnits(String lengthUnits) {
+        this.lengthUnits = lengthUnits;
+    }
 
     // parse number string using language specfic number format (comma separator , or .)
     // get rid of number dialog sending . instead of , (android bug)
@@ -246,7 +257,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
     // this version of getChordValue does not show decimal point, if not needed, for dialog
     public String getChordValueNum() {
-        return new DecimalFormat("#.#").format(getThrowGauge().getValue().GetChord());
+        return new DecimalFormat("#.#").format(Math.abs(getThrowGauge().getValue().GetChord()));
     }
 
     @Bindable
@@ -386,22 +397,22 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getMinTravel() {
-        double res = Math.abs(getThrowGauge().getValue().GetMinThrow());
+        double res = getThrowGauge().getValue().GetMinThrow();
         String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMinTravel2() {
-        double res = Math.abs(getThrowGauge2().getValue().GetMinThrow());
+        double res = getThrowGauge2().getValue().GetMinThrow();
         String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
         return str;
     }
 
     @Bindable
     public String getMaxTravelSet() {
-        double res = getThrowGauge().getValue().GetSetMaxThrow();
-        String str = "Max " + new DecimalFormat("0.0").format(res);
+        double res = Math.abs(getThrowGauge().getValue().GetSetMaxThrow());
+        String str = new DecimalFormat("0.0").format(res) + " Max";
         return str;
     }
 
@@ -414,12 +425,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMinTravelSet() {
         double res = getThrowGauge().getValue().GetSetMinThrow();
-        String str = "Min " + new DecimalFormat("0.0").format(res);
+        String str = new DecimalFormat("0.0").format(res) + " Min";
         return str;
     }
 
     public String getMinTravelSetNum() {
-        double res = getThrowGauge().getValue().GetSetMinThrow();
+        double res = Math.abs(getThrowGauge().getValue().GetSetMinThrow());
         String str = new DecimalFormat("#.#").format(res);
         return str;
     }

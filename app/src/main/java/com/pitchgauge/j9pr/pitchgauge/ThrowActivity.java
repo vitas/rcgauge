@@ -1,20 +1,20 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
 import android.app.Activity;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -235,6 +235,16 @@ public class ThrowActivity extends BluetoothBaseActivity {
             }
         });
 
+        // calibration confirm box (at longclick reset)
+        final Button resetButton = findViewById(R.id.buttonResetAngle);
+        resetButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0);
+                return true;
+            }
+        });
+
         // calibration confirm box
         final Button calibrateButton = (Button)findViewById(R.id.buttonCalibrate);
         calibrateButton.setOnClickListener(new View.OnClickListener() {
@@ -266,7 +276,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         mHandler = new DataHandler();
 
-        // read preference
+        // read device preference
         devicePrefs = BluetoothPreferences.getKeyrings(getApplicationContext());
         for (int i = 0; i < devicePrefs.size(); i++) {
             DeviceTag tag = devicePrefs.get(i);
@@ -278,6 +288,17 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 mGaugeViewModel.setMinTravelDia2(tag.getTravelMin());
             }
         }
+		
+        // read main preferences
+        MainPrefs mainPreferences = BluetoothPreferences.getMainPrefs(getApplicationContext());
+        if (mainPreferences.zMode == MainPrefs.zmodeT.IGNORE) {
+            mGaugeViewModel.setIgnoreZ(true);
+        } else {
+            mGaugeViewModel.setIgnoreZ(false);
+        }
+        String lu = mainPreferences.units.toString();
+        mGaugeViewModel.setLengthUnits(lu);
+
         // watch BT activity and display status line
         btWatcher.start();
     }
@@ -299,6 +320,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         Resources res = getResources();
         String strTitle = "";
+        String strDescription = "";
         String strValue = "";
         switch (t) {
             case T_LIMIT:
@@ -316,7 +338,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
             case T_CALIBRATE:
-                strTitle = res.getString(R.string.txt_dlg_keep_horizontal);
+                strTitle = res.getString(R.string.txt_dlg_calibrate);
+                strDescription = res.getString(R.string.txt_dlg_calibrate_desc);
                 strValue = "";
                 break;
             default:
@@ -324,7 +347,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(strTitle);
-
+        if (strDescription != "") {
+            builder.setMessage(strDescription);
+        }
         // Set up the input
         input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
