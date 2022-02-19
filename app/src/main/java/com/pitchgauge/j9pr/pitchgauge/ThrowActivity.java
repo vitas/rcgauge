@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
+import android.view.WindowManager.LayoutParams;
 
 import java.util.ArrayList;
 
@@ -196,6 +197,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
         super.onCreate(savedInstanceState);
 
         autoStart = true;
+
+        // keep activity screen on always
+        getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
 
