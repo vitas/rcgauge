@@ -76,9 +76,17 @@ public class ThrowActivity extends BluetoothBaseActivity {
         }
     }
 
+    boolean firstMessage = true;
+	
     class DataHandler extends Handler {
 
         public void handleMessage(Message msg) {
+
+            // send sensor configuration at startup once
+            if (firstMessage) {
+                firstMessage = false;
+                mGaugeViewModel.sendConfigMessage();
+            }
             switch (msg.what) {
 
                 case BluetoothState.MESSAGE_READ:
@@ -183,6 +191,28 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 }
                             }).start();
                         }
+
+                        // ensure proper sensor configuration setting
+                        if (command.getString("Reset sensor") == "Configure sensor") {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // horizontal installation
+                                    byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
+                                    ThrowActivity.this.mBluetoothService.Send(cmdString1);
+                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                    // bandwidth 256 Hz
+                                    byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
+                                    ThrowActivity.this.mBluetoothService.Send(cmdString2);
+                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                    // statisc detextion 0.122 deg/sec
+                                    byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
+                                    ThrowActivity.this.mBluetoothService.Send(cmdString3);
+                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                }
+                            }).start();
+                        }
+
                     }
                     break;
                 default:

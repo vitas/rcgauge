@@ -553,6 +553,17 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         this.mHandler.sendMessage(msg);
     }
 
+
+    public void sendConfigMessage() {
+
+        Message msg = this.mHandler.obtainMessage(BluetoothState.MESSAGE_STATE_CHANGE);
+        Bundle bundle = new Bundle();
+        bundle.putString("Reset sensor", "Configure sensor");
+        msg.setData(bundle);
+        this.mHandler.sendMessage(msg);
+    }
+
+
     public boolean isNumeric(String str){
         return str.matches("-?\\d+(.\\d+)?");
     }
