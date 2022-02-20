@@ -30,7 +30,9 @@ import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_NAME;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_POS;
 
 public class BluetoothService extends Service {
-    private static UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    // well-known Bluetooth serial board SPP UUID
+    private static final UUID MY_UUID = UUID.fromString((String)"00001101-0000-1000-8000-00805F9B34FB");
+
     private static final String NAME = "BluetoothData";
 
     private short IDNow;
@@ -359,7 +361,6 @@ public class BluetoothService extends Service {
         return -1;
     }
 
-
     public void Send(byte[] out) {
         // When writing, try to write out to all connected threads
         Log.d(TAG, "Start Writing..." + mConnThreads.size());
@@ -388,11 +389,14 @@ public class BluetoothService extends Service {
     }
 
     public synchronized void start() {
+
+        // Cancel any thread attempting to make a connection
         if (this.mConnectThread != null) {
             this.mConnectThread.cancel();
             this.mConnectThread = null;
         }
 
+        // Cancel any thread currently running a connection
         if (mConnectedThread != null) {
             mConnectedThread.cancel();
             mConnectedThread = null;
@@ -430,16 +434,10 @@ public class BluetoothService extends Service {
             }
 
             try {
+                // using the well-known Bluetooth serial board SPP UUID
+                Log.d(TAG, "BluetoothService connect(): Connect device UUID===" + MY_UUID);
 
-                boolean temp = device.fetchUuidsWithSdp();
-                UUID uuid = null;
-                if( temp ){
-                    uuid = device.getUuids()[0].getUuid();
-                }
-
-                Log.d(TAG, "BluetoothService connect(): Connect device UUID===" + uuid);
-
-                ConnectThread mConnectThread = new ConnectThread(device, uuid, pos);
+                ConnectThread mConnectThread = new ConnectThread(device, MY_UUID, pos);
                 mConnectThread.start();
 
                 setState(BluetoothState.STATE_CONNECTING);

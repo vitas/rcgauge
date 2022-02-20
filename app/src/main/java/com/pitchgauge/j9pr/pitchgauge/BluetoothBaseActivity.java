@@ -49,16 +49,17 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                     if (!mBluetoothPipe.isBluetoothEnabled()) {
                         mBluetoothPipe.enable();
                     } else if (!mBluetoothPipe.isServiceAvailable()) {
+					    // create a bluetooth server socket
                         mBluetoothPipe.setupService(mBluetoothService, mHandler);
                         mBluetoothPipe.startService();
                         mBluetoothPipe.autoConnect("yoyo");
                     }
-
+                    // connect as a bluetooth device
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
                             connectDevices();
                         }
-                    }, 4000);
+                    }, 100);
                 } else {
                     Log.w(TAG, "Service is not setup, data handler is null");
                 }
@@ -262,15 +263,8 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         }
                     }, 100);
                 }
-
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        connectDevicesFromKeyring();
-                    }
-                }, 4000);
             }
         }
-
     }
 
 
