@@ -76,6 +76,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
         }
     }
 
+    int frameCount = 0;
     boolean firstMessage = true;
 	
     class DataHandler extends Handler {
@@ -86,6 +87,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
             if (firstMessage) {
                 firstMessage = false;
                 mGaugeViewModel.sendConfigMessage();
+            }
+            // send a regular keep alive message, fixes the delayed instream issue with witmotion HC-02
+            if (frameCount==3) {
+                mGaugeViewModel.sendAliveMessage();
+                frameCount = 0;
+            } else {
+                frameCount++;
             }
             switch (msg.what) {
 
@@ -188,6 +196,16 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     while (!ThrowActivity.this.hasResumed()) ;
                                     ThrowActivity.this.resetNeutral();
                                     ThrowActivity.this.busyCalibration = false;
+                                }
+                            }).start();
+                        }
+                        // for unknown reasons an outgoing message avoids stalling of the incoming data stream
+                        if (command.getString("Reset sensor") == "Send alive") {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    byte[] cmdString = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81}; // bandwidth = 256Hz
+                                    ThrowActivity.this.mBluetoothService.Send(cmdString);
                                 }
                             }).start();
                         }
