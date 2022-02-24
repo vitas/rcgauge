@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.Nullable;
 import android.text.InputType;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,25 +77,27 @@ public class ThrowActivity extends BluetoothBaseActivity {
         }
     }
 
-    int frameCount = 0;
-    boolean firstMessage = true;
-	
     class DataHandler extends Handler {
+
+        long lLastTime = 0;
+        boolean firstMessage = true;
 
         public void handleMessage(Message msg) {
 
             // send sensor configuration at startup once
-            if (firstMessage) {
-                firstMessage = false;
+            if (this.firstMessage) {
+                this.firstMessage = false;
                 mGaugeViewModel.sendConfigMessage();
             }
+
             // send a regular keep alive message, fixes the delayed instream issue with witmotion HC-02
-            if (frameCount==3) {
+            long lTimeNow = System.currentTimeMillis();
+            long delta = lTimeNow - this.lLastTime;
+            if (delta > 1000) {
+                this.lLastTime = lTimeNow;
                 mGaugeViewModel.sendAliveMessage();
-                frameCount = 0;
-            } else {
-                frameCount++;
             }
+
             switch (msg.what) {
 
                 case BluetoothState.MESSAGE_READ:
@@ -146,13 +149,16 @@ public class ThrowActivity extends BluetoothBaseActivity {
                             default:
                                 return;
                         }
+
                     } catch (Exception e) {
                         return;
                     }
 
                 default:
                     return;
+
             }
+
         }
     }
 
@@ -161,6 +167,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
         }
 
         public void handleMessage(Message msg) {
+
+            // ensure time gap between sensor messages, otherwise BT connection breaks occasionally
+            try { Thread.sleep(300); } catch(InterruptedException e) { }
 
             switch (msg.what) {
                 case BluetoothState.MESSAGE_STATE_CHANGE:
@@ -175,12 +184,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
                                     try { Thread.sleep(1000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
-                                    while (!ThrowActivity.this.hasResumed()) ;
+                                    while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
+                                        try { Thread.sleep(1); } catch(InterruptedException e) {};
+                                    }
                                     ThrowActivity.this.resetNeutral();
                                     ThrowActivity.this.busyReset = false;
                                 }
                             }).start();
-
                         }
                         if (command.getString("Reset sensor") == "Calibrate") {
                             new Thread(new Runnable() {
@@ -193,7 +203,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     ThrowActivity.this.resetSensor();
                                     try { Thread.sleep(1000); } catch(InterruptedException e) { }
                                     ThrowActivity.this.resetSensor();
-                                    while (!ThrowActivity.this.hasResumed()) ;
+                                    byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                    ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
+                                    ThrowActivity.this.resetSensor();
+                                    while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
+                                        try { Thread.sleep(1); } catch(InterruptedException e) {};
+                                    }
                                     ThrowActivity.this.resetNeutral();
                                     ThrowActivity.this.busyCalibration = false;
                                 }
@@ -204,7 +220,8 @@ public class ThrowActivity extends BluetoothBaseActivity {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    byte[] cmdString = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81}; // bandwidth = 256Hz
+                                    // use a dummy command, bandwidth=256Hz
+                                    byte[] cmdString = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
                                     ThrowActivity.this.mBluetoothService.Send(cmdString);
                                 }
                             }).start();
@@ -216,17 +233,17 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 @Override
                                 public void run() {
                                     // horizontal installation
-                                    byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
-                                    ThrowActivity.this.mBluetoothService.Send(cmdString1);
-                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
-                                    // bandwidth 256 Hz
-                                    byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
-                                    ThrowActivity.this.mBluetoothService.Send(cmdString2);
-                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
-                                    // statisc detextion 0.122 deg/sec
-                                    byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
-                                    ThrowActivity.this.mBluetoothService.Send(cmdString3);
-                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+//                                    byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
+//                                    ThrowActivity.this.mBluetoothService.Send(cmdString1);
+//                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+//                                    // bandwidth 256 Hz
+//                                    byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
+//                                    ThrowActivity.this.mBluetoothService.Send(cmdString2);
+//                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+//                                    // statisc detextion 0.122 deg/sec
+//                                    byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
+//                                    ThrowActivity.this.mBluetoothService.Send(cmdString3);
+//                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
                                 }
                             }).start();
                         }
@@ -355,15 +372,15 @@ public class ThrowActivity extends BluetoothBaseActivity {
         btWatcher.start();
     }
 
-    public  void resetNeutral(){
+    public  void resetNeutral() {
         mGaugeViewModel.resetNeutral();
     }
 
-    public void resetSensor(){
+    public void resetSensor() {
         mGaugeViewModel.resetSensorPosition();
     }
 
-    public boolean hasResumed(){
+    public boolean hasResumed() {
         return mGaugeViewModel.HasResumed();
     }
 
