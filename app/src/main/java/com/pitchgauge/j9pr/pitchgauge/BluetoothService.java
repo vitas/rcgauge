@@ -281,6 +281,7 @@ public class BluetoothService extends Service {
                         }
                     }
 
+
                 } catch (IOException e) {
                     Log.e(TAG, "got disconnected " + mmSocket.getRemoteDevice(), e);
                     connectionLost(mmSocket.getRemoteDevice());
@@ -297,11 +298,16 @@ public class BluetoothService extends Service {
             try {
                 this.mmOutStream.write(buffer);
                 BluetoothService.this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+                mmOutStream.flush();
+
             } catch (IOException e) {
             }
         }
 
         public void cancel() {
+            try {this.mmInStream.close();} catch (Exception e) {}
+            try {this.mmOutStream.close();} catch (Exception e) {}
+            try {this.mmSocket.close();} catch (Exception e) {}
             isRunningConnectedThread = false;
         }
     }
@@ -374,10 +380,12 @@ public class BluetoothService extends Service {
                     r = mConnThreads.get(i);
                 }
                 // Perform the write unsynchronized
-                if(r.isAlive())
-                    r.write(out);
-                else
-                    r.cancel();
+                if (r != null) {
+                    if (r.isAlive())
+                        r.write(out);
+                    else
+                        r.cancel();
+                }
             } catch (Exception e) {
             }
         }
@@ -657,7 +665,8 @@ public class BluetoothService extends Service {
             this.iError++;
         }
         long lTimeNow = System.currentTimeMillis();
-        if (lTimeNow - this.lLastTime > 80) {
+        long delta = lTimeNow - this.lLastTime;
+        if (delta > 80) {
             this.lLastTime = lTimeNow;
             if (mDataHandler != null) {
                 Message msg = this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_READ);
