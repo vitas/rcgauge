@@ -553,6 +553,14 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         this.mHandler.sendMessage(msg);
     }
 
+    public void sendAliveMessage() {
+
+        Message msg = this.mHandler.obtainMessage(BluetoothState.MESSAGE_STATE_CHANGE);
+        Bundle bundle = new Bundle();
+        bundle.putString("Reset sensor", "Send alive");
+        msg.setData(bundle);
+        this.mHandler.sendMessage(msg);
+    }
 
     public void sendConfigMessage() {
 
