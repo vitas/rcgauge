@@ -25,7 +25,7 @@ public class ThrowGauge {
     long t1 = 0;
     double mQuatAngleFiltered = 0.0;
     double mAngleFiltered = 0.0;
-    double tauLP = 0.3; // time constant tau in seconds
+    double tauLP = 0.05; // time constant tau in seconds
 
     // min/max thresholds
     int iMin = 0;
@@ -56,6 +56,8 @@ public class ThrowGauge {
         mAngle = 0;
         /*** quaternion method ***/
         toQuaternion(mQBoardNeutral, mEulerYaw, mEulerPitch, mEulerRoll);
+        mQuatAngle = 0;
+        mQuatAngleFiltered = 0;
     }
 
     public boolean HasResumed() {
@@ -248,6 +250,7 @@ public class ThrowGauge {
             mQuatAngleFiltered = 0.0;
         }
 
+        mQuatAngle = mQuatAngleFiltered;
         mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
 
         if(mCurrentTravel < mMinThrow) {
