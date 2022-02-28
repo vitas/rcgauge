@@ -93,7 +93,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
             // send a regular keep alive message, fixes the delayed instream issue with witmotion HC-02
             long lTimeNow = System.currentTimeMillis();
             long delta = lTimeNow - this.lLastTime;
-            if (delta > 500) {
+            if (delta > 2000) {
                 this.lLastTime = lTimeNow;
                 mGaugeViewModel.sendAliveMessage();
             }
@@ -166,9 +166,10 @@ public class ThrowActivity extends BluetoothBaseActivity {
         SendSensor() {
         }
 
+        private boolean txBusy = false;
         public void handleMessage(Message msg) {
 
-            if  (!(ThrowActivity.this.busyReset | ThrowActivity.this.busyCalibration)) {
+            if  (!(txBusy)) {
                 switch (msg.what) {
                         case BluetoothState.MESSAGE_STATE_CHANGE:
                             if (ThrowActivity.this.mBluetoothPipe.isServiceAvailable()) {
@@ -177,9 +178,11 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 // reset button
                                 if (command.getString("Reset sensor") == "New neutral") {
                                     ThrowActivity.this.busyReset = true;
+                                    txBusy = true;
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            ThrowActivity.this.busyReset = true;
                                             byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
                                             ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
                                             try { Thread.sleep(300); } catch(InterruptedException e) {};
@@ -190,6 +193,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                             try { Thread.sleep(300); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetNeutral();
                                             ThrowActivity.this.busyReset = false;
+                                            txBusy = false;
                                         }
                                     }).start();
                                 }
@@ -197,12 +201,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 // calibrate button
                                 if (command.getString("Reset sensor") == "Calibrate") {
                                     ThrowActivity.this.busyCalibration = true;
+                                    txBusy = true;
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
                                             ThrowActivity.this.busyCalibration = true;
                                             byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x66};
-                                            //ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
+                                            ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
                                             try { Thread.sleep(10000); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetSensor();
                                             byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
@@ -215,42 +220,57 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                             try { Thread.sleep(300); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetNeutral();
                                             ThrowActivity.this.busyCalibration = false;
+                                            txBusy = false;
                                         }
                                     }).start();
                                 }
 
                                 // for unknown reasons an outgoing message avoids stalling of the incoming data stream
                                 if (command.getString("Reset sensor") == "Send alive") {
+                                    txBusy = true;
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            try { Thread.sleep(100); } catch(InterruptedException e) {};
                                             // send a dummy sequence
-                                            byte[] cmdString = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-                                            ThrowActivity.this.mBluetoothService.Send(cmdString);
+                                            byte[] CommandZero = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            txBusy = false;
                                         }
                                     }).start();
                                 }
 
                                 // ensure proper sensor configuration setting
                                 if (command.getString("Reset sensor") == "Configure sensor") {
-                                    ThrowActivity.this.busyCalibration = true;
+                                    txBusy = true;
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            try { Thread.sleep(500); } catch(InterruptedException e) { }
+                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                            byte[] CommandZero = {(byte) 0xFF, (byte) 0xAA, (byte) 0x00};
+
                                             // horizontal installation
                                             byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
                                             ThrowActivity.this.mBluetoothService.Send(cmdString1);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
                                             try { Thread.sleep(100); } catch(InterruptedException e) { }
+
                                             // bandwidth 256 Hz
                                             byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
                                             ThrowActivity.this.mBluetoothService.Send(cmdString2);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
                                             try { Thread.sleep(100); } catch(InterruptedException e) { }
+
                                             // static detection 0.122 deg/sec
                                             byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
                                             ThrowActivity.this.mBluetoothService.Send(cmdString3);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
                                             try { Thread.sleep(100); } catch(InterruptedException e) { }
-                                            ThrowActivity.this.busyCalibration = false;
+
+                                            txBusy = false;
                                         }
                                     }).start();
                                 }
