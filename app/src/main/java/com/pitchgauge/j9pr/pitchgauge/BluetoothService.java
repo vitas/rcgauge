@@ -41,7 +41,7 @@ public class BluetoothService extends Service {
     private int ar = 16;
     private int av = 2000;
     private int iError = 0;
-    long lLastTime = System.currentTimeMillis();
+    long[] lLastTime = {System.currentTimeMillis(), System.currentTimeMillis()};
     private AcceptThread mAcceptThread;
     private final BluetoothAdapter mAdapter;
     private ConnectThread mConnectThread;
@@ -664,10 +664,12 @@ public class BluetoothService extends Service {
             }
             this.iError++;
         }
+
         long lTimeNow = System.currentTimeMillis();
-        long delta = lTimeNow - this.lLastTime;
-        if (delta > 80) {
-            this.lLastTime = lTimeNow;
+        long delta = lTimeNow - this.lLastTime[pos];
+        if (delta > 10) { // avoid short update intervals
+            this.lLastTime[pos] = lTimeNow;
+            //Log.e(TAG, "pos=" + pos + " inputBuffer delta(ms)=" + delta);
             if (mDataHandler != null) {
                 Message msg = this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_READ);
                 Bundle bundle = new Bundle();
