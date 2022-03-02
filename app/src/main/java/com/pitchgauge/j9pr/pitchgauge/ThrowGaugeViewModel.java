@@ -437,18 +437,24 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public Drawable getTravelColor() {
-        if(getThrowGauge().getValue().IsBelowTravelMin() || getThrowGauge().getValue().IsAboveTravelMax())
-            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
-        else
+        if (getThrowGauge().getValue().IsBelowTravelMin()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_down, null);
+        } else if (getThrowGauge().getValue().IsAboveTravelMax()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_up, null);
+        } else {
             return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
+        }
     }
 
     @Bindable
     public Drawable getTravelColor2() {
-        if(getThrowGauge2().getValue().IsBelowTravelMin() || getThrowGauge2().getValue().IsAboveTravelMax())
-            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
-        else
+        if (getThrowGauge2().getValue().IsBelowTravelMin()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_down, null);
+        } else if (getThrowGauge2().getValue().IsAboveTravelMax()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_up, null);
+        } else {
             return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_green, null);
+        }
     }
 
     @Bindable
