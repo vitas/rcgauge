@@ -267,7 +267,6 @@ public class BluetoothBaseActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onDestroy() {
         doUnbind();
@@ -276,28 +275,8 @@ public class BluetoothBaseActivity extends AppCompatActivity {
 
     private boolean SerialPortOpen() {
         this.isOpen = true;
-        new readThread().start();
+        //new readThread().start(); // note by AHa: readThread not used
         return true;
     }
 
-    private class readThread extends Thread {
-
-        public void run() {
-            byte[] buffer = new byte[4096];
-            while (true) {
-                Message msg = Message.obtain();
-                if (BluetoothBaseActivity.this.isOpen) {
-                        //ThrowActivity.this.handler.sendMessage(msg);
-                    }
-                else {
-                    try {
-                        Thread.sleep(50);
-                        return;
-                    } catch (Exception e) {
-                        return;
-                    }
-                }
-            }
-        }
-    }
 }
