@@ -25,7 +25,7 @@ public class ThrowGauge {
     long t1 = 0;
     double mQuatAngleFiltered = 0.0;
     double mAngleFiltered = 0.0;
-    double tauLP = 0.05; // time constant tau in seconds
+    double tauLP = 0.07; // time constant tau in seconds
 
     // min/max thresholds
     int iMin = 0;
