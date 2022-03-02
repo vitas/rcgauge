@@ -206,7 +206,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                         @Override
                                         public void run() {
                                             ThrowActivity.this.busyCalibration = true;
-                                            byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x66};
+                                            byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
                                             ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
                                             try { Thread.sleep(10000); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetSensor();
@@ -243,10 +243,11 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                 // ensure proper sensor configuration setting
                                 if (command.getString("Reset sensor") == "Configure sensor") {
                                     txBusy = true;
+                                    ThrowActivity.this.busyReset = true;
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                            try { Thread.sleep(2000); } catch(InterruptedException e) { }
                                             byte[] CommandZero = {(byte) 0xFF, (byte) 0xAA, (byte) 0x00};
 
                                             // horizontal installation
@@ -256,20 +257,41 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                             ThrowActivity.this.mBluetoothService.Send(CommandZero);
                                             try { Thread.sleep(100); } catch(InterruptedException e) { }
 
-                                            // bandwidth 256 Hz
-                                            byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
+                                            try { Thread.sleep(2000); } catch(InterruptedException e) { }
+
+                                            // Update rate 100Hz (115200 baudrate)
+                                            byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x64};
                                             ThrowActivity.this.mBluetoothService.Send(cmdString2);
                                             try { Thread.sleep(250); } catch(InterruptedException e) { }
                                             ThrowActivity.this.mBluetoothService.Send(CommandZero);
                                             try { Thread.sleep(100); } catch(InterruptedException e) { }
 
-                                            // static detection 0.122 deg/sec
-                                            byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
+                                            // bandwidth 256 Hz
+                                            byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
                                             ThrowActivity.this.mBluetoothService.Send(cmdString3);
                                             try { Thread.sleep(250); } catch(InterruptedException e) { }
                                             ThrowActivity.this.mBluetoothService.Send(CommandZero);
                                             try { Thread.sleep(100); } catch(InterruptedException e) { }
 
+                                            // static detection 0.122 deg/sec
+                                            byte[] cmdString4 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
+                                            ThrowActivity.this.mBluetoothService.Send(cmdString4);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+
+//                                            // do an initial reset at startup
+//                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+//                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+//                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+//                                            ThrowActivity.this.resetSensor();
+//                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
+//                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
+//                                            }
+//                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+//                                            ThrowActivity.this.resetNeutral();
+
+                                            ThrowActivity.this.busyReset = false;
                                             txBusy = false;
                                         }
                                     }).start();
