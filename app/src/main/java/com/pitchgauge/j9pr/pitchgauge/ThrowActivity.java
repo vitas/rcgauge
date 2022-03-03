@@ -231,10 +231,10 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            try { Thread.sleep(100); } catch(InterruptedException e) {};
                                             // send a dummy sequence
                                             byte[] CommandZero = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
                                             ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(350); } catch(InterruptedException e) {};
                                             txBusy = false;
                                         }
                                     }).start();
