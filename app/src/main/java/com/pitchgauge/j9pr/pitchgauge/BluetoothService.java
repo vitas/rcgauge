@@ -30,7 +30,9 @@ import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_NAME;
 import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.DEVICE_POS;
 
 public class BluetoothService extends Service {
-    private static UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    // well-known Bluetooth serial board SPP UUID
+    private static final UUID MY_UUID = UUID.fromString((String)"00001101-0000-1000-8000-00805F9B34FB");
+
     private static final String NAME = "BluetoothData";
 
     private short IDNow;
@@ -39,7 +41,7 @@ public class BluetoothService extends Service {
     private int ar = 16;
     private int av = 2000;
     private int iError = 0;
-    long lLastTime = System.currentTimeMillis();
+    long[] lLastTime = {System.currentTimeMillis(), System.currentTimeMillis()};
     private AcceptThread mAcceptThread;
     private final BluetoothAdapter mAdapter;
     private ConnectThread mConnectThread;
@@ -279,6 +281,7 @@ public class BluetoothService extends Service {
                         }
                     }
 
+
                 } catch (IOException e) {
                     Log.e(TAG, "got disconnected " + mmSocket.getRemoteDevice(), e);
                     connectionLost(mmSocket.getRemoteDevice());
@@ -295,11 +298,16 @@ public class BluetoothService extends Service {
             try {
                 this.mmOutStream.write(buffer);
                 BluetoothService.this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+                mmOutStream.flush();
+
             } catch (IOException e) {
             }
         }
 
         public void cancel() {
+            try {this.mmInStream.close();} catch (Exception e) {}
+            try {this.mmOutStream.close();} catch (Exception e) {}
+            try {this.mmSocket.close();} catch (Exception e) {}
             isRunningConnectedThread = false;
         }
     }
@@ -359,7 +367,6 @@ public class BluetoothService extends Service {
         return -1;
     }
 
-
     public void Send(byte[] out) {
         // When writing, try to write out to all connected threads
         Log.d(TAG, "Start Writing..." + mConnThreads.size());
@@ -373,10 +380,12 @@ public class BluetoothService extends Service {
                     r = mConnThreads.get(i);
                 }
                 // Perform the write unsynchronized
-                if(r.isAlive())
-                    r.write(out);
-                else
-                    r.cancel();
+                if (r != null) {
+                    if (r.isAlive())
+                        r.write(out);
+                    else
+                        r.cancel();
+                }
             } catch (Exception e) {
             }
         }
@@ -388,11 +397,14 @@ public class BluetoothService extends Service {
     }
 
     public synchronized void start() {
+
+        // Cancel any thread attempting to make a connection
         if (this.mConnectThread != null) {
             this.mConnectThread.cancel();
             this.mConnectThread = null;
         }
 
+        // Cancel any thread currently running a connection
         if (mConnectedThread != null) {
             mConnectedThread.cancel();
             mConnectedThread = null;
@@ -430,16 +442,10 @@ public class BluetoothService extends Service {
             }
 
             try {
+                // using the well-known Bluetooth serial board SPP UUID
+                Log.d(TAG, "BluetoothService connect(): Connect device UUID===" + MY_UUID);
 
-                boolean temp = device.fetchUuidsWithSdp();
-                UUID uuid = null;
-                if( temp ){
-                    uuid = device.getUuids()[0].getUuid();
-                }
-
-                Log.d(TAG, "BluetoothService connect(): Connect device UUID===" + uuid);
-
-                ConnectThread mConnectThread = new ConnectThread(device, uuid, pos);
+                ConnectThread mConnectThread = new ConnectThread(device, MY_UUID, pos);
                 mConnectThread.start();
 
                 setState(BluetoothState.STATE_CONNECTING);
@@ -658,9 +664,12 @@ public class BluetoothService extends Service {
             }
             this.iError++;
         }
+
         long lTimeNow = System.currentTimeMillis();
-        if (lTimeNow - this.lLastTime > 80) {
-            this.lLastTime = lTimeNow;
+        long delta = lTimeNow - this.lLastTime[pos];
+        if (delta > 10) { // avoid short update intervals
+            this.lLastTime[pos] = lTimeNow;
+            //Log.e(TAG, "pos=" + pos + " inputBuffer delta(ms)=" + delta);
             if (mDataHandler != null) {
                 Message msg = this.mDataHandler.obtainMessage(BluetoothState.MESSAGE_READ);
                 Bundle bundle = new Bundle();

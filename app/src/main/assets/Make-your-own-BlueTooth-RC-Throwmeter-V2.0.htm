@@ -67,612 +67,759 @@ ul
 
 </head>
 
-<body lang=DE link=blue vlink=purple style='word-wrap:break-word'>
+<body lang=DE link=blue vlink=purple style='tab-interval:35.4pt;word-wrap:break-word'>
 
 <div class=WordSection1>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img width=330 height=191 id="Grafik 3"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image001.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img width=330 height=191
+id="_x0000_i1039"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image001.jpg"></span></p>
 
 <p class=MsoNormal align=center style='text-align:center;line-height:normal'><b><span
 lang=EN-US style='font-size:18.0pt;font-family:"Times New Roman",serif;
-color:black'>Make your own Bluetooth RC Throwmeter</span></b></p>
+color:black;mso-ansi-language:EN-US'>Make your own Bluetooth RC Throwmeter</span></b></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><span lang=FR style='font-size:12.0pt;font-family:"Times New Roman",serif;
-color:black'>by Yannick Selles, Pierre Rondel, Vitaliy Ryumshyn and Alois Hahn</span></p>
+color:black;mso-ansi-language:FR'>by Yannick Selles, Pierre Rondel, Vitaliy
+Ryumshyn and Alois Hahn</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span lang=FR
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:FR'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Introduction</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Introduction</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>This mobile application allows you to &quot;build&quot; your own
-Bluetooth throw-meter for a very reasonable cost. It doesn't require any soldering
-or cabling. You just need to have access to a 3D printer and that is all!</span></p>
+color:black;mso-ansi-language:EN-US'>This mobile application allows you to
+&quot;build&quot; your own Bluetooth throw-meter for a very reasonable cost. It
+doesn't require any soldering or cabling. You just need to have access to a 3D
+printer and that is all!</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><b><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Features of version 1.4</span></b></p>
+color:black;mso-ansi-language:EN-US'>Features of version 1.5</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Support two sensors simultaneously</span></p>
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Can bind and use 2022 WitMotion modules
+(with other HC-06 inside)<o:p></o:p></span></p>
 
 <p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Calibration support, no need for manufacturer app</span></p>
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Prevent screensaver to lock Throw Meter
+screen<o:p></o:p></span></p>
 
 <p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Bluetooth status bar</span></p>
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Improved reliability of Bluetooth binding<o:p></o:p></span></p>
 
 <p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>More stable Bluetooth connection, and reconnection when exiting of
-standby/sleeping mode</span></p>
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Prevent max UP/DOWN to catch fast travel
+glitches<o:p></o:p></span></p>
 
 <p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Clearer separation between max travel feature and limit setting
-with alarm feature</span></p>
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Fast and smooth screen update in Dual-Mode<o:p></o:p></span></p>
 
 <p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Localization</span></p>
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Ensure proper Witmotion configuration at
+startup<o:p></o:p></span></p>
 
-<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
-line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><b><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>German language support</span></p>
+color:black;mso-ansi-language:EN-US'><o:p>&nbsp;</o:p></span></b></p>
 
-<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
-line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><b><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Sensor option to chose more robust X/Y only calculation</span></p>
-
-<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
-line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Compacter screen layout for small displays</span></p>
-
-<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
-line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
-color:black'>·</span><span lang=EN-US style='font-size:7.0pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Reminder to power off sensor when App is left</span></p>
+color:black;mso-ansi-language:EN-US'>Features of version 1.4</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Support two sensors simultaneously</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Calibration support, no need for
+manufacturer app</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Bluetooth status bar</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>More stable Bluetooth connection, and
+reconnection when exiting of standby/sleeping mode</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Clearer separation between max travel
+feature and limit setting with alarm feature</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Localization</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>German language support</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Sensor option to chose more robust X/Y
+only calculation</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Compacter screen layout for small displays</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0cm;text-indent:-18.0pt;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:Symbol;
+color:black;mso-ansi-language:EN-US'>·</span><span lang=EN-US style='font-size:
+7.0pt;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>Reminder to power off sensor when App is
+left</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
+lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'>&nbsp;</p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=FR
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>The
-component</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:FR'>The component</span></b></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img width=330 height=186 id="Grafik 4"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image002.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img width=330 height=186
+id="_x0000_i1038"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image002.jpg"></span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>The component is the BWT61CL&nbsp;from WitMotion, a six axis
-Bluetooth attitude angle sensor with battery incorporated. You can buy it on
-AliExpress or Amazon US and amazon EU and cost around 20~25 Euros, free
-shipping.</span></p>
+color:black;mso-ansi-language:EN-US'>The component is the BWT61CL&nbsp;from
+WitMotion, a six axis Bluetooth attitude angle sensor with battery
+incorporated. You can buy it on AliExpress or Amazon US and amazon EU and cost
+around 20~25 Euros, free shipping.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>It is based on the JY61 sensor, has Bluetooth or serial
-connectivity, integrates a dynamic Kalman filter algorithm, an internal voltage
-stabilizing circuit module, voltage 3.3v~5v. The only drawback is, that the
-Bluetooth BLE is only compatible with android. The battery has&nbsp;a 150mA
-capacity so it lasts for a long operation time.</span></p>
+color:black;mso-ansi-language:EN-US'>It is based on the JY61 sensor, has
+Bluetooth or serial connectivity, integrates a dynamic Kalman filter algorithm,
+an internal voltage stabilizing circuit module, voltage 3.3v~5v. The only
+drawback is, that the Bluetooth BLE is only compatible with android. The
+battery has&nbsp;a 150mA capacity so it lasts for a long operation time.</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=FR
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Characteristics</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:FR'>Characteristics</span></b></p>
 
 <ul style='margin-top:0cm' type=disc>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=FR
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Voltage: 3.3V-5V</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=FR
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Current: &lt;40mA</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Size : 51.3mm x 36mm X 15mm</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     </span><span lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif'>Weight
-     : 16gr</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Dimension: Accelerated speed -3d Angular speed -3d Magnetic field-3d
-     Angle-3d</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     </span><span lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif'>Air
-     pressure 1d</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Range : Accelerated speed -±16g Angular speed -±2000°/s Angle---±180°</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Stability: Accelerated speed -0.01g Angular speed -0.05°/s</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     </span><span lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif'>Attitude
-     measurement stability: 0.05°</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Output content: Time, Accelerated speed, Angular speed, Angel.</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     </span><span lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif'>Output
-     frequency</span><span style='font-size:13.5pt;font-family:"MS Gothic"'>&#65306;</span><span
-     lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif'>100Hz</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Date interface: Serial TTL level, Bitrate 115200 (default and can’t be
-     changed)</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     </span><span lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif'>Bluetooth
-     transmission distance : &gt;10m</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=FR
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Support for Android</span></li>
- <li class=MsoNormal style='color:black;line-height:normal'><span lang=EN-US
-     style='font-size:13.5pt;font-family:"Times New Roman",serif'>&nbsp; &nbsp;
-     Working time: 2 to 3 hours (full charge)</span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=FR style='font-size:13.5pt;font-family:
+     "Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:FR'>&nbsp; &nbsp; Voltage: 3.3V-5V</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=FR style='font-size:13.5pt;font-family:
+     "Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:FR'>&nbsp; &nbsp; Current: &lt;40mA</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Size : 51.3mm x 36mm X 15mm</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; </span><span lang=FR
+     style='font-size:13.5pt;font-family:"Times New Roman",serif;mso-fareast-font-family:
+     "Times New Roman";mso-ansi-language:FR'>Weight : 16gr</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Dimension: Accelerated speed -3d
+     Angular speed -3d Magnetic field-3d Angle-3d</span><span style='mso-fareast-font-family:
+     "Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; </span><span lang=FR
+     style='font-size:13.5pt;font-family:"Times New Roman",serif;mso-fareast-font-family:
+     "Times New Roman";mso-ansi-language:FR'>Air pressure 1d</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Range : Accelerated speed -±16g
+     Angular speed -±2000°/s Angle---±180°</span><span style='mso-fareast-font-family:
+     "Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Stability: Accelerated speed -0.01g
+     Angular speed -0.05°/s</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; </span><span lang=FR
+     style='font-size:13.5pt;font-family:"Times New Roman",serif;mso-fareast-font-family:
+     "Times New Roman";mso-ansi-language:FR'>Attitude measurement stability:
+     0.05°</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Output content: Time, Accelerated
+     speed, Angular speed, Angel.</span><span style='mso-fareast-font-family:
+     "Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; </span><span lang=FR
+     style='font-size:13.5pt;font-family:"Times New Roman",serif;mso-fareast-font-family:
+     "Times New Roman";mso-ansi-language:FR'>Output frequency</span><span
+     style='font-size:13.5pt;font-family:"MS Gothic"'>&#65306;</span><span
+     lang=FR style='font-size:13.5pt;font-family:"Times New Roman",serif;
+     mso-fareast-font-family:"Times New Roman";mso-ansi-language:FR'>100Hz</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Date interface: Serial TTL level,
+     Bitrate 115200 (default and can’t be changed)</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; </span><span lang=FR
+     style='font-size:13.5pt;font-family:"Times New Roman",serif;mso-fareast-font-family:
+     "Times New Roman";mso-ansi-language:FR'>Bluetooth transmission distance :
+     &gt;10m</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=FR style='font-size:13.5pt;font-family:
+     "Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:FR'>&nbsp; &nbsp; Support for Android</span><span
+     style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
+ <li class=MsoNormal style='color:black;line-height:normal;mso-list:l1 level1 lfo3;
+     tab-stops:list 36.0pt'><span lang=EN-US style='font-size:13.5pt;
+     font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman";
+     mso-ansi-language:EN-US'>&nbsp; &nbsp; Working time: 2 to 3 hours (full
+     charge)</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></li>
 </ul>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Documentation&nbsp;&nbsp;</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Documentation&nbsp;&nbsp;</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><a
 href="http://wiki.wit-motion.com/english/lib/exe/fetch.php?media=bluetooth_inclinometer:bwt61cl:docs:bwt61cl_user_manual_v1.pdf"><span
-lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>http://wiki.wit-motion.com/english/lib/exe/fetch.php?media=bluetooth_inclinometer:bwt61cl:docs:bwt61cl_user_manual_v1.pdf</span></a></p>
+lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif;
+mso-ansi-language:EN-US'>http://wiki.wit-motion.com/english/lib/exe/fetch.php?media=bluetooth_inclinometer:bwt61cl:docs:bwt61cl_user_manual_v1.pdf</span></a></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Building
-your RC Throw-meter</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Building your RC Throw-meter</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>As said in the introduction, the work is limited to the 3D
-printing of the clips that allow to fix the device on the trailing edge of the
-glider. It has been designed on DesignSpark (</span><a
+color:black;mso-ansi-language:EN-US'>As said in the introduction, the work is
+limited to the 3D printing of the clips that allow to fix the device on the
+trailing edge of the glider. It has been designed on DesignSpark (</span><a
 href="https://www.dropbox.com/s/8q00hkf6rfdq9cq/clips_V2.rsdoc?dl=0"
-target="_blank"><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'>original
-file .rsdoc</span></a><span lang=EN-US style='font-size:13.5pt;font-family:
-"Times New Roman",serif;color:black'>), and I'm providing the .rsdoc original
-file in addition to the STL file.</span></p>
+target="_blank"><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif;
+mso-ansi-language:EN-US'>original file .rsdoc</span></a><span lang=EN-US
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>), and I'm providing the .rsdoc original file in
+addition to the STL file.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><a
 href="https://www.dropbox.com/s/flrx289lqb9n8ox/clips_V2.stl?dl=0"
-target="_blank"><b><span lang=FR style='font-size:12.0pt;font-family:"Times New Roman",serif'>STL
-file is here</span></b></a></p>
+target="_blank"><b><span lang=FR style='font-size:12.0pt;font-family:"Times New Roman",serif;
+mso-ansi-language:FR'>STL file is here</span></b></a></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img border=0 width=384 height=265 id="Grafik 6"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image003.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img border=0 width=384
+height=265 id="_x0000_i1037"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image003.jpg"></span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>The clips are removable, so the device, its clips and the charging
-cable can be carried/stored in the plastic box it was received in.</span></p>
+color:black;mso-ansi-language:EN-US'>The clips are removable, so the device,
+its clips and the charging cable can be carried/stored in the plastic box it
+was received in.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Just print the part, in PLA or PETG or ABS, 100% infill for me.
-The dimension is optimised for F3x plane wings and tailplanes. To protect the
-surface of the control surface and avoid the clips to slide/shift, I added a
-piece of rubber (a small piece of bicycle inner tube) on the clips surfaces,
-with double side tape.</span></p>
+color:black;mso-ansi-language:EN-US'>Just print the part, in PLA or PETG or
+ABS, 100% infill for me. The dimension is optimised for F3x plane wings and
+tailplanes. To protect the surface of the control surface and avoid the clips
+to slide/shift, I added a piece of rubber (a small piece of bicycle inner tube)
+on the clips surfaces, with double side tape.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span lang=FR
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:FR'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span lang=FR
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>&nbsp;</span></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:FR'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Print the sticker using the .pdf provided. Prior to apply it,
-don't forget to remove the other stiker.&nbsp;Protect the printed paper with
-transparent tape at the top, and double side tape on the other side, and
-position it on the top of the case, respecting the correct orientation (Charge,
-On/Off). This will give you the orientation when using pointing where is the
-hinge</span></p>
+color:black;mso-ansi-language:EN-US'>Print the sticker using the .pdf provided.
+Prior to apply it, don't forget to remove the other sticker.&nbsp;Protect the
+printed paper with transparent tape at the top, and double side tape on the
+other side, and position it on the top of the case, respecting the correct
+orientation (Charge, On/Off). This will give you the orientation when using
+pointing where is the hinge</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=FR
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>The
-App</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:FR'>The App</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>The Android App has been developed by Yannick and Vitaliy. The App
-is divided in several screens, the start screen giving access to the top left
-menu, the &quot;Sensor BT&quot; screen to bind the App with the throwmeter, and
-finally the &quot;Throw Meter&quot; screen where everything happens once
-binded.</span></p>
+color:black;mso-ansi-language:EN-US'>The Android App has been developed by
+Yannick and Vitaliy. The App is divided in several screens, the start screen
+giving access to the top left menu, the &quot;Sensor BT&quot; screen to bind
+the App with the throwmeter, and finally the &quot;Throw Meter&quot; screen
+where everything happens once binded.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Using
-your RC Throw-meter(s)</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Using your RC Throw-meter(s)</span></b></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Charging
-the battery&nbsp;</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Charging the battery&nbsp;</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Connect the cable provided to the balancer Plug. On newer versions
-just connect the USB cable. The red LED is ON during the charge and switches to
-OFF once charged.</span></p>
+color:black;mso-ansi-language:EN-US'>Connect the cable provided to the balancer
+Plug. On newer versions just connect the USB cable. The red LED is ON during
+the charge and switches to OFF once charged.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Switching
-on your Throwmeter(s)</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Switching on your Throwmeter(s)</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Move the sliding switch from right to left. The blue LED is
-blinking which indicates that the device is waiting for the binding.</span></p>
+color:black;mso-ansi-language:EN-US'>Move the sliding switch from right to
+left. The blue LED is blinking which indicates that the device is waiting for
+the binding.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Binding
-your Android smartphone for the first time</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Binding your Android smartphone for the first time</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>On your smartphone navigate to the parameter/bluetooth menu and
-scan for new devices. The BWT61CL will show as HC-06. When asked, enter the
-code “1234”. The sensor is now binded and you are ready to open the App.</span></p>
+color:black;mso-ansi-language:EN-US'>On your smartphone navigate to the
+parameter/bluetooth menu and scan for new devices. The BWT61CL will show as
+HC-06. When asked, enter the code “1234”. The sensor is now binded and you are
+ready to open the App.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Binding
-with the App</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Binding with the App</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;text-align:justify;line-height:
 normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Select the menu on the top left, then open &quot;BT Sensors&quot;
-and select one (or two) HC-06 sensors or click on SCAN if the device doesn't
-appear. Once selected you can return on the start page. Open the menu on the
-top left and select &quot;Throw meter&quot;</span></p>
+color:black;mso-ansi-language:EN-US'>Select the menu on the top left, then open
+&quot;BT Sensors&quot; and select one (or two) HC-06 sensors. Once selected you
+can return on the start page. Open the menu on the top left and select
+&quot;Throw meter&quot;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img border=0 width=210 height=358 id="Grafik 21"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image004.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img border=0 width=210
+height=358 id="_x0000_i1036"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image004.jpg"></span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;text-align:justify;line-height:
 normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span><img border=0 width=211 height=447 id="Grafik 9"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image005.jpg"></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span><span style='mso-no-proof:
+yes'><img border=0 width=211 height=447 id="_x0000_i1035"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image005.jpg"></span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
-<h4 align=center style='margin:0cm;text-align:center;background:white'>&nbsp;</h4>
+<h4 align=center style='margin:0cm;text-align:center;background:white'><span
+style='mso-fareast-font-family:"Times New Roman";color:black;mso-color-alt:
+windowtext'>&nbsp;</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></h4>
 
 <h4 align=center style='margin:0cm;text-align:center;background:white'><span
-lang=EN-US style='font-size:10.0pt;font-family:"Arial",sans-serif;color:#222222'>&nbsp;</span></h4>
+lang=EN-US style='font-size:10.0pt;font-family:"Arial",sans-serif;mso-fareast-font-family:
+"Times New Roman";color:#222222;mso-ansi-language:EN-US'>&nbsp;</span><span
+style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></h4>
 
 <h4 align=center style='margin:0cm;text-align:center;background:white'><span
-lang=EN-US style='font-size:10.0pt;font-family:"Arial",sans-serif;color:#222222'>&nbsp;</span></h4>
+lang=EN-US style='font-size:10.0pt;font-family:"Arial",sans-serif;mso-fareast-font-family:
+"Times New Roman";color:#222222;mso-ansi-language:EN-US'>&nbsp;</span><span
+style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></h4>
 
 <h4 style='margin:0cm;text-align:justify;background:white'><span lang=EN-US
-style='font-size:13.5pt;color:#222222'>Calibration</span></h4>
+style='font-size:13.5pt;mso-fareast-font-family:"Times New Roman";color:#222222;
+mso-ansi-language:EN-US'>Calibration</span><span style='mso-fareast-font-family:
+"Times New Roman"'><o:p></o:p></span></h4>
 
 <h4 style='margin:0cm;text-align:justify;background:white'><span lang=EN-US
-style='font-size:13.5pt;color:#222222'>&nbsp;</span></h4>
+style='font-size:13.5pt;mso-fareast-font-family:"Times New Roman";color:#222222;
+mso-ansi-language:EN-US'>&nbsp;</span><span style='mso-fareast-font-family:
+"Times New Roman"'><o:p></o:p></span></h4>
 
 <p class=MsoNormal><span lang=EN-US style='font-size:13.5pt;line-height:115%;
-font-family:"Times New Roman",serif;color:#222222;background:white'>If the
-device is providing inconsistent or weird measures, it probably needs a full
-calibration. Level the sensor(s) horizontally and do not move. To activate
-Calibration <b>long press</b> the <b>“Reset/Calib”</b> button, confirm dialog
-and wait until calibration completes.</span></p>
+font-family:"Times New Roman",serif;color:#222222;background:white;mso-ansi-language:
+EN-US'>If the device is providing inconsistent or weird measures, it probably
+needs a full calibration. Level the sensor(s) horizontally and do not move. To
+activate Calibration <b>long press</b> the <b>“Reset/Calib”</b> button, confirm
+dialog and wait until calibration completes.</span></p>
 
-<p class=MsoNormal align=center style='text-align:center;background:white'>&nbsp;</p>
+<p class=MsoNormal align=center style='text-align:center;background:white'><span
+style='color:black;mso-color-alt:windowtext'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='text-align:center;background:white'><span
 lang=EN-US style='font-size:10.0pt;line-height:115%;font-family:"Arial",sans-serif;
-color:#888888'>&nbsp;</span></p>
+color:#888888;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='text-align:center;background:white'><span
-style='color:black'><img border=0 width=214 height=316 id="Grafik 22"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image006.jpg"></span></p>
+style='color:black;mso-color-alt:windowtext'><span style='mso-no-proof:yes'><img
+border=0 width=214 height=316 id="_x0000_i1034"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image006.jpg"></span></span></p>
 
 <p class=MsoNormal align=center style='text-align:center;background:white'><span
-style='color:black'><img border=0 width=219 height=318 id="Grafik 23"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image007.jpg"></span></p>
+style='color:black;mso-color-alt:windowtext'><span style='mso-no-proof:yes'><img
+border=0 width=219 height=318 id="_x0000_i1033"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image007.jpg"></span></span></p>
 
 <p class=MsoNormal align=center style='text-align:center;background:white'><span
 lang=EN-US style='font-size:10.0pt;line-height:115%;font-family:"Arial",sans-serif;
-color:#222222'>&nbsp;</span></p>
+color:#222222;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Reset
-Angle</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Reset Angle</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;text-align:justify;line-height:
 normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>The device is supposed to do a calibration at startup. It is
-recommended to do it with the device installed on a horizontal surface. Once
-done,&nbsp;<b>you can clip the device on the leading edge of control surface
-you want to measure</b>. When your control surface is at its neutral position,
-proceed to a&nbsp;new &quot;Reset&quot; in order for the device to know its
-spacial position and be ready to measure the angle.</span></p>
+color:black;mso-ansi-language:EN-US'>The device is supposed to do a calibration
+at startup. It is recommended to do it with the device installed on a
+horizontal surface. Once done,&nbsp;<b>you can clip the device on the leading
+edge of control surface you want to measure</b>. When your control surface is
+at its neutral position, proceed to a&nbsp;new &quot;Reset&quot; in order for
+the device to know its spacial position and be ready to measure the angle.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Travel
-setup&nbsp;</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Travel setup&nbsp;</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;text-align:justify;line-height:
 normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Measure the chord of you control surface and click on the chord
-field at the top of the screen to enter the value. There is no unit, so it can
-be “mm” or “inches”. Travel will be shown in the same unit.</span></p>
+color:black;mso-ansi-language:EN-US'>Measure the chord of you control surface
+and click on the chord field at the top of the screen to enter the value. There
+is no unit, so it can be “mm” or “inches”. Travel will be shown in the same
+unit.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;text-align:justify;line-height:
 normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img border=0 width=239 height=253 id="Grafik 24"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image008.jpg"></p>
-
-<p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
-
-<p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Max UP
-and Max DOWN</span></b></p>
-
-<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>This is a very useful feature that allows you to quickly measure
-the maximum up and down travels of a control surface. Use “Reset” to clear the
-Max UP/DOWN values for a new measurement.</span></p>
-
-<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
-lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
-
-<p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img border=0 width=254 height=202 id="Grafik 25"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image009.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img border=0 width=239
+height=253 id="_x0000_i1032"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image008.jpg"></span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
-style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black'>Set
-Max UP and Max DOWN Thresholds</span></b></p>
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Max UP and Max DOWN</span></b></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>If your objective is to do settings, not to measure, you can enter
-a “Max positiv travel” and a “Min negativ travel” separately. This instructs
-the App to display an alarm (in RED color instead GREEN) when the travel value
-exceeds a threshold, either above the “Max positiv travel” or below the “Min
-negativ travel”.</span></p>
+color:black;mso-ansi-language:EN-US'>This is a very useful feature that allows
+you to quickly measure the maximum up and down travels of a control surface.
+Use “Reset” to clear the Max UP/DOWN values for a new measurement.</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img border=0 width=253 height=173 id="Grafik 26"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image010.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img border=0 width=254
+height=202 id="_x0000_i1031"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image009.jpg"></span></p>
+
+<p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
+line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
+
+<p class=MsoNormal style='line-height:normal'><b><span lang=EN-US
+style='font-size:13.5pt;font-family:"Times New Roman",serif;color:black;
+mso-ansi-language:EN-US'>Set Max UP and Max DOWN Thresholds</span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
+lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>If your objective is to do settings, not
+to measure, you can enter a “Max positiv travel” and a “Min negativ travel”
+separately. This instructs the App to display an alarm (in RED color instead
+GREEN) when the travel value exceeds a threshold, either above the “Max positiv
+travel” or below the “Min negativ travel”.</span></p>
+
+<p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
+lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
+line-height:normal'><span style='mso-no-proof:yes'><img border=0 width=253
+height=173 id="_x0000_i1030"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image010.jpg"></span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
-line-height:normal'><img border=0 width=252 height=194 id="Grafik 27"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image011.jpg"></p>
+line-height:normal'><span style='mso-no-proof:yes'><img border=0 width=252
+height=194 id="_x0000_i1029"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image011.jpg"></span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'><img border=0 width=265 height=333 id="Grafik 28"
+color:black;mso-ansi-language:EN-US;mso-no-proof:yes'><img border=0 width=265
+height=333 id="_x0000_i1028"
 src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image012.jpg"></span><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='margin-bottom:0cm;text-align:center;
 line-height:normal'>&nbsp;</p>
 
-<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+<p class=MsoNormal><span lang=EN-US style='mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal><b><span lang=EN-US style='font-size:13.5pt;line-height:
-115%;font-family:"Times New Roman",serif;color:black'>Sensor Options</span></b></p>
+115%;font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>Sensor
+Options</span></b></p>
 
 <p class=MsoNormal><span lang=EN-US style='font-size:13.5pt;line-height:115%;
-font-family:"Times New Roman",serif;color:black'>The App computes its spatial
-position upon the rotation measurements of the WitMotion sensor. The most
-precise method uses all three axes X,Y and Z. It turned out, that the WitMotion
-sensor can lose the correct Z value when moved fast and irregularly. This may
-add significant error to the measured angle, specifically around zero. The user
-has to use “Reset” if this occurs.</span></p>
+font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>The
+App computes its spatial position upon the rotation measurements of the
+WitMotion sensor. The most precise method uses all three axes X,Y and Z. It
+turned out, that the WitMotion sensor can lose the correct Z value when moved
+fast and irregularly. This may add significant error to the measured angle,
+specifically around zero. The user has to use “Reset” if this occurs.</span></p>
 
 <p class=MsoNormal><span lang=EN-US style='font-size:13.5pt;line-height:115%;
-font-family:"Times New Roman",serif;color:black'>As an alternative, the App may
-ignore the vertical Z axis. This method is much more robust, but might add some
-absolute measurement error. In real life context this can be accepted for the
-comfort of robustness, thus it is the default setting.</span></p>
+font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>As an
+alternative, the App may ignore the vertical Z axis. This method is much more
+robust, but might add some absolute measurement error. In real life context
+this can be accepted for the comfort of robustness, thus it is the default
+setting.</span></p>
 
 <p class=MsoNormal><span lang=EN-US style='font-size:13.5pt;line-height:115%;
-font-family:"Times New Roman",serif;color:black'>Sensor setting options are
-provided to allow the user to choose the preferred mode.</span></p>
+font-family:"Times New Roman",serif;color:black;mso-ansi-language:EN-US'>Sensor
+setting options are provided to allow the user to choose the preferred mode.</span></p>
 
-<p class=MsoNormal align=center style='text-align:center'><img border=0
-width=262 height=164 id="Grafik 20"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image013.jpg"></p>
+<p class=MsoNormal align=center style='text-align:center'><span
+style='mso-no-proof:yes'><img border=0 width=262 height=164 id="_x0000_i1027"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image013.jpg"></span></p>
 
 <h4 style='margin:0cm;text-align:justify;background:white'><span lang=EN-US
-style='font-size:13.5pt;color:#222222'>Calibration with the <span
-style='background:white'>manufacturer App</span></span></h4>
+style='font-size:13.5pt;mso-fareast-font-family:"Times New Roman";color:#222222;
+mso-ansi-language:EN-US'>Calibration with the <span style='background:white'>manufacturer
+App</span></span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></h4>
 
 <h4 style='margin:0cm;text-align:justify;background:white'><span lang=EN-US
-style='font-size:13.5pt;color:#222222'>&nbsp;</span></h4>
+style='font-size:13.5pt;mso-fareast-font-family:"Times New Roman";color:#222222;
+mso-ansi-language:EN-US'>&nbsp;</span><span style='mso-fareast-font-family:
+"Times New Roman"'><o:p></o:p></span></h4>
 
 <p class=MsoNormal><span lang=EN-US style='font-size:13.5pt;line-height:115%;
-font-family:"Times New Roman",serif;color:#222222;background:white'>Alternatively,
-instead using the “Calibrate” Button as described above, the calibration can be
-done with the manufacturer App as well. You can download&nbsp;the manufacturer
-App </span><a
+font-family:"Times New Roman",serif;color:#222222;background:white;mso-ansi-language:
+EN-US'>Alternatively, instead using the “Calibrate” Button as described above,
+the calibration can be done with the manufacturer App as well. You can
+download&nbsp;the manufacturer App </span><a
 href="https://www.dropbox.com/s/hmkhdirafo285ej/mini%20IMU.apk?dl=0"
 target="_blank"><b><span lang=EN-US style='font-size:13.5pt;line-height:115%;
-font-family:"Times New Roman",serif;color:#0070C0;background:white'>here</span></b></a><span
-lang=EN-US style='font-size:13.5pt;line-height:115%;font-family:"Times New Roman",serif;
-color:#222222;background:white'>.&nbsp; To do a full calibration, once selected
-the correct chipset model WT601, click on SET (top left) and then
+font-family:"Times New Roman",serif;color:#0070C0;background:white;mso-ansi-language:
+EN-US'>here</span></b></a><span lang=EN-US style='font-size:13.5pt;line-height:
+115%;font-family:"Times New Roman",serif;color:#222222;background:white;
+mso-ansi-language:EN-US'>.&nbsp; To do a full calibration, once selected the
+correct chipset model WT601, click on SET (top left) and then
 &quot;Acceleration calibration&quot;. </span></p>
 
-<p class=MsoNormal align=center style='text-align:center;background:white'>&nbsp;</p>
+<p class=MsoNormal align=center style='text-align:center;background:white'><span
+style='color:black;mso-color-alt:windowtext'>&nbsp;</span></p>
 
 <p class=MsoNormal align=center style='text-align:center;background:white'><span
-style='color:black'><img border=0 width=230 height=409 id="Grafik 18"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image014.jpg"></span></p>
+style='color:black;mso-color-alt:windowtext'><span style='mso-no-proof:yes'><img
+border=0 width=230 height=409 id="_x0000_i1026"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image014.jpg"></span></span></p>
 
 <p class=MsoNormal align=center style='text-align:center;background:white'><span
-style='color:black'><img border=0 width=259 height=461 id="Grafik 19"
-src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image015.jpg"></span></p>
+style='color:black;mso-color-alt:windowtext'><span style='mso-no-proof:yes'><img
+border=0 width=259 height=461 id="_x0000_i1025"
+src="Make-your-own-BlueTooth-RC-Throwmeter-V2.0-Dateien/image015.jpg"></span></span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;text-align:justify;line-height:
 normal'><span lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>&nbsp;</span></p>
+color:black;mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:12.0pt;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:#222222;background:white'>Once calibrated the App can be closed and the
-user can run the RC Throw-meter Application.</span></p>
+color:#222222;background:white;mso-ansi-language:EN-US'>Once calibrated the App
+can be closed and the user can run the RC Throw-meter Application.</span></p>
 
-<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+<p class=MsoNormal><span lang=EN-US style='mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-bottom:0cm;line-height:normal'><span
 lang=EN-US style='font-size:13.5pt;font-family:"Times New Roman",serif;
-color:black'>Hope you will enjoy this Bluetooth RC Throw-meter! </span></p>
+color:black;mso-ansi-language:EN-US'>Hope you will enjoy this Bluetooth RC
+Throw-meter! </span></p>
 
-<p class=MsoNormal><span lang=EN-US>&nbsp;</span></p>
+<p class=MsoNormal><span lang=EN-US style='mso-ansi-language:EN-US'>&nbsp;</span></p>
 
 </div>
 

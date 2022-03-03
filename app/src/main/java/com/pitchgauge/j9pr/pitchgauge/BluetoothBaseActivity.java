@@ -49,16 +49,17 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                     if (!mBluetoothPipe.isBluetoothEnabled()) {
                         mBluetoothPipe.enable();
                     } else if (!mBluetoothPipe.isServiceAvailable()) {
+					    // create a bluetooth server socket
                         mBluetoothPipe.setupService(mBluetoothService, mHandler);
                         mBluetoothPipe.startService();
                         mBluetoothPipe.autoConnect("yoyo");
                     }
-
+                    // connect as a bluetooth device
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
                             connectDevices();
                         }
-                    }, 4000);
+                    }, 100);
                 } else {
                     Log.w(TAG, "Service is not setup, data handler is null");
                 }
@@ -262,17 +263,9 @@ public class BluetoothBaseActivity extends AppCompatActivity {
                         }
                     }, 100);
                 }
-
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        connectDevicesFromKeyring();
-                    }
-                }, 4000);
             }
         }
-
     }
-
 
     @Override
     protected void onDestroy() {
@@ -282,28 +275,8 @@ public class BluetoothBaseActivity extends AppCompatActivity {
 
     private boolean SerialPortOpen() {
         this.isOpen = true;
-        new readThread().start();
+        //new readThread().start(); // note by AHa: readThread not used
         return true;
     }
 
-    private class readThread extends Thread {
-
-        public void run() {
-            byte[] buffer = new byte[4096];
-            while (true) {
-                Message msg = Message.obtain();
-                if (BluetoothBaseActivity.this.isOpen) {
-                        //ThrowActivity.this.handler.sendMessage(msg);
-                    }
-                else {
-                    try {
-                        Thread.sleep(50);
-                        return;
-                    } catch (Exception e) {
-                        return;
-                    }
-                }
-            }
-        }
-    }
 }

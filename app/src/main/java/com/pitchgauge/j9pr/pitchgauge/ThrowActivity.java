@@ -16,11 +16,13 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.annotation.Nullable;
 import android.text.InputType;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.pitchgauge.j9pr.pitchgauge.databinding.ThrowActivityBinding;
+import android.view.WindowManager.LayoutParams;
 
 import java.util.ArrayList;
 
@@ -77,7 +79,25 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
     class DataHandler extends Handler {
 
+        private long lLastTime = 0;
+        private boolean firstMessage = true;
+
         public void handleMessage(Message msg) {
+
+            // send sensor configuration at startup once
+            if (this.firstMessage) {
+                this.firstMessage = false;
+                mGaugeViewModel.sendConfigMessage();
+            }
+
+            // send a regular keep alive message, fixes the delayed instream issue with witmotion HC-02
+            long lTimeNow = System.currentTimeMillis();
+            long delta = lTimeNow - this.lLastTime;
+            if (delta > 2000) {
+                this.lLastTime = lTimeNow;
+                mGaugeViewModel.sendAliveMessage();
+            }
+
             switch (msg.what) {
 
                 case BluetoothState.MESSAGE_READ:
@@ -129,13 +149,16 @@ public class ThrowActivity extends BluetoothBaseActivity {
                             default:
                                 return;
                         }
+
                     } catch (Exception e) {
                         return;
                     }
 
                 default:
                     return;
+
             }
+
         }
     }
 
@@ -143,52 +166,146 @@ public class ThrowActivity extends BluetoothBaseActivity {
         SendSensor() {
         }
 
+        private boolean txBusy = false;
         public void handleMessage(Message msg) {
 
-            switch (msg.what) {
-                case BluetoothState.MESSAGE_STATE_CHANGE:
-                    if (ThrowActivity.this.mBluetoothPipe.isServiceAvailable()) {
-                        Bundle command = msg.getData();
-                        if (command.getString("Reset sensor") == "New neutral") {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ThrowActivity.this.busyReset = true;
-                                    byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
-                                    ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
-                                    ThrowActivity.this.resetSensor();
-                                    while (!ThrowActivity.this.hasResumed()) ;
-                                    ThrowActivity.this.resetNeutral();
-                                    ThrowActivity.this.busyReset = false;
-                                }
-                            }).start();
+            if  (!(txBusy)) {
+                switch (msg.what) {
+                        case BluetoothState.MESSAGE_STATE_CHANGE:
+                            if (ThrowActivity.this.mBluetoothPipe.isServiceAvailable()) {
+                                Bundle command = msg.getData();
 
-                        }
-                        if (command.getString("Reset sensor") == "Calibrate") {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ThrowActivity.this.busyCalibration = true;
-                                    byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
-                                    ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
-                                    try { Thread.sleep(10000); } catch(InterruptedException e) { }
-                                    ThrowActivity.this.resetSensor();
-                                    try { Thread.sleep(1000); } catch(InterruptedException e) { }
-                                    ThrowActivity.this.resetSensor();
-                                    while (!ThrowActivity.this.hasResumed()) ;
-                                    ThrowActivity.this.resetNeutral();
-                                    ThrowActivity.this.busyCalibration = false;
+                                // reset button
+                                if (command.getString("Reset sensor") == "New neutral") {
+                                    ThrowActivity.this.busyReset = true;
+                                    txBusy = true;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ThrowActivity.this.busyReset = true;
+                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                            ThrowActivity.this.resetSensor();
+                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
+                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
+                                            }
+                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                            ThrowActivity.this.resetNeutral();
+                                            ThrowActivity.this.busyReset = false;
+                                            txBusy = false;
+                                        }
+                                    }).start();
                                 }
-                            }).start();
-                        }
+
+                                // calibrate button
+                                if (command.getString("Reset sensor") == "Calibrate") {
+                                    ThrowActivity.this.busyCalibration = true;
+                                    txBusy = true;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ThrowActivity.this.busyCalibration = true;
+                                            byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
+                                            ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
+                                            try { Thread.sleep(10000); } catch(InterruptedException e) {};
+                                            ThrowActivity.this.resetSensor();
+                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                            try { Thread.sleep(1000); } catch(InterruptedException e) {};
+                                            ThrowActivity.this.resetSensor();
+                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
+                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
+                                            }
+                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                            ThrowActivity.this.resetNeutral();
+                                            ThrowActivity.this.busyCalibration = false;
+                                            txBusy = false;
+                                        }
+                                    }).start();
+                                }
+
+                                // for unknown reasons an outgoing message avoids stalling of the incoming data stream
+                                if (command.getString("Reset sensor") == "Send alive") {
+                                    txBusy = true;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // send a dummy sequence
+                                            byte[] CommandZero = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(350); } catch(InterruptedException e) {};
+                                            txBusy = false;
+                                        }
+                                    }).start();
+                                }
+
+                                // ensure proper sensor configuration setting
+                                if (command.getString("Reset sensor") == "Configure sensor") {
+                                    txBusy = true;
+                                    ThrowActivity.this.busyReset = true;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try { Thread.sleep(2000); } catch(InterruptedException e) { }
+                                            byte[] CommandZero = {(byte) 0xFF, (byte) 0xAA, (byte) 0x00};
+
+                                            // horizontal installation
+                                            byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
+                                            ThrowActivity.this.mBluetoothService.Send(cmdString1);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+
+                                            try { Thread.sleep(2000); } catch(InterruptedException e) { }
+
+                                            // Update rate 100Hz (115200 baudrate)
+                                            byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x64};
+                                            ThrowActivity.this.mBluetoothService.Send(cmdString2);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+
+                                            // bandwidth 256 Hz
+                                            byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
+                                            ThrowActivity.this.mBluetoothService.Send(cmdString3);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+
+                                            // static detection 0.122 deg/sec
+                                            byte[] cmdString4 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
+                                            ThrowActivity.this.mBluetoothService.Send(cmdString4);
+                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
+
+//                                            // do an initial reset at startup
+//                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+//                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+//                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+//                                            ThrowActivity.this.resetSensor();
+//                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
+//                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
+//                                            }
+//                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+//                                            ThrowActivity.this.resetNeutral();
+
+                                            ThrowActivity.this.busyReset = false;
+                                            txBusy = false;
+                                        }
+                                    }).start();
+                                }
+
+                            }
+                            break;
+                        default:
+                            return;
                     }
-                    break;
-                default:
-                    return;
+                }
             }
         }
-    }
+
 
 
     @Override
@@ -196,6 +313,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
         super.onCreate(savedInstanceState);
 
         autoStart = true;
+
+        // keep activity screen on always
+        getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
 
@@ -303,15 +423,15 @@ public class ThrowActivity extends BluetoothBaseActivity {
         btWatcher.start();
     }
 
-    public  void resetNeutral(){
+    public  void resetNeutral() {
         mGaugeViewModel.resetNeutral();
     }
 
-    public void resetSensor(){
+    public void resetSensor() {
         mGaugeViewModel.resetSensorPosition();
     }
 
-    public boolean hasResumed(){
+    public boolean hasResumed() {
         return mGaugeViewModel.HasResumed();
     }
 

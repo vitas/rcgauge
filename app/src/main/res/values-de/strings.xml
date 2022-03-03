@@ -26,8 +26,8 @@
     <string name="txt_travel">Ausschlag</string>
     <string name="txt_settings_head">Werkzeuge</string>
     <string name="txt_preferences">Voreinstellungen</string>
-    <string name="txt_use_xy_axes_default">Verwende XY Axen (default)</string>
-    <string name="txt_use_xyz_axes">Verwende XYZ Axen</string>
+    <string name="txt_use_xy_axes_default">Verwende XY Achsen (default)</string>
+    <string name="txt_use_xyz_axes">Verwende XYZ Achsen</string>
     <string name="txt_display">Anzeige</string>
     <string name="txt_sensor_settings">Sensor Einstellungen</string>
     <string name="txt_remind_sensor_power">Ausschalten der WitMotion Sensor(en) nicht vergessen!</string>

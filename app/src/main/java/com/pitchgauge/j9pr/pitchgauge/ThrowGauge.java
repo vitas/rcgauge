@@ -13,13 +13,24 @@ public class ThrowGauge {
     double mChord = 0;
     double mAngle = 0;
     double mQuatAngle = 0;
-    double mOffsetAngle = 0;
     double mMaxThrow = 0;
     double mMinThrow = 0;
     double mTemperature = 0;
     double mMaxTravelAlarm = 0;
     double mMinTravelAlarm = 0;
     double mCurrentTravel = 0;
+
+    // low pass filter
+    long t0 = 0;
+    long t1 = 0;
+    double mQuatAngleFiltered = 0.0;
+    double mAngleFiltered = 0.0;
+    double tauLP = 0.07; // time constant tau in seconds
+
+    // min/max thresholds
+    int iMin = 0;
+    int iMax = 0;
+
     Vector3d mAcceleration = new Vector3d();
     Vector3d mAngularVelocity = new Vector3d();
 
@@ -42,10 +53,11 @@ public class ThrowGauge {
         mMaxThrow = 0;
         mResetArmed = false;
         /*** simple method ***/
-        mOffsetAngle = mAngle;
         mAngle = 0;
         /*** quaternion method ***/
         toQuaternion(mQBoardNeutral, mEulerYaw, mEulerPitch, mEulerRoll);
+        mQuatAngle = 0;
+        mQuatAngleFiltered = 0;
     }
 
     public boolean HasResumed() {
@@ -167,7 +179,22 @@ public class ThrowGauge {
     }
 
     public double ResolveSimpleThrow() {
-        mCurrentTravel = - mChord * Math.sin( Math.toRadians(mAngle));
+
+        // get delta T
+        t1 = System.currentTimeMillis();
+        long deltaT = t1 - t0;
+        t0 = t1;
+
+        // low pass filter mAngleFiltered
+        if (t0 != 0) {
+            double kLP = tauLP / (tauLP + deltaT / 1000.0);
+            mAngleFiltered =  mAngleFiltered + ( 1 - kLP) * (mAngle - mAngleFiltered);
+        } else {
+            mAngleFiltered = 0.0;
+        }
+
+        mCurrentTravel = - mChord * Math.sin( Math.toRadians(mAngleFiltered));
+
         if(mCurrentTravel < mMinThrow)
             mMinThrow = mCurrentTravel;
         if(mCurrentTravel > mMaxThrow)
@@ -210,11 +237,40 @@ public class ThrowGauge {
             mQuatAngle = 0;
         }
 
-        mCurrentTravel = mChord * Math.sin(mQuatAngle);
-        if(mCurrentTravel < mMinThrow)
-            mMinThrow = mCurrentTravel;
-        if(mCurrentTravel > mMaxThrow)
-            mMaxThrow = mCurrentTravel;
+        // get delta T
+        t1 = System.currentTimeMillis();
+        long deltaT = t1 - t0;
+        t0 = t1;
+
+        // low pass filter mQuatAngle
+        if (t0 != 0) {
+            double kLP = tauLP / (tauLP + deltaT / 1000.0);
+            mQuatAngleFiltered =  mQuatAngleFiltered + ( 1 - kLP) * (mQuatAngle - mQuatAngleFiltered);
+        } else {
+            mQuatAngleFiltered = 0.0;
+        }
+
+        mQuatAngle = mQuatAngleFiltered;
+        mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
+
+        if(mCurrentTravel < mMinThrow) {
+            iMin++;
+            if (iMin > 5) {
+                mMinThrow = mCurrentTravel;
+                iMin = 0;
+            }
+        } else {
+            iMin = 0;
+        }
+        if(mCurrentTravel > mMaxThrow) {
+            iMax++;
+            if (iMax > 5) {
+                mMaxThrow = mCurrentTravel;
+                iMax = 0;
+            }
+        } else {
+            iMax = 0;
+        }
 
         return mCurrentTravel;
     }
