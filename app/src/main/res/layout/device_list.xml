@@ -20,21 +20,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/txt_button_select"/>
-    <TextView android:textColor="#fff"
-        android:id="@+id/title_new_devices"
-        android:background="#666"
-        android:paddingLeft="5dp"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/txt_title_other_devices"/>
-    <ListView android:id="@+id/new_devices"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:stackFromBottom="true"
-        android:layout_weight="2"/>
-    <Button android:id="@+id/button_scan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/txt_button_scan"/>
 </LinearLayout>
