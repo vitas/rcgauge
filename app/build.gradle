@@ -22,6 +22,7 @@ android {
     dataBinding {
         enabled = true
     }
+    namespace 'com.pitchgauge.j9pr.pitchgauge'
     if (new File("signing.properties").exists()) {
         Properties signingProperties = new Properties()
         signingProperties.load(new FileInputStream(new File('signing.properties')))

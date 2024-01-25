@@ -243,12 +243,22 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getAngle() {
-        return new DecimalFormat("0.0").format(getThrowGauge().getValue().GetAngle());
+        double angle = getThrowGauge().getValue().GetAngle();
+        if ((angle >= 0.0) || (angle <= -0.1)) {
+            return new DecimalFormat("0.0").format(angle);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
     public String getAngle2() {
-        return new DecimalFormat("0.0").format(getThrowGauge2().getValue().GetAngle());
+        double angle = getThrowGauge2().getValue().GetAngle();
+        if ((angle >= 0.0) || (angle <= -0.1)) {
+            return new DecimalFormat("0.0").format(angle);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
@@ -370,43 +380,61 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getTravel() {
         double res = getThrowGauge().getValue().GetThrow();
-        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
-        return str;
+        if ((res >= 0.0) || (res <= -0.1)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
     public String getTravel2() {
         double res = getThrowGauge2().getValue().GetThrow();
-        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
-        return str;
+        if ((res >= 0.0) || (res <= -0.1)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
     public String getMaxTravel() {
         double res = getThrowGauge().getValue().GetMaxThrow();
-        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
-        return str;
+        if ((res >= 0.0) || (res <= -0.1)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
     public String getMaxTravel2() {
         double res = getThrowGauge2().getValue().GetMaxThrow();
-        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
-        return str;
+        if ((res >= 0.0) || (res <= -0.1)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
     public String getMinTravel() {
         double res = getThrowGauge().getValue().GetMinThrow();
-        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
-        return str;
+        if ((res >= 0.0) || (res <= -0.1)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
     public String getMinTravel2() {
         double res = getThrowGauge2().getValue().GetMinThrow();
-        String str = new DecimalFormat("0.0").format(res); // rounded to 2 decimal places
-        return str;
+        if ((res >= 0.0) || (res <= -0.1)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
     }
 
     @Bindable
