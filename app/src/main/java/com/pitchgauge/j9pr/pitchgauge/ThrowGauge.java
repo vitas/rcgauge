@@ -255,7 +255,7 @@ public class ThrowGauge {
 
         if(mCurrentTravel < mMinThrow) {
             iMin++;
-            if (iMin > 5) {
+            if (iMin > 15) {
                 mMinThrow = mCurrentTravel;
                 iMin = 0;
             }
@@ -264,7 +264,7 @@ public class ThrowGauge {
         }
         if(mCurrentTravel > mMaxThrow) {
             iMax++;
-            if (iMax > 5) {
+            if (iMax > 15) {
                 mMaxThrow = mCurrentTravel;
                 iMax = 0;
             }
