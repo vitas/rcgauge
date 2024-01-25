@@ -1,52 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textSize="28dp"
-    tools:context=".MainSettings">
+    tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textSensor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/txt_sensor_settings"
-        android:textSize="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RadioGroup
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/textSensor">
+        android:layout_height="match_parent"
+        android:textSize="20dp"
+        tools:context=".MainSettings">
 
-        <RadioButton
-            android:id="@+id/prefsSensorNoZ"
+        <TextView
+            android:id="@+id/textSensor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:onClick="onRadioButtonClicked1"
-            android:text="@string/txt_use_xy_axes_default"
-            android:textSize="18dp" />
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/txt_sensor_settings"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/prefsSensorAll"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/textAxes"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/txt_sensor_axes"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/textSensor"
+            app:layout_constraintTop_toBottomOf="@+id/textSensor" />
+
+        <RadioGroup
+            android:id="@+id/prefsAxesRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:onClick="onRadioButtonClicked2"
-            android:text="@string/txt_use_xyz_axes"
-            android:textSize="18dp" />
-    </RadioGroup>
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/textAxes">
 
+            <RadioButton
+                android:id="@+id/prefsSensorNoZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorAxesRadioButtonClicked1"
+                android:text="@string/txt_use_xy_axes_default"
+                android:textSize="16dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <RadioButton
+                android:id="@+id/prefsSensorAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorAxesRadioButtonClicked2"
+                android:text="@string/txt_use_xyz_axes"
+                android:textSize="16dp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textThrowCalcMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/txt_calc_method"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/prefsAxesRadio"
+            app:layout_constraintTop_toBottomOf="@+id/prefsAxesRadio" />
+        <RadioGroup
+            android:id="@+id/prefsThrowCalcMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/textThrowCalcMethod">
+
+            <RadioButton
+                android:id="@+id/prefsThrowCalcOrtho"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onThrowCalcRadioButtonClicked1"
+                android:text="@string/txt_use_ortho_default"
+                android:textSize="16dp" />
+
+            <RadioButton
+                android:id="@+id/prefsThrowCalcChord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onThrowCalcRadioButtonClicked2"
+                android:text="@string/txt_use_chord"
+                android:textSize="16dp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textSensorModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/txt_sensor_model"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/prefsThrowCalcMethod"
+            app:layout_constraintTop_toBottomOf="@+id/prefsThrowCalcMethod" />
+
+        <RadioGroup
+            android:id="@+id/prefsSensorModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/textSensorModel">
+
+            <RadioButton
+                android:id="@+id/prefsSensorAUTO"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorModelRadioButtonClicked1"
+                android:text="@string/txt_use_AUTO_default"
+                android:textSize="16dp" />
+
+            <RadioButton
+                android:id="@+id/prefsSensorBWT61CL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorModelRadioButtonClicked2"
+                android:text="@string/txt_use_BWT61CL"
+                android:textSize="16dp" />
+
+            <RadioButton
+                android:id="@+id/prefsSensorBWT901CL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorModelRadioButtonClicked3"
+                android:text="@string/txt_use_BWT901CL"
+                android:textSize="16dp" />
+        </RadioGroup>
+        <TextView
+            android:id="@+id/textSensorConfig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/txt_sensor_config"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/prefsSensorModel"
+            app:layout_constraintTop_toBottomOf="@+id/prefsSensorModel" />
+        <RadioGroup
+            android:id="@+id/prefsSensorConfig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/textSensorConfig">
+
+            <RadioButton
+                android:id="@+id/prefsSensorConfigAUTO"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorConfigRadioButtonClicked1"
+                android:text="@string/txt_use_config_AUTO"
+                android:textSize="16dp" />
+            <RadioButton
+                android:id="@+id/prefsSensorConfigMANUAL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:onClick="onSensorConfigRadioButtonClicked2"
+                android:text="@string/txt_use_config_MANUAL"
+                android:textSize="16dp" />
+        </RadioGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

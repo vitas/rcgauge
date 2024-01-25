@@ -34,4 +34,12 @@
     <string name="txt_closing">Quitter</string>
     <string name="txt_notify_nearby_devices">Une autorisation requise pour l\'application a été refusée. Veuillez accorder l\'autorisation aux \'Appareils à proximité\' dans le menu des \'Autorisations des applications\' Android ou réinstallez l\'application.</string>
     <string name="txt_missing_permission">Permissions manquantes pour </string>
+    <string name="txt_sensor_axes">Axes</string>
+    <string name="txt_sensor_model">WitMotion Modèle</string>
+    <string name="txt_sensor_config">Sensor Configuration</string>
+    <string name="txt_use_config_AUTO">Automatic (default)</string>
+    <string name="txt_use_config_MANUAL">Manual</string>
+    <string name="txt_calc_method">Throw Calculation Method</string>
+    <string name="txt_use_ortho_default">Orthogonal Distance (default)</string>
+    <string name="txt_use_chord">Chord Length</string>
 </resources>

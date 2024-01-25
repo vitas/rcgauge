@@ -34,4 +34,12 @@
     <string name="txt_closing">Выход</string>
     <string name="txt_notify_nearby_devices">Необходимая авторизация для приложения была отклонена. Пожалуйста, предоставьте права на \"Устройства поблизости\" в меню Android \"Разрешения приложений\" или переустановите приложение.</string>
     <string name="txt_missing_permission">Отсутствие разрешений для </string>
+    <string name="txt_sensor_axes">оси</string>
+    <string name="txt_sensor_model">WitMotion модель</string>
+    <string name="txt_sensor_config">Sensor Configuration</string>
+    <string name="txt_use_config_AUTO">Automatic (default)</string>
+    <string name="txt_use_config_MANUAL">Manual</string>
+    <string name="txt_calc_method">Throw Calculation Method</string>
+    <string name="txt_use_ortho_default">Orthogonal Distance (default)</string>
+    <string name="txt_use_chord">Chord Length</string>
 </resources>
