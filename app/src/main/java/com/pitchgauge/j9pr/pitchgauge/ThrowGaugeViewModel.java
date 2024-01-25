@@ -244,7 +244,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getAngle() {
         double angle = getThrowGauge().getValue().GetAngle();
-        if ((angle >= 0.0) || (angle <= -0.1)) {
+        if ((angle > 0.0) || (angle <= -0.1)) {
             return new DecimalFormat("0.0").format(angle);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -254,7 +254,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getAngle2() {
         double angle = getThrowGauge2().getValue().GetAngle();
-        if ((angle >= 0.0) || (angle <= -0.1)) {
+        if ((angle > 0.0) || (angle <= -0.1)) {
             return new DecimalFormat("0.0").format(angle);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -380,7 +380,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getTravel() {
         double res = getThrowGauge().getValue().GetThrow();
-        if ((res >= 0.0) || (res <= -0.1)) {
+        if ((res > 0.0) || (res <= -0.1)) {
             return new DecimalFormat("0.0").format(res);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -390,7 +390,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getTravel2() {
         double res = getThrowGauge2().getValue().GetThrow();
-        if ((res >= 0.0) || (res <= -0.1)) {
+        if ((res > 0.0) || (res <= -0.1)) {
             return new DecimalFormat("0.0").format(res);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -400,7 +400,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMaxTravel() {
         double res = getThrowGauge().getValue().GetMaxThrow();
-        if ((res >= 0.0) || (res <= -0.1)) {
+        if ((res > 0.0) || (res <= -0.1)) {
             return new DecimalFormat("0.0").format(res);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -410,7 +410,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMaxTravel2() {
         double res = getThrowGauge2().getValue().GetMaxThrow();
-        if ((res >= 0.0) || (res <= -0.1)) {
+        if ((res > 0.0) || (res <= -0.1)) {
             return new DecimalFormat("0.0").format(res);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -420,7 +420,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMinTravel() {
         double res = getThrowGauge().getValue().GetMinThrow();
-        if ((res >= 0.0) || (res <= -0.1)) {
+        if ((res > 0.0) || (res <= -0.1)) {
             return new DecimalFormat("0.0").format(res);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
@@ -430,7 +430,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     @Bindable
     public String getMinTravel2() {
         double res = getThrowGauge2().getValue().GetMinThrow();
-        if ((res >= 0.0) || (res <= -0.1)) {
+        if ((res > 0.0) || (res <= -0.1)) {
             return new DecimalFormat("0.0").format(res);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
