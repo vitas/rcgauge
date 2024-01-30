@@ -4,6 +4,7 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Quaterniond;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 public class ThrowGauge {
@@ -28,8 +29,12 @@ public class ThrowGauge {
     double tauLP = 0.07; // time constant tau in seconds
 
     // min/max thresholds
+    long tMin = 0;
     int iMin = 0;
+    double sumMin;
+    long tMax = 0;
     int iMax = 0;
+    double sumMax = 0;
 
     Vector3d mAcceleration = new Vector3d();
     Vector3d mAngularVelocity = new Vector3d();
@@ -45,6 +50,10 @@ public class ThrowGauge {
         this.ignoreZ = ignoreZ;
     }
 
+    MainPrefs.throwCalcMethodT throwCalcMethod;
+    public void setThrowCalcMethod(MainPrefs.throwCalcMethodT method) {
+        this.throwCalcMethod = method;
+    }
 
     public void SetNeutral()
     {
@@ -251,27 +260,48 @@ public class ThrowGauge {
         }
 
         mQuatAngle = mQuatAngleFiltered;
-        mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
 
+        // calculate throw distance
+        switch (throwCalcMethod) {
+            case ORTHO: // orthogonal distance
+                mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
+                break;
+            case CHORD: // chord distance
+                mCurrentTravel = mChord * 2 * Math.sin(mQuatAngleFiltered/2.0);
+                break;
+        }
+
+        // min/max travel with glitch filter
         if(mCurrentTravel < mMinThrow) {
-            iMin++;
-            if (iMin > 15) {
-                mMinThrow = mCurrentTravel;
+            tMin += deltaT;
+            sumMin += mCurrentTravel;
+            iMin ++;
+            if (tMin > 800) {
+                mMinThrow = sumMin / iMin;
+                tMin = 0;
                 iMin = 0;
+                sumMin = 0;
             }
         } else {
+            tMin = 0;
             iMin = 0;
+            sumMin = 0;
         }
         if(mCurrentTravel > mMaxThrow) {
-            iMax++;
-            if (iMax > 15) {
-                mMaxThrow = mCurrentTravel;
+            tMax += deltaT;
+            sumMax += mCurrentTravel;
+            iMax ++;
+            if (tMax > 800) {
+                mMaxThrow = sumMax / iMax;
+                tMax = 0;
                 iMax = 0;
+                sumMax = 0;
             }
         } else {
+            tMax = 0;
             iMax = 0;
+            sumMax = 0;
         }
-
         return mCurrentTravel;
     }
 

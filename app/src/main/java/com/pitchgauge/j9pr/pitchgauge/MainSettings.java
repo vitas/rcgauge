@@ -59,16 +59,16 @@ public class MainSettings extends AppCompatActivity {
         }
 
         // Sensor Configuration
-        RadioButton rButtonSensorConfig1 = (RadioButton) findViewById(R.id.prefsSensorConfigAUTO);
-        RadioButton rButtonSensorConfig2 = (RadioButton) findViewById(R.id.prefsSensorConfigMANUAL);
-        switch (prefs.getSensorConfigMode()) {
-            case AUTO:
-                rButtonSensorConfig1.setChecked(true);
-                break;
-            case MANUAL:
-                rButtonSensorConfig2.setChecked(true);
-                break;
-        }
+//        RadioButton rButtonSensorConfig1 = (RadioButton) findViewById(R.id.prefsSensorConfigAUTO);
+//        RadioButton rButtonSensorConfig2 = (RadioButton) findViewById(R.id.prefsSensorConfigMANUAL);
+//        switch (prefs.getSensorConfigMode()) {
+//            case AUTO:
+//                rButtonSensorConfig1.setChecked(true);
+//                break;
+//            case MANUAL:
+//                rButtonSensorConfig2.setChecked(true);
+//                break;
+//        }
 
     }
 

@@ -10,7 +10,7 @@ public class MainPrefs implements Parcelable {
         zMode = zmodeT.IGNORE;
         throwCalcMethod = throwCalcMethodT.ORTHO;
         witModel = witModelT.AUTO;
-        sensorConfigMode = sensorConfigModeT.AUTO;
+        sensorConfigMode = sensorConfigModeT.MANUAL;  // use manual mode, as auto mode is still not finalized
     }
 
     enum unitsT {

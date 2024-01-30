@@ -332,7 +332,7 @@ public class BluetoothService extends Service {
             mDeviceNames.add(null);
             mConnThreads.add(null);
             mSockets.add(null);
-            mfDatas.add(new float[32]);
+            mfDatas.add(new float[36]);
             mPackBuffers.add(new byte[11]);
             mQueueBuffers.add(new LinkedList());
         }
@@ -571,12 +571,13 @@ public class BluetoothService extends Service {
         mSuspend = state;
     }
 
+    // decode sensor output packets
     public void CopeSerialData(int acceptedLen, byte[] tempInputBuffer, int pos) {
         for (int i = 0; i < acceptedLen; i++) {
             mQueueBuffers.get(pos).add(Byte.valueOf(tempInputBuffer[i]));
         }
         while (mQueueBuffers.get(pos).size() >= 11) {
-            if (((Byte) mQueueBuffers.get(pos).poll()).byteValue() == (byte) 85) {
+            if (((Byte) mQueueBuffers.get(pos).poll()).byteValue() == (byte) 85) { // header 0x55
                 byte sHead = ((Byte) mQueueBuffers.get(pos).poll()).byteValue();
                 if ((sHead & 240) == 80) {
                     this.iError = 0;
@@ -585,27 +586,27 @@ public class BluetoothService extends Service {
                     mPackBuffers.get(pos)[j] = ((Byte) mQueueBuffers.get(pos).poll()).byteValue();
                 }
                 switch (sHead) {
-                    case (byte) 80:
+                    case (byte) 80: // 0x50 time
                         int ms = (((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255);
                         this.strDate = String.format("20%02d-%02d-%02d", new Object[]{Byte.valueOf(mPackBuffers.get(pos)[0]), Byte.valueOf(mPackBuffers.get(pos)[1]), Byte.valueOf(mPackBuffers.get(pos)[2])});
                         this.strTime = String.format(" %02d:%02d:%02d.%03d", new Object[]{Byte.valueOf(mPackBuffers.get(pos)[3]), Byte.valueOf(mPackBuffers.get(pos)[4]), Byte.valueOf(mPackBuffers.get(pos)[5]), Integer.valueOf(ms)});
                         //RecordData(sHead, this.strDate + this.strTime);
                         break;
-                    case (byte) 81:
+                    case (byte) 81: // 0x51 acceleration
                         mfDatas.get(pos)[0] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[1] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[2] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
                         //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[0])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[1])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[2])}) + " ");
                         break;
-                    case (byte) 82:
+                    case (byte) 82: // 0x52 angular velocity
                         mfDatas.get(pos)[3] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[4] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[5] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
                         //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[3])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[4])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[5])}) + " ");
                         break;
-                    case (byte) 83:
+                    case (byte) 83: // 0x53 angle output
                         mfDatas.get(pos)[6] = (((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f) * 180.0f;
                         mfDatas.get(pos)[7] = (((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f) * 180.0f;
                         mfDatas.get(pos)[8] = (((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f) * 180.0f;
@@ -644,7 +645,7 @@ public class BluetoothService extends Service {
                         mfDatas.get(pos)[23] = ((float) (((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255))) / 1000.0f;
                         //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[21])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[22])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[23])}));
                         break;
-                    case (byte) 89:
+                    case (byte) 89: // 0x59 quaternion
                         mfDatas.get(pos)[24] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[25] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 32768.0f;
                         mfDatas.get(pos)[26] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 32768.0f;
@@ -656,6 +657,13 @@ public class BluetoothService extends Service {
                         mfDatas.get(pos)[29] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 100.0f;
                         mfDatas.get(pos)[30] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 100.0f;
                         mfDatas.get(pos)[31] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
+                        //RecordData(sHead, String.format("% 5.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[28])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[29])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[30])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[31])}));
+                        break;
+                    case (byte) 95: // BWT901 Read Response
+                        mfDatas.get(pos)[32] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
+                        mfDatas.get(pos)[33] = (float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255));
+                        mfDatas.get(pos)[34] = (float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255));
+                        mfDatas.get(pos)[35] = (float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255));
                         //RecordData(sHead, String.format("% 5.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[28])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[29])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[30])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[31])}));
                         break;
                     default:
