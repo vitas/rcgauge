@@ -267,7 +267,12 @@ public class ThrowGauge {
                 mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
                 break;
             case CHORD: // chord distance
-                mCurrentTravel = mChord * 2 * Math.sin(mQuatAngleFiltered/2.0);
+                // limit calculation to -90 to +90 deg deflection range
+                if ((mQuatAngleFiltered > PI/2.0) || (mQuatAngleFiltered < -PI/2.0)) {
+                    mCurrentTravel = 0.0;
+                } else {
+                    mCurrentTravel = mChord * 2 * Math.sin(mQuatAngleFiltered / 2.0);
+                }
                 break;
         }
 
