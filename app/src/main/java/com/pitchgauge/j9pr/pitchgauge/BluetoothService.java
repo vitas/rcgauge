@@ -613,33 +613,33 @@ public class BluetoothService extends Service {
                         mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
                         //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[6])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[7])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[8])}));
                         break;
-                    case (byte) 84:
+                    case (byte) 84: // 0x54 magnetic output
                         mfDatas.get(pos)[9] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
                         mfDatas.get(pos)[10] = (float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255));
                         mfDatas.get(pos)[11] = (float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255));
                         mfDatas.get(pos)[16] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
                         //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[9])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[10])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[11])}));
                         break;
-                    case (byte) 85:
+                    case (byte) 85: // 0x55
                         mfDatas.get(pos)[12] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
                         mfDatas.get(pos)[13] = (float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255));
                         mfDatas.get(pos)[14] = (float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255));
                         mfDatas.get(pos)[15] = (float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255));
                         //RecordData(sHead, String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[12])}) + String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[13])}) + String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[14])}) + String.format("% 7.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[15])}));
                         break;
-                    case (byte) 86:
+                    case (byte) 86: // 0x56
                         mfDatas.get(pos)[17] = (float) (((((((long) mPackBuffers.get(pos)[3]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[2]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[1]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[0]) & 255));
                         mfDatas.get(pos)[18] = ((float) (((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255))) / 100.0f;
                         //RecordData(sHead, String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[17])}) + String.format("% 10.2f", new Object[]{Float.valueOf(mfDatas.get(pos)[18])}));
                         break;
-                    case (byte) 87:
+                    case (byte) 87: // 0x57
                         long Longitude = ((((((long) mPackBuffers.get(pos)[3]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[2]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[1]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[0]) & 255);
                         mfDatas.get(pos)[19] = (float) (((double) (Longitude / 10000000)) + ((((double) ((float) (Longitude % 10000000))) / 100000.0d) / 60.0d));
                         long Latitude = ((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255);
                         mfDatas.get(pos)[20] = (float) (((double) (Latitude / 10000000)) + ((((double) ((float) (Latitude % 10000000))) / 100000.0d) / 60.0d));
                         //RecordData(sHead, String.format("% 14.6f", new Object[]{Float.valueOf(mfDatas.get(pos)[19])}) + String.format("% 14.6f", new Object[]{Float.valueOf(mfDatas.get(pos)[20])}));
                         break;
-                    case (byte) 88:
+                    case (byte) 88: // 0x58
                         mfDatas.get(pos)[21] = ((float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255))) / 10.0f;
                         mfDatas.get(pos)[22] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 100.0f;
                         mfDatas.get(pos)[23] = ((float) (((((((long) mPackBuffers.get(pos)[7]) << 24) & -16777216) | ((((long) mPackBuffers.get(pos)[6]) << 16) & 16711680)) | ((((long) mPackBuffers.get(pos)[5]) << 8) & 65280)) | (((long) mPackBuffers.get(pos)[4]) & 255))) / 1000.0f;
@@ -652,14 +652,14 @@ public class BluetoothService extends Service {
                         mfDatas.get(pos)[27] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 32768.0f;
                         //RecordData(sHead, String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[24])}) + String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[25])}) + String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[26])}) + String.format("% 7.3f", new Object[]{Float.valueOf(mfDatas.get(pos)[27])}));
                         break;
-                    case (byte) 90:
+                    case (byte) 90: // 0x60
                         mfDatas.get(pos)[28] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
                         mfDatas.get(pos)[29] = ((float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255))) / 100.0f;
                         mfDatas.get(pos)[30] = ((float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255))) / 100.0f;
                         mfDatas.get(pos)[31] = ((float) ((((short) mPackBuffers.get(pos)[7]) << 8) | (((short) mPackBuffers.get(pos)[6]) & 255))) / 100.0f;
                         //RecordData(sHead, String.format("% 5.0f", new Object[]{Float.valueOf(mfDatas.get(pos)[28])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[29])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[30])}) + String.format("% 7.1f", new Object[]{Float.valueOf(mfDatas.get(pos)[31])}));
                         break;
-                    case (byte) 95: // BWT901 Read Response
+                    case (byte) 95: // 0x5F, BWT901 Read Response, undocumented
                         mfDatas.get(pos)[32] = (float) ((((short) mPackBuffers.get(pos)[1]) << 8) | (((short) mPackBuffers.get(pos)[0]) & 255));
                         mfDatas.get(pos)[33] = (float) ((((short) mPackBuffers.get(pos)[3]) << 8) | (((short) mPackBuffers.get(pos)[2]) & 255));
                         mfDatas.get(pos)[34] = (float) ((((short) mPackBuffers.get(pos)[5]) << 8) | (((short) mPackBuffers.get(pos)[4]) & 255));

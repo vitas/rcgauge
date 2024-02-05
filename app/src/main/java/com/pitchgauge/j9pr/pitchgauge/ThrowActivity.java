@@ -430,6 +430,12 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                                     try { Thread.sleep(250); } catch(InterruptedException e) {};
                                                     ThrowActivity.this.mBluetoothService.Send(cmdBandwidth);
                                                     try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    // return content , use default 0x51 Acceleration Output, 0x52 Angular Velocity, 0x53 Angle Output and 0x54 Magnetic Output
+                                                    byte[] cmdReturnContent = {(byte)0xFF, (byte)0xAA, (byte)0x02, (byte)0x01E, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdReturnContent);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdBandwidth);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
                                                     // save configuration
                                                     byte[] SaveCmd = {(byte)0xFF, (byte)0xAA, (byte)0x00, (byte)0x00, (byte)0x00};
                                                     ThrowActivity.this.mBluetoothService.Send(SaveCmd);
@@ -686,7 +692,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
             case T_CALIBRATE:
-                strTitle = res.getString(R.string.txt_dlg_calibrate);
+                strTitle = res.getString(R.string.txt_dlg_calibrate) + " " + strWitModel;
                 strDescription = res.getString(R.string.txt_dlg_calibrate_desc);
                 strValue = "";
                 break;
