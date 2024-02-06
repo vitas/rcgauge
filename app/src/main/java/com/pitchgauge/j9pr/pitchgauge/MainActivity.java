@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity
 	// permissions result callback (not used)
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], int[] grantResults) {
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         for (int i = 0; i < permissions.length; i++) {
             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, permissions[i] + " permission denied");
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQ_DATA_ACTIVITY:
                 if (resultCode == RESULT_OK) {

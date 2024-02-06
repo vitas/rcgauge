@@ -87,8 +87,9 @@ public class BluetoothBaseActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_ENABLE_BT) {
-            if(resultCode == Activity.RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == Activity.RESULT_OK) {
 
                 mBluetoothPipe.setupService(mBluetoothService, mHandler);
                 mBluetoothPipe.startService();

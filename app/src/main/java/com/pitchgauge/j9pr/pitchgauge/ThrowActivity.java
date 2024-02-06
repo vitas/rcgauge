@@ -70,8 +70,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private btStatusWatcherClass btWatcher = new btStatusWatcherClass();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_CONNECT_DEVICE) {
-            if(resultCode == Activity.RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK) {
                 //TODO
                 // mBluetoothPipe.connect(data);
             }
