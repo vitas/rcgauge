@@ -567,6 +567,14 @@ public class ThrowActivity extends BluetoothBaseActivity {
             }
         });
 
+        // show differences enable/disable button
+        final Button showDiffButton = findViewById(R.id.buttonShowDiff);
+        showDiffButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mGaugeViewModel.toggleDiffVisible();
+            }
+        });
+
         mGaugeViewModel.getThrowGauge().observe(this, new Observer<ThrowGauge>() {
             @Override
             public void onChanged(@Nullable ThrowGauge user) {

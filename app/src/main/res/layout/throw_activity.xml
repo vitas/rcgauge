@@ -43,7 +43,7 @@
                     android:textSize="14sp"
                     android:textAllCaps="false"
                     tools:layout_editor_absoluteX="6dp"
-                    />
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <Button
                     android:id="@+id/buttonBTStatus2"
@@ -61,7 +61,8 @@
                     android:textColor="@android:color/white"
                     android:textSize="14sp"
                     android:textAllCaps="false"
-                    tools:layout_editor_absoluteX="6dp" />
+                    tools:layout_editor_absoluteX="6dp"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 
@@ -100,6 +101,7 @@
                     android:textAllCaps="false"
                     android:textSize="17sp" />
 
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -127,7 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="6"
                     android:background="@drawable/rounded_back"
                     android:gravity="center|center_horizontal"
                     android:padding="2dp"
@@ -135,11 +137,24 @@
                     android:textSize="34sp" />
 
                 <TextView
+                    android:id="@+id/inAngleDiff"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:layout_weight="7"
+                    android:background="@drawable/rounded_back"
+                    android:gravity="center|center_horizontal"
+                    android:padding="0dp"
+                    android:text="@{CommandthrowViewModel.AngleDiff}"
+                    android:textSize="20sp"
+                    android:visibility="@{CommandthrowViewModel.diffVisible}" />
+
+                <TextView
                     android:id="@+id/inAngle2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="6"
                     android:background="@drawable/rounded_back"
                     android:gravity="center|center_horizontal"
                     android:padding="2dp"
@@ -176,7 +191,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="6"
                     android:background="@{CommandthrowViewModel.TravelColor}"
                     android:gravity="center|center_horizontal"
                     android:padding="2dp"
@@ -185,11 +200,24 @@
                     android:textSize="34sp" />
 
                 <TextView
+                    android:id="@+id/inTravelDiff"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="7"
+                    android:background="@drawable/rounded_back"
+                    android:gravity="center|center_horizontal"
+                    android:padding="0dp"
+                    android:text="@{CommandthrowViewModel.TravelDiff}"
+                    android:textSize="20sp"
+                    android:visibility="@{CommandthrowViewModel.diffVisible}" />
+
+                <TextView
                     android:id="@+id/outTravel2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="6dp"
-                    android:layout_weight="1"
+                    android:layout_weight="6"
                     android:background="@{CommandthrowViewModel.TravelColor2}"
                     android:gravity="center|center_horizontal"
                     android:padding="2dp"
@@ -204,10 +232,11 @@
                 android:id="@+id/maxTravelsUP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="start"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
-                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
 
                 android:text="@string/txt_command_maxthrow"
                 android:textSize="17sp"
@@ -268,7 +297,6 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:padding="2dp"
-                app:layout_constraintBottom_toTopOf="@+id/buttonResetAngle"
                 app:layout_constraintTop_toBottomOf="@+id/inMaxThrow_container">
 
 
@@ -309,25 +337,55 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/inReset_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                app:layout_constraintTop_toBottomOf="@+id/inMinThrow_container">
 
-            <Button
-                android:id="@+id/buttonResetAngle"
-                android:layout_width="200dp"
-                android:layout_height="0dp"
-                android:layout_margin="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/btn_rounded_back"
-                android:gravity="center|center_horizontal"
-                android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
-                android:enabled="@{CommandthrowViewModel.buttonResetAngleEnable}"
-                android:padding="17dp"
-                android:text="@string/txt_reset_angle"
-                android:textAllCaps="false"
-                android:textSize="17sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inMinThrow_container" />
+                <TextView
+                    android:id="@+id/inPlaceholder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:visibility="invisible"
+                    android:textSize="24sp" />
+
+               <Button
+                    android:id="@+id/buttonResetAngle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/btn_rounded_back"
+                    android:gravity="center"
+                    android:onClick="@{()-> CommandthrowViewModel.onResetAngleClicked()}"
+                    android:enabled="@{CommandthrowViewModel.buttonResetAngleEnable}"
+                    android:text="@string/txt_reset_angle"
+                    android:textAllCaps="false"
+                    android:textSize="17sp" />
+
+                <Button
+                    android:id="@+id/buttonShowDiff"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="12dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/btn_rounded_back"
+                    android:gravity="center"
+                    android:text="@string/txt_diffButton"
+                    android:visibility="@{CommandthrowViewModel.diffButtonVisible}"
+                    android:textAllCaps="false"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -58,4 +58,5 @@
     <string name="txt_calc_method">Throw Calculation Method</string>
     <string name="txt_use_ortho_default">Orthogonal deflection (default)</string>
     <string name="txt_use_chord">Chord length</string>
+    <string name="txt_diffButton">Diff</string>
 </resources>

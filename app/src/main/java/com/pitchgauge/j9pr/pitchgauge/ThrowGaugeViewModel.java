@@ -26,7 +26,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     private PropertyChangeRegistry callbacks = new PropertyChangeRegistry();
     private Handler mHandler;
     private boolean mMultiDevice;
-
+    private boolean mdiffVisible = false;
     private String btStatusStr = "BT1";
     private String btStatusStr2 = "BT2";
 
@@ -185,7 +185,9 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             getThrowGauge2().getValue().SetAngles(x, y, z);
             setWitLinkStatus(1, BluetoothState.WIT_DATA_ARRIVING);
             notifyPropertyChanged(BR.angle2);
+            notifyPropertyChanged(BR.angleDiff);
             notifyPropertyChanged(BR.travel2);
+			notifyPropertyChanged(BR.travelDiff);
             notifyPropertyChanged(BR.maxTravel2);
             notifyPropertyChanged(BR.minTravel2);
             notifyPropertyChanged(BR.maxTravelSet);
@@ -242,6 +244,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         } catch (Exception e) {
         }
     }
+	
+    public void setAngleDiff(String angle) {
+    }
+
+    public void setThrowDiff(String thr) {
+    }
 
     @Bindable
     public double getTemperature() {
@@ -263,6 +271,16 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         double angle = getThrowGauge2().getValue().GetAngle();
         if ((angle > 0.05) || (angle < -0.05)) {
             return new DecimalFormat("0.0").format(angle);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
+    }
+
+    @Bindable
+    public String getAngleDiff() {
+        double diff = getThrowGauge().getValue().GetAngle() - getThrowGauge2().getValue().GetAngle();
+        if ((diff > 0.05) || (diff < -0.05)) {
+            return new DecimalFormat("0.0").format(diff);
         } else {
             return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
         }
@@ -424,6 +442,16 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
 
     @Bindable
+    public String getTravelDiff() {
+        double res = getThrowGauge().getValue().GetThrow() - getThrowGauge2().getValue().GetThrow();
+        if ((res > 0.05) || (res < -0.05)) {
+            return new DecimalFormat("0.0").format(res);
+        } else {
+            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        }
+    }
+
+    @Bindable
     public String getMaxTravel() {
         double res = getThrowGauge().getValue().GetMaxThrow();
         if ((res > 0.05) || (res < -0.05)) {
@@ -547,6 +575,25 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         return mMultiDevice?View.VISIBLE:View.GONE;
     }
 
+    public int getDiffButtonVisible() {
+        return mMultiDevice?View.VISIBLE:View.INVISIBLE;
+    }
+
+
+    public int getDiffVisible() {
+        if (mMultiDevice) {
+            return mdiffVisible ? View.VISIBLE : View.GONE;
+        } else {
+            mdiffVisible = false;
+            return mdiffVisible ? View.VISIBLE : View.GONE;
+        }
+    }
+
+    public void toggleDiffVisible() {
+        mdiffVisible = !mdiffVisible;
+        notifyChange();
+    }
+	
     public void setMinTravelDia(String value){
         double d = parseStringDouble(value);
         getThrowGauge().getValue().SetMinTravel(d);
