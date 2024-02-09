@@ -53,7 +53,9 @@ Sticker
 
 Use this idea to make your own incidence angle gauge.
 
-[![Incidence Angle Gauge](/doc/incidence_angle/incidence-gauge_small.jpg)(/doc/incidence_angle/README-wing-incidence.md) ]
+![Incidence Angle Gauge](/doc/incidence_angle/incidence-gauge_small.jpg)
+
+![Incidence Angle Gauge ](/doc/incidence_angle/README-wing-incidence.md)
 
 
 
