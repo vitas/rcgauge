@@ -31,7 +31,6 @@ import static com.pitchgauge.j9pr.pitchgauge.BluetoothPipe.REQUEST_ENABLE_BT;
 
 public class ThrowActivity extends BluetoothBaseActivity {
 
-
     private ThrowGaugeViewModel mGaugeViewModel;
     private final Handler mSendSensor = new SendSensor();
     int RunMode = 0;
@@ -49,19 +48,31 @@ public class ThrowActivity extends BluetoothBaseActivity {
     private EditText input;
 
     private enum dialogType {
-        T_LIMIT, T_CHORD, T_CALIBRATE
+        T_LIMIT, T_CHORD, T_CALIBRATE, T_BT_SETTING
     }
 
     ArrayList<DeviceTag> devicePrefs = new ArrayList<DeviceTag>();
 
     private boolean busyReset = false;
     private boolean busyCalibration = false;
+    private boolean busyConfigure = false;
+    private boolean btConnectedAll = false;
+    private boolean witKnown = false;
+
+    // detection of wit model
+    private enum bwtModelT {
+        UNKNOWN, BWT61CL, BWT901CL
+    }
+    private bwtModelT bwtModel = bwtModelT.UNKNOWN;
+
+    private boolean sendSensorConfigStartup = false;
 
     private btStatusWatcherClass btWatcher = new btStatusWatcherClass();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_CONNECT_DEVICE) {
-            if(resultCode == Activity.RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CONNECT_DEVICE) {
+            if (resultCode == Activity.RESULT_OK) {
                 //TODO
                 // mBluetoothPipe.connect(data);
             }
@@ -79,24 +90,17 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
     class DataHandler extends Handler {
 
-        private long lLastTime = 0;
+        private long[] lLastTimeDetect = new long[] {System.currentTimeMillis(), System.currentTimeMillis()};
+        private long[] lLastTimeKeepAlive = new long[] {System.currentTimeMillis(), System.currentTimeMillis()};
+
         private boolean firstMessage = true;
+        private long[] lLastTimeFirstMessage = new long[] {System.currentTimeMillis(), System.currentTimeMillis()};
+        private boolean[] configSent = new boolean[] {false, false};
 
         public void handleMessage(Message msg) {
 
-            // send sensor configuration at startup once
-            if (this.firstMessage) {
-                this.firstMessage = false;
-                mGaugeViewModel.sendConfigMessage();
-            }
-
-            // send a regular keep alive message, fixes the delayed instream issue with witmotion HC-02
             long lTimeNow = System.currentTimeMillis();
-            long delta = lTimeNow - this.lLastTime;
-            if (delta > 2000) {
-                this.lLastTime = lTimeNow;
-                mGaugeViewModel.sendAliveMessage();
-            }
+            long delta = 0;
 
             switch (msg.what) {
 
@@ -104,6 +108,40 @@ public class ThrowActivity extends BluetoothBaseActivity {
                     try {
                         float[] fData = msg.getData().getFloatArray("Data");
                         int pos = msg.getData().getInt("Pos");
+
+                        // common message stream, checks to be done per sensor instance
+                        if (this.firstMessage) {
+                            // first message detected
+                            this.lLastTimeFirstMessage[pos] = lTimeNow;
+                            this.firstMessage = false;
+                        } else {
+
+                            // send sensor configuration at startup once
+                            // TODO: this is not fully functional and not used, as the function could be called to early in dual sensor mode
+                            if (sendSensorConfigStartup) {
+                                delta = lTimeNow - this.lLastTimeFirstMessage[pos];
+                                if (!configSent[pos] && (delta > 100)) {
+                                    mGaugeViewModel.sendConfigMessage(pos);
+                                    configSent[pos] = true;
+                                }
+                            }
+
+                            // try to detect a BWT901CL
+                            if (bwtModel == bwtModelT.UNKNOWN) {
+                                delta = lTimeNow - this.lLastTimeDetect[pos];
+                                if (delta > 500) {
+                                    this.lLastTimeDetect[pos] = lTimeNow;
+                                    mGaugeViewModel.sendConfigReadMessage(pos);
+                                }
+                            }
+
+                            // send a regular keep alive message, fixes the delayed instream issue with witmotion HC-02
+                            delta = lTimeNow - this.lLastTimeKeepAlive[pos];
+                            if (delta > 2000) {
+                                this.lLastTimeKeepAlive[pos] = lTimeNow;
+                                mGaugeViewModel.sendAliveMessage(pos);
+                            }
+                        }
                         switch (ThrowActivity.this.RunMode) {
                             case 0:
                                 switch (ThrowActivity.this.iCurrentGroup) {
@@ -122,8 +160,20 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                         fData[4] = fData[4] * ((float) ThrowActivity.this.av);
                                         fData[5] = fData[5] * ((float) ThrowActivity.this.av);
                                         ThrowActivity.this.mGaugeViewModel. setVelocities(pos, Float.valueOf(fData[3]), Float.valueOf(fData[4]), Float.valueOf(fData[5]));
-                                        // Roll Pitch Yaw
+                                        // angle values (Roll,Pitch,Yaw)
                                         ThrowActivity.this.mGaugeViewModel.setAngles(pos, Float.valueOf(fData[6]), Float.valueOf(fData[7]), Float.valueOf(fData[8]));
+
+                                        // if config data is received, we assume it is a BWT901CL
+                                        if ((Float.valueOf(fData[32]) != 0)
+                                                || (Float.valueOf(fData[33]) != 0)
+                                                || (Float.valueOf(fData[34]) != 0)
+                                                || (Float.valueOf(fData[35]) != 0)) {
+                                            bwtModel = bwtModelT.BWT901CL;
+                                            fData[32] = 0;
+                                            fData[33] = 0;
+                                            fData[34] = 0;
+                                            fData[35] = 0;
+                                        }
                                         return;
                                     default:
                                         return;
@@ -167,7 +217,28 @@ public class ThrowActivity extends BluetoothBaseActivity {
         }
 
         private boolean txBusy = false;
+        private long cmdLeaveLastTime = System.currentTimeMillis();
+
+        private int messageCount = 0;
+        private int configCount = 0;
+
+
         public void handleMessage(Message msg) {
+
+            long lTimeNow = System.currentTimeMillis();
+
+            messageCount++;
+
+            // do not send before all connected
+            if (!btConnectedAll) {
+                return;
+            }
+
+            if (bwtModel == bwtModelT.UNKNOWN) {
+                if (configCount > 2 ) { // assume sensor being a BWT61 after some failing read commands
+                    bwtModel = bwtModel.BWT61CL;
+                }
+            }
 
             if  (!(txBusy)) {
                 switch (msg.what) {
@@ -182,17 +253,34 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ThrowActivity.this.busyReset = true;
-                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
-                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
-                                            ThrowActivity.this.resetSensor();
-                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
-                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
+                                            // ensure guard time to keep-alive message
+                                            long deltaT = lTimeNow - cmdLeaveLastTime;
+                                            if (deltaT < 400) {
+                                                try { Thread.sleep(deltaT); } catch(InterruptedException e) {};
                                             }
-                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                            switch (bwtModel) {
+                                                case BWT901CL:
+                                                    byte[] cmdStart = {(byte)0xFF, (byte)0xAA, (byte)0x69, (byte)0x88, (byte)0xB5};
+                                                    byte[] cmdResetZ = {(byte)0xFF, (byte)0xAA, (byte)0x01, (byte)0x04, (byte)0x00};
+                                                    byte[] cmdSave = {(byte)0xFF, (byte)0xAA, (byte)0x00, (byte)0x00, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdStart);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdResetZ);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdSave);
+                                                    break;
+                                                case BWT61CL:
+                                                    byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                                    ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    break;
+                                                default:
+                                            }
+                                            ThrowActivity.this.resetSensor();
+                                            try { Thread.sleep(400); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetNeutral();
                                             ThrowActivity.this.busyReset = false;
+                                            cmdLeaveLastTime = System.currentTimeMillis();
                                             txBusy = false;
                                         }
                                     }).start();
@@ -205,98 +293,193 @@ public class ThrowActivity extends BluetoothBaseActivity {
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ThrowActivity.this.busyCalibration = true;
-                                            byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
-                                            ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
-                                            try { Thread.sleep(10000); } catch(InterruptedException e) {};
-                                            ThrowActivity.this.resetSensor();
-                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
-                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                            // ensure guard time to keep-alive message
+                                            long deltaT = lTimeNow - cmdLeaveLastTime;
+                                            if (deltaT < 400) {
+                                                try { Thread.sleep(deltaT); } catch(InterruptedException e) {};
+                                            }
+                                            switch (bwtModel) {
+                                                case BWT901CL:
+                                                    byte[] cmdStart = {(byte)0xFF, (byte)0xAA, (byte)0x69, (byte)0x88, (byte)0xB5};
+                                                    byte[] cmdCalibrate = {(byte)0xFF, (byte)0xAA, (byte)0x01, (byte)0x01, (byte)0x00};
+                                                    byte[] cmdResetZ = {(byte)0xFF, (byte)0xAA, (byte)0x01, (byte)0x04, (byte)0x00};
+                                                    byte[] cmdSave = {(byte)0xFF, (byte)0xAA, (byte)0x00, (byte)0x00, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdStart);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdCalibrate);
+                                                    try { Thread.sleep(5000); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.resetSensor();
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdStart);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdResetZ);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdSave);
+                                                    break;
+                                                case BWT61CL:
+                                                    byte[] CalibrationCmd = {(byte) 0xFF, (byte) 0xAA, (byte) 0x67};
+                                                    ThrowActivity.this.mBluetoothService.Send(CalibrationCmd);
+                                                    try { Thread.sleep(10000); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.resetSensor();
+                                                    byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
+                                                    ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
+                                                    break;
+                                                default:
+                                            }
                                             try { Thread.sleep(1000); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetSensor();
-                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
-                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
-                                            }
-                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                            try { Thread.sleep(400); } catch(InterruptedException e) {};
                                             ThrowActivity.this.resetNeutral();
                                             ThrowActivity.this.busyCalibration = false;
+                                            cmdLeaveLastTime = System.currentTimeMillis();
                                             txBusy = false;
                                         }
                                     }).start();
                                 }
 
                                 // for unknown reasons an outgoing message avoids stalling of the incoming data stream
-                                if (command.getString("Reset sensor") == "Send alive") {
+                                if (command.getString("Send alive") == String.valueOf(0)) {
+
+                                    long deltaT = lTimeNow - cmdLeaveLastTime;
+                                    if (deltaT < 1000) {
+                                        return; // skip keep-alive if last command happened shortly before
+                                    }
+
                                     txBusy = true;
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
                                             // send a dummy sequence
-                                            byte[] CommandZero = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
-                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
-                                            try { Thread.sleep(350); } catch(InterruptedException e) {};
+                                            switch (bwtModel) {
+                                                case BWT901CL:
+                                                    byte[] CommandZero2 = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandZero2);
+                                                    break;
+                                                case BWT61CL:
+                                                    byte[] CommandZero = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                                default:
+                                            }
+                                            cmdLeaveLastTime = System.currentTimeMillis();
                                             txBusy = false;
                                         }
                                     }).start();
                                 }
 
-                                // ensure proper sensor configuration setting
-                                if (command.getString("Reset sensor") == "Configure sensor") {
+                                // for unknown reasons an outgoing message avoids stalling of the incoming data stream
+                                if (command.getString("Send BWT901 Read Config") == String.valueOf(0)) {
+
+                                    long deltaT = lTimeNow - cmdLeaveLastTime;
+                                    if (deltaT < 500) {
+                                        return; // skip keep-alive if last command happened shortly before
+                                    }
+
                                     txBusy = true;
-                                    ThrowActivity.this.busyReset = true;
+                                    configCount++;
+
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            try { Thread.sleep(2000); } catch(InterruptedException e) { }
-                                            byte[] CommandZero = {(byte) 0xFF, (byte) 0xAA, (byte) 0x00};
-
-                                            // horizontal installation
-                                            byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
-                                            ThrowActivity.this.mBluetoothService.Send(cmdString1);
-                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
-                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
-                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
-
-                                            try { Thread.sleep(2000); } catch(InterruptedException e) { }
-
-                                            // Update rate 100Hz (115200 baudrate)
-                                            byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x64};
-                                            ThrowActivity.this.mBluetoothService.Send(cmdString2);
-                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
-                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
-                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
-
-                                            // bandwidth 256 Hz
-                                            byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x81};
-                                            ThrowActivity.this.mBluetoothService.Send(cmdString3);
-                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
-                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
-                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
-
-                                            // static detection 0.122 deg/sec
-                                            byte[] cmdString4 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
-                                            ThrowActivity.this.mBluetoothService.Send(cmdString4);
-                                            try { Thread.sleep(250); } catch(InterruptedException e) { }
-                                            ThrowActivity.this.mBluetoothService.Send(CommandZero);
-                                            try { Thread.sleep(100); } catch(InterruptedException e) { }
-
-//                                            // do an initial reset at startup
-//                                            byte[] ResetZaxis = {(byte) 0xFF, (byte) 0xAA, (byte) 0x52};
-//                                            ThrowActivity.this.mBluetoothService.Send(ResetZaxis);
-//                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
-//                                            ThrowActivity.this.resetSensor();
-//                                            while (!ThrowActivity.this.hasResumed()) { // do not block in while loop
-//                                                try { Thread.sleep(100); } catch(InterruptedException e) {};
-//                                            }
-//                                            try { Thread.sleep(300); } catch(InterruptedException e) {};
-//                                            ThrowActivity.this.resetNeutral();
-
-                                            ThrowActivity.this.busyReset = false;
+                                            // try to read config from a BWT901CL
+                                            switch (bwtModel) {
+                                                case UNKNOWN:
+                                                    byte[] CommandRead = {(byte) 0xFF, (byte) 0xAA, (byte) 0x27, (byte) 0x6E, (byte) 0x00}; // read config command
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandRead);
+                                                    break;
+                                            }
+                                            cmdLeaveLastTime = System.currentTimeMillis();
                                             txBusy = false;
                                         }
                                     }).start();
                                 }
 
+                                // send sensor configuration setting
+                                if (command.getString("Configure sensor") == String.valueOf(0)) {
+                                    txBusy = true;
+                                    ThrowActivity.this.busyConfigure = true;
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // ensure guard time to keep-alive messages
+                                            long deltaT = lTimeNow - cmdLeaveLastTime;
+                                            if (deltaT < 400) {
+                                                try { Thread.sleep(deltaT); } catch(InterruptedException e) {};
+                                            }
+                                            switch (bwtModel) {
+                                                case BWT901CL:
+                                                    // 6-axis mode
+                                                    byte[] cmdStart = {(byte)0xFF, (byte)0xAA, (byte)0x69, (byte)0x88, (byte)0xB5};
+                                                    byte[] cmdAxis = {(byte)0xFF, (byte)0xAA, (byte)0x24, (byte)0x01, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdStart);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdAxis);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    // horizontal installation
+                                                    byte[] cmdInstallDir = {(byte)0xFF, (byte)0xAA, (byte)0x23, (byte)0x00, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdStart);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdInstallDir);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    // bandwidth 20Hz
+                                                    byte[] cmdBandwidth = {(byte)0xFF, (byte)0xAA, (byte)0x1F, (byte)0x04, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdStart);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdBandwidth);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    // output rate 10Hz
+                                                    byte[] cmdOutRate = {(byte)0xFF, (byte)0xAA, (byte)0x03, (byte)0x06, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdOutRate);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdBandwidth);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    // return content , use default 0x51 Acceleration Output, 0x52 Angular Velocity, 0x53 Angle Output and 0x54 Magnetic Output
+                                                    byte[] cmdReturnContent = {(byte)0xFF, (byte)0xAA, (byte)0x02, (byte)0x01E, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdReturnContent);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) {};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdBandwidth);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    // save configuration
+                                                    byte[] SaveCmd = {(byte)0xFF, (byte)0xAA, (byte)0x00, (byte)0x00, (byte)0x00};
+                                                    ThrowActivity.this.mBluetoothService.Send(SaveCmd);
+                                                    try { Thread.sleep(300); } catch(InterruptedException e) {};
+                                                    break;
+                                                case BWT61CL:
+                                                    try { Thread.sleep(2000); } catch(InterruptedException e) { }
+                                                    byte[] CommandZero = {(byte) 0xFF, (byte) 0xAA, (byte) 0x00};
+                                                    // horizontal installation
+                                                    byte[] cmdString1 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x65};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdString1);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                                    try { Thread.sleep(2000); } catch(InterruptedException e) { }
+                                                    // Update rate 100Hz (115200 baudrate)
+                                                    byte[] cmdString2 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x64};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdString2);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                                    // bandwidth 21 Hz
+                                                    byte[] cmdString3 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x85};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdString3);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                                    // static detection 0.122 deg/sec
+                                                    byte[] cmdString4 = {(byte) 0xFF, (byte) 0xAA, (byte) 0x71};
+                                                    ThrowActivity.this.mBluetoothService.Send(cmdString4);
+                                                    try { Thread.sleep(250); } catch(InterruptedException e) { }
+                                                    ThrowActivity.this.mBluetoothService.Send(CommandZero);
+                                                    try { Thread.sleep(100); } catch(InterruptedException e) { }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                            ThrowActivity.this.busyConfigure = false;
+                                            cmdLeaveLastTime = System.currentTimeMillis();
+                                            txBusy = false;
+                                        }
+                                    }).start();
+                                }
                             }
                             break;
                         default:
@@ -336,14 +519,14 @@ public class ThrowActivity extends BluetoothBaseActivity {
         minAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                onOpenDialogThresholdAlert(dialogType.T_LIMIT,0);
+                onOpenDialogThresholdAlert(dialogType.T_LIMIT,0, 0);
             }
         });
 
-         maxAlert.setOnClickListener(new View.OnClickListener() {
+        maxAlert.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                onOpenDialogThresholdAlert(dialogType.T_LIMIT,1);
+                onOpenDialogThresholdAlert(dialogType.T_LIMIT,1, 0);
             }
         });
 
@@ -351,7 +534,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
         final Button chordButton = findViewById(R.id.inChordButton);
         chordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                onOpenDialogThresholdAlert(dialogType.T_CHORD,0);
+                onOpenDialogThresholdAlert(dialogType.T_CHORD,0, 0);
             }
         });
 
@@ -360,19 +543,38 @@ public class ThrowActivity extends BluetoothBaseActivity {
         resetButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0);
+                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0, 0);
                 return true;
             }
         });
 
-        // calibration confirm box
-        final Button calibrateButton = (Button)findViewById(R.id.buttonCalibrate);
-        calibrateButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onOpenDialogThresholdAlert(dialogType.T_CALIBRATE,0);
+        // BT status button 1 (log-click)
+        final Button btStatusButton = findViewById(R.id.buttonBTStatus);
+        btStatusButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_BT_SETTING,0, 0);
+                return true;
             }
         });
 
+        // BT status button 2 (long-click)
+        final Button btStatus2Button = findViewById(R.id.buttonBTStatus2);
+        btStatus2Button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onOpenDialogThresholdAlert(dialogType.T_BT_SETTING,0, 1);
+                return true;
+            }
+        });
+
+        // show differences enable/disable button
+        final Button showDiffButton = findViewById(R.id.buttonShowDiff);
+        showDiffButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mGaugeViewModel.toggleDiffVisible();
+            }
+        });
 
         mGaugeViewModel.getThrowGauge().observe(this, new Observer<ThrowGauge>() {
             @Override
@@ -411,13 +613,53 @@ public class ThrowActivity extends BluetoothBaseActivity {
 		
         // read main preferences
         MainPrefs mainPreferences = BluetoothPreferences.getMainPrefs(getApplicationContext());
-        if (mainPreferences.zMode == MainPrefs.zmodeT.IGNORE) {
-            mGaugeViewModel.setIgnoreZ(true);
-        } else {
-            mGaugeViewModel.setIgnoreZ(false);
+
+        // Z Axes
+        switch (mainPreferences.zMode) {
+            case IGNORE:
+                mGaugeViewModel.setIgnoreZ(true);
+                break;
+            case FULL:
+                mGaugeViewModel.setIgnoreZ(false);
+                break;
         }
+
+        // length unit
         String lu = mainPreferences.units.toString();
         mGaugeViewModel.setLengthUnits(lu);
+
+        // throw calculation method
+        switch (mainPreferences.throwCalcMethod) {
+            case ORTHO:
+                mGaugeViewModel.setThrowCalcMethod(MainPrefs.throwCalcMethodT.ORTHO);
+                break;
+            case CHORD:
+                mGaugeViewModel.setThrowCalcMethod(MainPrefs.throwCalcMethodT.CHORD);
+                break;
+        }
+
+        // sensor model
+        switch (mainPreferences.witModel) {
+            case AUTO:
+                bwtModel = bwtModelT.UNKNOWN;
+                break;
+            case BWT61CL:
+                bwtModel = bwtModelT.BWT61CL;
+                break;
+            case BWT901CL:
+                bwtModel = bwtModelT.BWT901CL;
+                break;
+        }
+
+        // send sensor configuration at startup
+        switch (mainPreferences.sensorConfigMode) {
+            case AUTO:
+                sendSensorConfigStartup = true;
+                break;
+            case MANUAL:
+                sendSensorConfigStartup = false;
+                break;
+        }
 
         // watch BT activity and display status line
         btWatcher.start();
@@ -436,12 +678,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
     }
 
     // dialog for MaxTravel, MinTravel and Chord
-    private void onOpenDialogThresholdAlert(final dialogType t, final int lohi) {
+    private void onOpenDialogThresholdAlert(final dialogType t, final int lohi, final int channel) {
 
         Resources res = getResources();
         String strTitle = "";
         String strDescription = "";
         String strValue = "";
+        String strWitModel = bwtModel.toString();
         switch (t) {
             case T_LIMIT:
                 if (lohi == 0) {
@@ -458,8 +701,13 @@ public class ThrowActivity extends BluetoothBaseActivity {
                 strValue = mGaugeViewModel.getChordValueNum();
                 break;
             case T_CALIBRATE:
-                strTitle = res.getString(R.string.txt_dlg_calibrate);
+                strTitle = res.getString(R.string.txt_dlg_calibrate) + " " + strWitModel;
                 strDescription = res.getString(R.string.txt_dlg_calibrate_desc);
+                strValue = "";
+                break;
+            case T_BT_SETTING:
+                strTitle = res.getString(R.string.txt_dlg_bt_settings) + " " + strWitModel;
+                strDescription = res.getString(R.string.txt_dlg_bt_settings_desc);
                 strValue = "";
                 break;
             default:
@@ -499,6 +747,9 @@ public class ThrowActivity extends BluetoothBaseActivity {
                         break;
                     case T_CALIBRATE:
                         mGaugeViewModel.onCalibrateClicked();
+                        break;
+                    case T_BT_SETTING:
+                        mGaugeViewModel.onBTStatusClicked();
                         break;
                     default:
                 }
@@ -545,8 +796,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
         private Drawable btColor[] = new Drawable[2];
         private boolean btShowAlt[] = new boolean[2];
 
-        private boolean buttonResetEnabled[] = new boolean[2];
-        private boolean buttonCalEnabled[] = new boolean[2];
+        private boolean btConnected[] = new boolean[2];
 
         private int tick = 0;
 
@@ -571,19 +821,32 @@ public class ThrowActivity extends BluetoothBaseActivity {
 
                 // enable/disable buttons
                 if (mGaugeViewModel.getMultiDevice()) {
+                    btConnectedAll = btConnected[0] && btConnected[1];
+                    witKnown = (bwtModel != bwtModelT.UNKNOWN);
                     mGaugeViewModel.setButtonResetAngleEnable(
-                            !(busyReset || busyCalibration) && (buttonResetEnabled[0] && buttonResetEnabled[1]));
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
                     mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
                     mGaugeViewModel.setButtonCalibrateEnable(
-                            !(busyReset || busyCalibration) && (buttonCalEnabled[0] && buttonCalEnabled[1]));
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
                     mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                    mGaugeViewModel.setButtonBTStatus(
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
+                    mGaugeViewModel.setButtonBTStatus2(
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonBTStatusEnable);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonBTStatus2Enable);
                 } else {
+                    btConnectedAll = btConnected[0];
+                    witKnown = (bwtModel != bwtModelT.UNKNOWN);
                     mGaugeViewModel.setButtonResetAngleEnable(
-                            !(busyReset || busyCalibration) && buttonResetEnabled[0]);
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
                     mGaugeViewModel.notifyPropertyChanged(BR.buttonResetAngleEnable);
                     mGaugeViewModel.setButtonCalibrateEnable(
-                            !(busyReset || busyCalibration) && buttonCalEnabled[0]);
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
                     mGaugeViewModel.notifyPropertyChanged(BR.buttonCalibrateEnable);
+                    mGaugeViewModel.setButtonBTStatus(
+                            !(busyReset || busyCalibration || busyConfigure) && btConnectedAll && witKnown);
+                    mGaugeViewModel.notifyPropertyChanged(BR.buttonBTStatusEnable);
                 }
 
                 switch (tick) {
@@ -629,22 +892,6 @@ public class ThrowActivity extends BluetoothBaseActivity {
             exit = true;
         }
 
-        // TODO AHa: not used
-//        private Drawable getWitColor(int channel) {
-//            Drawable color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
-//            switch (mGaugeViewModel.getWitLinkStatus(channel)) {
-//                case BluetoothState.WIT_IDLE:
-//                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
-//                    break;
-//                case BluetoothState.WIT_DATA_ARRIVING:
-//                    color = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
-//                    break;
-//                default:
-//            }
-//            mGaugeViewModel.setWitLinkStatus(channel, BluetoothState.WIT_IDLE);
-//            return color;
-//        }
-
         private void setTextAndColor (int channel) {
             int linkState;
             int witState;
@@ -664,37 +911,32 @@ public class ThrowActivity extends BluetoothBaseActivity {
                         btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_blue, null);
                         btTextAlt[channel] = "connected";
                         btShowAlt[channel] = false;
-                        buttonResetEnabled[channel] = true;
-                        buttonCalEnabled[channel] = true;
+                        btConnected[channel] = true;
                     } else {
                         btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                         btTextAlt[channel] = "connected wait";
                         btShowAlt[channel] = true;
-                        buttonResetEnabled[channel] = false;
-                        buttonCalEnabled[channel] = false;
+                        btConnected[channel] = false;
                     }
                     break;
                 case BluetoothState.STATE_CONNECTING:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "connecting";
                     btShowAlt[channel] = true;
-                    buttonResetEnabled[channel] = false;
-                    buttonCalEnabled[channel] = false;
+                    btConnected[channel] = false;
                     break;
                 case BluetoothState.STATE_LISTEN:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "listening";
                     btShowAlt[channel] = true;
-                    buttonResetEnabled[channel] = false;
-                    buttonCalEnabled[channel] = false;
+                    btConnected[channel] = false;
                     break;
 
-                 default:
+                default:
                     btColor[channel] = ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red, null);
                     btTextAlt[channel] = "opening";
                     btShowAlt[channel] = true;
-                    buttonResetEnabled[channel] = false;
-                    buttonCalEnabled[channel] = false;
+                    btConnected[channel] = false;
                     break;
             }
         }

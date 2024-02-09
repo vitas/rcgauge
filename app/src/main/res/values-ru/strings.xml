@@ -34,4 +34,17 @@
     <string name="txt_closing">Выход</string>
     <string name="txt_notify_nearby_devices">Необходимая авторизация для приложения была отклонена. Пожалуйста, предоставьте права на \"Устройства поблизости\" в меню Android \"Разрешения приложений\" или переустановите приложение.</string>
     <string name="txt_missing_permission">Отсутствие разрешений для </string>
+    <string name="txt_use_AUTO_default">Auto-Detect (default)</string>
+    <string name="txt_use_BWT61CL">BWT61CL</string>
+    <string name="txt_sensor_axes">Axes</string>
+    <string name="txt_sensor_model">WitMotion Sensor Model</string>
+    <string name="txt_dlg_bt_settings">Configure WitMotion Sensor</string>
+    <string name="txt_dlg_bt_settings_desc">Send configuration parameters to Witmotion for use with RC Throwmeter</string>
+    <string name="txt_use_BWT901CL">BWT901CL</string>
+    <string name="txt_sensor_config">Send Sensor Configuration</string>
+    <string name="txt_use_config_AUTO">Automatic (default)</string>
+    <string name="txt_use_config_MANUAL">Manual</string>
+    <string name="txt_calc_method">Throw Calculation Method</string>
+    <string name="txt_use_ortho_default">Orthogonal deflection (default)</string>
+    <string name="txt_use_chord">Chord length</string>
 </resources>

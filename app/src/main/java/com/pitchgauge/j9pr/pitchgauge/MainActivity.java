@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.navigation.NavigationView;
 import android.util.Log;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         // Use this check to determine whether Bluetooth classic is supported on the device.
         boolean bluetoothAvailable = getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
 
-		// ask user for app permissions
+        // ask user for app permissions
         askPermissions(multiplePermissionLauncher);
 
     }
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity
 	// permissions result callback (not used)
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], int[] grantResults) {
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         for (int i = 0; i < permissions.length; i++) {
             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, permissions[i] + " permission denied");
@@ -164,13 +166,13 @@ public class MainActivity extends AppCompatActivity
         Resources res = getResources();
 
 		// warning if user has denied permissions, android app can not ask again 
-        if (!hasPermissions(PERMISSIONS)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // do not check for Android Version < 12
+            if (!hasPermissions(PERMISSIONS)) {
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle(res.getString(R.string.txt_missing_permission) + " " + res.getString(R.string.app_name))
                         .setMessage(res.getString(R.string.txt_notify_nearby_devices))
-                        .setPositiveButton("Exit", new DialogInterface.OnClickListener()
-                        {
+                        .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
@@ -178,8 +180,9 @@ public class MainActivity extends AppCompatActivity
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
-            drawer.closeDrawer(GravityCompat.START);
-            return true;
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
         }
 
         // Handle navigation view item clicks here.
@@ -214,6 +217,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQ_DATA_ACTIVITY:
                 if (resultCode == RESULT_OK) {
