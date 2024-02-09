@@ -26,6 +26,7 @@ This is an example of the throwmeter display screen.
 # 3D Printed Holding Clip
 
 You can print your own universal mounting clip. 
+
 ![RC Throwmeter](/doc/clip/image003.jpg)
 
 STL file
@@ -33,16 +34,19 @@ STL file
 [Mounting Clip STL File](/doc/clip/clips_V2.stl)
 
 Sticker
+
 [Mounting Clip STL File](/doc/clip/sticker.pdf)
 
 
 ## Resources
-Datasheets and manuals you find on the manufacturer websites. Otherwise find the datatsheets here.
+Datasheets and manuals you find on the manufacturer websites. Otherwise, find the datatsheets here.
 
 WitMotion BWT61CL
+
 [BWT61CL](/doc/BWT61CL)
 
 WitMotion BWT901CL
+
 [BWT901CL](/doc/BWT901CL)
 
 
