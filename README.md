@@ -7,16 +7,19 @@ It doesn't require any soldering or cabling. You just need to have access to a 3
 
 ## Installation
 
-The app is available on playstore. Alternatively you can install the .apk by your own.
+The app is available on playstore. Alternatively you can install the APK by your own. See releases folder for a proper APK file.
+
 
 [RC Throwmeter Releases](/releases)
 
 ## Documentation
 
-The app displays a description and instructions on the first screen, just install it.
+The app displays a description and instructions on the first screen, just install it. See also [Planet Soaring Blogspot](https://planet-soaring.blogspot.com/) and search in blogs for 'rc throwmeter'.
+
+
+
 
 ![RC Throwmeter](/doc/start_screen.jpg)
-
 
 
 This is an example of the throwmeter display screen.
@@ -39,14 +42,12 @@ Sticker
 
 
 ## Resources
-Datasheets and manuals you find on the manufacturer websites. Otherwise, find the datatsheets here.
+Datasheets and manuals for the sensors you can find on the manufacturer websites. Otherwise, find the datatsheets here.
 
-WitMotion BWT61CL
-
+WitMotion 
 [BWT61CL](/doc/BWT61CL)
 
-WitMotion BWT901CL
-
+WitMotion
 [BWT901CL](/doc/BWT901CL)
 
 

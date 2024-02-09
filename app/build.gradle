@@ -1,22 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        debug {
-            storeFile file('C:\\Users\\ahahn\\keystores\\upload-keystore.jks')
-            storePassword 'JFci1SAlTDKR649Z'
-            keyAlias 'upload'
-            keyPassword 'zdCLGH0xSXLlCYbo'
-        }
-        release {
-            v1SigningEnabled true
-            v2SigningEnabled true
-            storeFile file('C:\\Users\\ahahn\\keystores\\upload-keystore.jks')
-            storePassword 'JFci1SAlTDKR649Z'
-            keyAlias 'upload'
-            keyPassword 'zdCLGH0xSXLlCYbo'
-        }
-    }
     defaultConfig {
         versionCode 6
         versionName "1.6"
@@ -31,7 +15,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
     productFlavors {
