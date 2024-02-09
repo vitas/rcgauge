@@ -16,13 +16,22 @@ The app is available on playstore. Alternatively you can install the APK by your
 
 The app displays a description and instructions on the first screen, just install it. See also [Planet Soaring Blogspot](https://planet-soaring.blogspot.com/) and search in blogs for 'rc throwmeter'.
 
-
-
-
 ![RC Throwmeter](/doc/start_screen.jpg)
 
-
 This is an example of the throwmeter display screen.
+
+
+## Resources
+
+Datasheets and manuals for the sensors you can find on the manufacturer websites. Otherwise, find the datatsheets here.
+
+WitMotion 
+[BWT61CL](/doc/BWT61CL)
+
+WitMotion
+[BWT901CL](/doc/BWT901CL)
+
+
 
 ![RC Throwmeter](/doc/main_screen.jpg)
 
@@ -40,14 +49,12 @@ Sticker
 
 [Mounting Clip Sticker PDF](/doc/clip/sticker.pdf)
 
+# Measuring Incidence Angle
 
-## Resources
-Datasheets and manuals for the sensors you can find on the manufacturer websites. Otherwise, find the datatsheets here.
+Use this idea to make your own incidence angle gauge.
 
-WitMotion 
-[BWT61CL](/doc/BWT61CL)
+[![Incidence Angle Gauge](/doc/incidence_angle/incidence-gauge_small.jpg)(/doc/incidence_angle/README-wing-incidence.md) ]
 
-WitMotion
-[BWT901CL](/doc/BWT901CL)
+
 
 
