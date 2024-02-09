@@ -38,7 +38,7 @@ STL file
 
 Sticker
 
-[Mounting Clip STL File](/doc/clip/sticker.pdf)
+[Mounting Clip Sticker PDF](/doc/clip/sticker.pdf)
 
 
 ## Resources
