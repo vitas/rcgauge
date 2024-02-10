@@ -10,7 +10,7 @@ It doesn't require any soldering or cabling. You just need to have access to a 3
 The app is available on playstore. Alternatively you can install the APK by your own. See releases folder for a proper APK file.
 
 
-[RC Throwmeter Releases](/releases)
+[RC Throwmeter Releases](https://github.com/vitas/rcgauge/releases)
 
 ## Documentation
 
