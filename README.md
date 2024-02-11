@@ -49,6 +49,8 @@ Sticker
 
 [Mounting Clip Sticker PDF](/doc/clip/sticker.pdf)
 
+[More 3d printed parts](https://www.thingiverse.com/thing:6479899/apps?fbclid=IwAR3RKmbelq7ynDV4Q1acz99nUar9Vw82zQ2zmdLvJ-FWQSZJtKdPMc9MMN8)
+
 # Measuring Incidence Angle
 
 Use this idea to make your own incidence angle gauge.
