@@ -13,7 +13,7 @@ Published on [Thingiverse (Part 6479899)](https://www.thingiverse.com/thing:6479
 ### 3D printed parts
 
 * 4 pcs 'Part1' [STL File](/doc/incidence_angle/thingiverse/files/IncidenceMeter_part1.stl)
-* 2 pcs 'Part2' [STL File](/doc/incidence_angle/thingiverse/files/IncidenceMeter_part2.stl.stl)
+* 2 pcs 'Part2' [STL File](/doc/incidence_angle/thingiverse/files/IncidenceMeter_part2.stl)
 * 4 pcs 'Screw Holder' [STL File](/doc/incidence_angle/thingiverse/files/screw.stl)
 
 ### Other
