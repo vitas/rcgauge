@@ -179,6 +179,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.minTravelSet);
             notifyPropertyChanged(BR.maxTravelColor);
             notifyPropertyChanged(BR.minTravelColor);
+            notifyPropertyChanged(BR.angleColor);
             notifyPropertyChanged(BR.travelColor);
             notifyPropertyChanged(BR.btStatusColor);
         } else {
@@ -194,6 +195,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
             notifyPropertyChanged(BR.minTravelSet);
             notifyPropertyChanged(BR.maxTravelColor2);
             notifyPropertyChanged(BR.minTravelColor2);
+            notifyPropertyChanged(BR.angleColor2);
             notifyPropertyChanged(BR.travelColor2);
             notifyPropertyChanged(BR.btStatusColor2);
         }
@@ -218,6 +220,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
                 notifyPropertyChanged(BR.minTravel);
                 notifyPropertyChanged(BR.maxTravelColor);
                 notifyPropertyChanged(BR.minTravelColor);
+                notifyPropertyChanged(BR.angleColor);;
                 notifyPropertyChanged(BR.travelColor);
             }
         } catch (Exception e) {
@@ -239,6 +242,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
                 notifyPropertyChanged(BR.minTravel2);
                 notifyPropertyChanged(BR.maxTravelColor2);
                 notifyPropertyChanged(BR.minTravelColor2);
+                notifyPropertyChanged(BR.angleColor2);
                 notifyPropertyChanged(BR.travelColor2);
             }
         } catch (Exception e) {
@@ -518,6 +522,28 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     }
 
     @Bindable
+    public Drawable getAngleColor() {
+        if (getThrowGauge().getValue().IsBelowAngleMin()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_down, null);
+        } else if (getThrowGauge().getValue().IsAboveAngleMax()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_up, null);
+        } else {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.rounded_back, null);
+        }
+    }
+
+    @Bindable
+    public Drawable getAngleColor2() {
+        if (getThrowGauge2().getValue().IsBelowAngleMin()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_down, null);
+        } else if (getThrowGauge2().getValue().IsAboveAngleMax()) {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_up, null);
+        } else {
+            return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.rounded_back, null);
+        }
+    }
+
+    @Bindable
     public Drawable getTravelColor() {
         if (getThrowGauge().getValue().IsBelowTravelMin()) {
             return ResourcesCompat.getDrawable(getApplication().getResources(), R.drawable.layout_range_red_down, null);
@@ -638,6 +664,8 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         notifyPropertyChanged(BR.minTravel);
         notifyPropertyChanged(BR.maxTravel2);
         notifyPropertyChanged(BR.minTravel2);
+        notifyPropertyChanged(BR.angleColor);
+        notifyPropertyChanged(BR.angleColor2);
         notifyPropertyChanged(BR.travelColor);
         notifyPropertyChanged(BR.travelColor2);
     }

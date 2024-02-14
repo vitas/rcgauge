@@ -220,19 +220,54 @@ public class ThrowGauge {
         mMinTravelAlarm = travel;
     }
 
-    public boolean IsAboveTravelMax(){
-        if (mMaxTravelAlarm == 0)
+    public boolean IsAboveAngleMax(){
+        if (mMaxTravelAlarm == 0) {
             return false;
-        return mCurrentTravel > mMaxTravelAlarm;
+        }
+        if (mChord == 0) {
+            return Math.toDegrees(mQuatAngleFiltered) > mMaxTravelAlarm;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean IsBelowAngleMin(){
+        if (mMinTravelAlarm == 0) {
+            return false;
+        }
+        if (mChord == 0) {
+            return Math.toDegrees(mQuatAngleFiltered) < mMinTravelAlarm;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean IsAboveTravelMax(){
+        if (mMaxTravelAlarm == 0) {
+            return false;
+        }
+        if (mChord == 0) {
+            return false;
+        } else {
+            return mCurrentTravel > mMaxTravelAlarm;
+        }
     }
 
     public boolean IsBelowTravelMin(){
-        if (mMinTravelAlarm == 0)
+        if (mMinTravelAlarm == 0) {
             return false;
-        return mCurrentTravel < mMinTravelAlarm;
+        }
+        if (mChord == 0) {
+            return false;
+        } else {
+            return mCurrentTravel < mMinTravelAlarm;
+        }
     }
 
     public double ResolveQuatsThrow() {
+
+        double mCurrentTmp = 0;
+
         if (ignoreZ) {
             toQuaternion(mQBoard, 0, mEulerPitch, mEulerRoll);
         } else {
@@ -276,10 +311,17 @@ public class ThrowGauge {
                 break;
         }
 
+        //  chord=0 show angle min/max instead travel min/max being 0.0
+        if (mChord == 0) {
+            mCurrentTmp = Math.toDegrees(mQuatAngleFiltered);
+        } else {
+            mCurrentTmp = mCurrentTravel;
+        }
+
         // min/max travel with glitch filter
-        if(mCurrentTravel < mMinThrow) {
+        if(mCurrentTmp < mMinThrow) {
             tMin += deltaT;
-            sumMin += mCurrentTravel;
+            sumMin += mCurrentTmp;
             iMin ++;
             if (tMin > 800) {
                 mMinThrow = sumMin / iMin;
@@ -292,9 +334,9 @@ public class ThrowGauge {
             iMin = 0;
             sumMin = 0;
         }
-        if(mCurrentTravel > mMaxThrow) {
+        if(mCurrentTmp > mMaxThrow) {
             tMax += deltaT;
-            sumMax += mCurrentTravel;
+            sumMax += mCurrentTmp;
             iMax ++;
             if (tMax > 800) {
                 mMaxThrow = sumMax / iMax;
