@@ -26,7 +26,7 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     private PropertyChangeRegistry callbacks = new PropertyChangeRegistry();
     private Handler mHandler;
     private boolean mMultiDevice;
-    private boolean mdiffVisible = false;
+
     private String btStatusStr = "BT1";
     private String btStatusStr2 = "BT2";
 
@@ -66,6 +66,12 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
     public void setLengthUnits(String lengthUnits) {
         this.lengthUnits = lengthUnits;
     }
+
+    private enum mdiffVisibleT {
+        DIFF_OFF, DIFF_NORMAL, DIFF_PERCENTAGE;
+    }
+    private mdiffVisibleT mdiffVisible = mdiffVisibleT.DIFF_OFF;
+
 
     // parse number string using language specfic number format (comma separator , or .)
     // get rid of number dialog sending . instead of , (android bug)
@@ -282,12 +288,48 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getAngleDiff() {
-        double diff = getThrowGauge().getValue().GetAngle() - getThrowGauge2().getValue().GetAngle();
-        if ((diff > 0.05) || (diff < -0.05)) {
-            return new DecimalFormat("0.0").format(diff);
-        } else {
-            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        double res = 0;
+        String x = "";
+        switch (getDiffVisibleValue()) {
+            case DIFF_NORMAL:
+                double diff = getThrowGauge().getValue().GetAngle() - getThrowGauge2().getValue().GetAngle();
+                if ((diff > 0.05) || (diff < -0.05)) {
+                    x = new DecimalFormat("0.0").format(diff);
+                } else {
+                    x = new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+                }
+                break;
+            case DIFF_PERCENTAGE:
+                double a = getThrowGauge().getValue().GetAngle();
+                double b = getThrowGauge2().getValue().GetAngle();
+                a = Math.abs(a);
+                b = Math.abs(b);
+                double aMax = Math.max(a, b);
+                if (aMax < 1.0) { // no diff calc if angles near zero
+                    x = "-- %";
+                } else {
+                    if (a > b) {
+                        if (a != 0) res = (1 - (b / a)) * 100;
+                        if (res >= 0.5) {
+                            x = "< " + new DecimalFormat("0").format(res) + "%";
+                        } else {
+                            x = new DecimalFormat("0").format(0) + "%"; // get rid of -0.0 display
+                        }
+                    } else {
+                        if (b != 0) res = (1 - (a / b)) * 100;
+                        if (res >= 0.5) {
+                            x = new DecimalFormat("0").format(res) + "%" + " >";
+                        } else {
+                            x = new DecimalFormat("0").format(0) + "%"; // get rid of -0.0 display
+                        }
+                    }
+                }
+                break;
+            case DIFF_OFF:
+                x = "--%";
+                break;
         }
+        return x;
     }
 
     @Bindable
@@ -447,12 +489,54 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     @Bindable
     public String getTravelDiff() {
-        double res = getThrowGauge().getValue().GetThrow() - getThrowGauge2().getValue().GetThrow();
-        if ((res > 0.05) || (res < -0.05)) {
-            return new DecimalFormat("0.0").format(res);
-        } else {
-            return new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+        double res = 0;
+        String x = "";
+        switch (getDiffVisibleValue()) {
+            case DIFF_NORMAL:
+                res = getThrowGauge().getValue().GetThrow() - getThrowGauge2().getValue().GetThrow();
+                if ((res > 0.05) || (res < -0.05)) {
+                    x = new DecimalFormat("0.0").format(res);
+                } else {
+                    x = new DecimalFormat("0.0").format(0); // get rid of -0.0 display
+                }
+                break;
+            case DIFF_PERCENTAGE:
+                double a = getThrowGauge().getValue().GetThrow();
+                double b = getThrowGauge2().getValue().GetThrow();
+                double angleA = getThrowGauge().getValue().GetAngle();
+                double angleB = getThrowGauge2().getValue().GetAngle();
+                double chord = getThrowGauge().getValue().GetChord();
+
+                angleA = Math.abs(angleA);
+                angleB = Math.abs(angleB);
+                double aMax = Math.max(angleA, angleB);
+                if ((aMax < 1.0) || (chord == 0)) { // no diff calc if angles near zero
+                    x = "--%";
+                } else {
+                    a = Math.abs(a);
+                    b = Math.abs(b);
+                    if (a > b) {
+                        if (a != 0) res = (1 - (b / a)) * 100;
+                        if (res >= 0.5) {
+                            x = "< " + new DecimalFormat("0").format(res) + "%";
+                        } else {
+                            x = new DecimalFormat("0").format(0) + "%"; // get rid of -0.0 display
+                        }
+                    } else {
+                        if (b != 0) res = (1 - (a / b)) * 100;
+                        if (res >= 0.5) {
+                            x = new DecimalFormat("0").format(res) + "%" + " >";
+                        } else {
+                            x = new DecimalFormat("0").format(0) + "%"; // get rid of -0.0 display
+                        }
+                    }
+                }
+                break;
+            case DIFF_OFF:
+                x = "--%";
+                break;
         }
+        return x;
     }
 
     @Bindable
@@ -608,16 +692,30 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
 
     public int getDiffVisible() {
         if (mMultiDevice) {
-            return mdiffVisible ? View.VISIBLE : View.GONE;
+            return mdiffVisible == mdiffVisibleT.DIFF_OFF ? View.GONE : View.VISIBLE;
         } else {
-            mdiffVisible = false;
-            return mdiffVisible ? View.VISIBLE : View.GONE;
+            mdiffVisible = mdiffVisibleT.DIFF_OFF;
+            return mdiffVisible == mdiffVisibleT.DIFF_OFF ? View.GONE : View.VISIBLE;
         }
     }
 
     public void toggleDiffVisible() {
-        mdiffVisible = !mdiffVisible;
+        switch (mdiffVisible) {
+            case DIFF_OFF:
+                mdiffVisible = mdiffVisibleT.DIFF_NORMAL;
+                break;
+            case DIFF_NORMAL:
+                mdiffVisible = mdiffVisibleT.DIFF_PERCENTAGE;
+                break;
+            case DIFF_PERCENTAGE:
+                mdiffVisible = mdiffVisibleT.DIFF_OFF;
+                break;
+        }
         notifyChange();
+    }
+
+    public mdiffVisibleT getDiffVisibleValue() {
+        return mdiffVisible;
     }
 	
     public void setMinTravelDia(String value){
