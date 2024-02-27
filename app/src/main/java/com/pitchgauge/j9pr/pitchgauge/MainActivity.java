@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity
 	// permissions result callback (not used)
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], int[] grantResults) {
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         for (int i = 0; i < permissions.length; i++) {
             if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, permissions[i] + " permission denied");
@@ -165,23 +164,40 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         Resources res = getResources();
 
-		// warning if user has denied permissions, android app can not ask again 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // do not check for Android Version < 12
-            if (!hasPermissions(PERMISSIONS)) {
-                new AlertDialog.Builder(this)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle(res.getString(R.string.txt_missing_permission) + " " + res.getString(R.string.app_name))
-                        .setMessage(res.getString(R.string.txt_notify_nearby_devices))
-                        .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
-                drawer.closeDrawer(GravityCompat.START);
-                return true;
+		// warning if user has denied permissions, android app can not ask again
+        MainPrefs prefs = new MainPrefs();
+        prefs = BluetoothPreferences.getMainPrefs(getApplicationContext());
+		
+        if (prefs.permissionCheck != MainPrefs.permissionCheckT.IGNORE) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) { // do not check for Android Version < 12
+                if (!hasPermissions(PERMISSIONS)) {
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle(res.getString(R.string.txt_missing_permission) + " " + res.getString(R.string.app_name))
+                            .setMessage(res.getString(R.string.txt_notify_nearby_devices))
+                            .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            // ignore button is a workaround for devices, which fail at hasPermissions() for unknown reasonss
+                            // e.g. xiaomi android 12
+                            .setNeutralButton("Ignore", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // read main preferences
+                                    MainPrefs prefs = new MainPrefs();
+                                    prefs = BluetoothPreferences.getMainPrefs(getApplicationContext());
+                                    prefs.setPermissionCheck(MainPrefs.permissionCheckT.IGNORE);
+                                    BluetoothPreferences.setMainPrefs(getApplicationContext(), prefs);
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true;
+                }
             }
         }
 
@@ -217,7 +233,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQ_DATA_ACTIVITY:
                 if (resultCode == RESULT_OK) {

@@ -32,7 +32,7 @@
     <string name="txt_sensor_settings">Sensor Einstellungen</string>
     <string name="txt_remind_sensor_power">Ausschalten der WitMotion Sensor(en) nicht vergessen!</string>
     <string name="txt_closing">Beende</string>
-    <string name="txt_notify_nearby_devices">Eine erforderliche App-Berechtigung wurde abgelehnt. Bitte vergeben Sie die \'Geräte in der Nähe\' Berechtigung im Android \'App-Berechtigungen\' Menü oder installieren Sie die App neu.</string>
+    <string name="txt_notify_nearby_devices">Eine erforderliche App-Berechtigung wurde abgelehnt. Bitte vergeben Sie die \'Geräte in der Nähe\' Berechtigung im Android \'App-Berechtigungen\' Menü oder installieren Sie die App neu. In seltenen Fällen kann das Deaktivieren dieses Checks mit \'IGNORE\' sinnvoll sein (auf eigenes Risiko).</string>
     <string name="txt_missing_permission">Fehlende Berechtigungen für</string>
     <string name="txt_use_AUTO_default">Auto-Detect (default)</string>
     <string name="txt_use_BWT61CL">BWT61CL</string>

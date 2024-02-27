@@ -43,7 +43,7 @@
     <string name="txt_sensor_settings">Sensor Settings</string>
     <string name="txt_remind_sensor_power">Do not forget to switch OFF the WitMotion Sensor(s)</string>
     <string name="txt_closing">Exit</string>
-    <string name="txt_notify_nearby_devices">A required app permission has been denied. Please grant \'Nearby devices\' permission in the Android \'App permissions\' menu or reinstall the app.</string>
+    <string name="txt_notify_nearby_devices">A required app permission has been denied. Please grant \'Nearby devices\' permission in the Android \'App permissions\' menu or reinstall the app. In rare cases, it might be useful to deactivate this check with \'IGNORE\' (at your own risk).</string>
     <string name="txt_missing_permission">Missing permissions for </string>
     <string name="txt_use_AUTO_default">Auto-Detect (default)</string>
     <string name="txt_use_BWT61CL">BWT61CL</string>
