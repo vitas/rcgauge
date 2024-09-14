@@ -11,6 +11,7 @@ public class MainPrefs implements Parcelable {
         throwCalcMethod = throwCalcMethodT.ORTHO;
         witModel = witModelT.AUTO;
         sensorConfigMode = sensorConfigModeT.MANUAL;  // use manual mode, as auto mode is still not finalized
+        permissionCheck = permissionCheckT.NORMAL;
     }
 
     enum unitsT {
@@ -44,11 +45,19 @@ public class MainPrefs implements Parcelable {
         MANUAL
     };
 
+    // permission check fails for some devices (xiaomi android 12)
+    // can be ignored manually, just a workaround
+    enum permissionCheckT {
+        NORMAL,
+        IGNORE  //
+    };
+
     unitsT units;
     zmodeT zMode;
     throwCalcMethodT throwCalcMethod;
     witModelT witModel;
     sensorConfigModeT sensorConfigMode;
+    permissionCheckT permissionCheck;
 
     protected MainPrefs(Parcel in) {
         units = unitsT.valueOf(in.readString());
@@ -56,13 +65,16 @@ public class MainPrefs implements Parcelable {
         throwCalcMethod = throwCalcMethodT.valueOf(in.readString());
         witModel = witModelT.valueOf(in.readString());
         sensorConfigMode = sensorConfigModeT.valueOf(in.readString());
+        permissionCheck = permissionCheckT.valueOf(in.readString());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(units.toString());
         dest.writeString(zMode.toString());
-        dest.writeString(witModel.toString());
+        dest.writeString(throwCalcMethod.toString());
+		dest.writeString(witModel.toString());
+        dest.writeString(permissionCheck.toString());
     }
 
     @Override
@@ -114,4 +126,7 @@ public class MainPrefs implements Parcelable {
         this.sensorConfigMode = sensorConfigMode;
     }
 
+    public void setPermissionCheck(permissionCheckT t) {
+        this.permissionCheck = t;
+    }
 }

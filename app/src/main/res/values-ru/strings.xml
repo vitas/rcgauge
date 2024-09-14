@@ -32,7 +32,7 @@
     <string name="txt_sensor_settings">Настройки датчиков</string>
     <string name="txt_remind_sensor_power">Не забудьте выключить датчик(и) WitMotion!</string>
     <string name="txt_closing">Выход</string>
-    <string name="txt_notify_nearby_devices">Необходимая авторизация для приложения была отклонена. Пожалуйста, предоставьте права на \"Устройства поблизости\" в меню Android \"Разрешения приложений\" или переустановите приложение.</string>
+    <string name="txt_notify_nearby_devices">Необходимая авторизация для приложения была отклонена. Пожалуйста, предоставьте права на \"Устройства поблизости\" в меню Android \"Разрешения приложений\" или переустановите приложение. В редких случаях может быть полезно отключить эту проверку с помощью \'IGNORE\' (на ваш страх и риск).</string>
     <string name="txt_missing_permission">Отсутствие разрешений для </string>
     <string name="txt_use_AUTO_default">Auto-Detect (default)</string>
     <string name="txt_use_BWT61CL">BWT61CL</string>

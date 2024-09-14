@@ -10,7 +10,7 @@ It doesn't require any soldering or cabling. You just need to have access to a 3
 The app is available on playstore. Alternatively you can install the APK by your own. See releases folder for a proper APK file.
 
 
-[RC Throwmeter Releases](/releases)
+[RC Throwmeter Releases](https://github.com/vitas/rcgauge/releases)
 
 ## Documentation
 
@@ -18,7 +18,11 @@ The app displays a description and instructions on the first screen, just instal
 
 ![RC Throwmeter](/doc/start_screen.jpg)
 
+
+
 This is an example of the throwmeter display screen.
+
+![RC Throwmeter](/doc/main_screen.jpg)
 
 
 ## Resources
@@ -32,30 +36,46 @@ WitMotion
 [BWT901CL](/doc/BWT901CL)
 
 
-
-![RC Throwmeter](/doc/main_screen.jpg)
-
 # 3D Printed Holding Clip
 
 You can print your own universal mounting clip. 
 
-![RC Throwmeter](/doc/clip/image003.jpg)
+<img src="/doc/clip/clip-02.jpg" alt="drawing" width="300"/>
 
-STL file
+All parts and more are published on [Thingiverse (Part 6479899)](https://www.thingiverse.com/thing:6479899)
 
-[Mounting Clip STL File](/doc/clip/clips_V2.stl)
+[Mounting Clip STL](/doc/clip/clips_V2.stl)
 
-Sticker
+[Sensor Sticker PDF](/doc/clip/sticker.pdf)
 
-[Mounting Clip Sticker PDF](/doc/clip/sticker.pdf)
+<img src="/doc/clip/clip-03.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-04.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-05.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-06.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-07.jpg" alt="drawing" width="300"/>
+
+
 
 # Measuring Incidence Angle
 
-Use this idea to make your own incidence angle gauge.
+Use this ideas to make your own incidence angle gauge.
 
-![Incidence Angle Gauge](/doc/incidence_angle/incidence-gauge_small.jpg)
+See here for ![More Details about Incidence Angle Gauge ](/doc/incidence_angle/README-wing-incidence.md)
 
-![Incidence Angle Gauge ](/doc/incidence_angle/README-wing-incidence.md)
+## Design 1 by Pierre Rondel
+<img src="/doc/incidence_angle/thingiverse/images/ab188025-2032-4a18-9bfb-140bcdd05252.jpg" alt="drawing" width="300"/>
+
+## Design 2 by Thommy
+<img src="/doc/incidence_angle/incidence-gauge.jpg" alt="drawing" width="300"/>
+
+
+
+
+
 
 
 
