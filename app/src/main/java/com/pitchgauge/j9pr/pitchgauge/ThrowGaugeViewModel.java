@@ -152,9 +152,17 @@ public class ThrowGaugeViewModel extends AndroidViewModel implements Observable 
         double d = parseStringDouble(chord);
         getThrowGauge().getValue().SetChord(d);
         getThrowGauge2().getValue().SetChord(d);
+        getThrowGauge().getValue().SetMaxThrow(0);
+        getThrowGauge2().getValue().SetMaxThrow(0);
+        getThrowGauge().getValue().SetMinThrow(0);
+        getThrowGauge2().getValue().SetMinThrow(0);
         notifyPropertyChanged(BR.chordValue);
         notifyPropertyChanged(BR.travel);
         notifyPropertyChanged(BR.travel2);
+        notifyPropertyChanged(BR.maxTravel);
+        notifyPropertyChanged(BR.maxTravel2);
+        notifyPropertyChanged(BR.minTravel);
+        notifyPropertyChanged(BR.minTravel2);
     }
 
     public void setAccelerations(int pos, float x, float y, float z) {
