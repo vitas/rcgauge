@@ -32,4 +32,19 @@
     <string name="txt_sensor_settings">Paramètres du capteur</string>
     <string name="txt_remind_sensor_power">N\'oubliez pas d\'éteindre le(s) capteur(s) WitMotion!</string>
     <string name="txt_closing">Quitter</string>
+    <string name="txt_notify_nearby_devices">Une autorisation requise pour l\'application a été refusée. Veuillez accorder l\'autorisation aux \'Appareils à proximité\' dans le menu des \'Autorisations des applications\' Android ou réinstallez l\'application. Dans de rares cas, il peut être utile de désactiver ce contrôle avec \'IGNORE\' (à vos risques et périls).</string>
+    <string name="txt_missing_permission">Permissions manquantes pour </string>
+    <string name="txt_use_AUTO_default">Détection automatique (default)</string>
+    <string name="txt_use_BWT61CL">BWT61CL</string>
+    <string name="txt_sensor_axes">Axes</string>
+    <string name="txt_sensor_model">Modèle capteur WitMotion</string>
+    <string name="txt_dlg_bt_settings">Configurer capteur WitMotion</string>
+    <string name="txt_dlg_bt_settings_desc">Envoyer configuration des paramètres Witmotion pour utiliser RC Throwmeter</string>
+    <string name="txt_use_BWT901CL">BWT901CL</string>
+    <string name="txt_sensor_config">Envoi configuration capteur</string>
+    <string name="txt_use_config_AUTO">Automatique (default)</string>
+    <string name="txt_use_config_MANUAL">Manuel</string>
+    <string name="txt_calc_method">Méthode de calcul</string>
+    <string name="txt_use_ortho_default">déflection Orthogonale (default)</string>
+    <string name="txt_use_chord">Valeur Corde</string>
 </resources>

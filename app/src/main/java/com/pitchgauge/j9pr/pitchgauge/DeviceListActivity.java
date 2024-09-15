@@ -35,13 +35,6 @@ public class DeviceListActivity extends BluetoothBaseActivity {
     private final BroadcastReceiver mReceiver = new BLbroadcastReceiver();
     ListView pairedListView;
 
-    class OnDeviceDiscoveryClick implements OnClickListener {
-
-        public void onClick(View v) {
-            DeviceListActivity.this.doDiscovery();
-            v.setVisibility(View.GONE);
-        }
-    }
 
     class OnDeviceSelectionClick implements OnItemClickListener {
 
@@ -161,7 +154,6 @@ public class DeviceListActivity extends BluetoothBaseActivity {
         }
         setResult(0);
 
-        ((Button) findViewById(R.id.button_scan)).setOnClickListener(new OnDeviceDiscoveryClick());
         this.mPairedDevicesArrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice);
         this.mNewDevicesArrayAdapter = new ArrayAdapter(this, R.layout.device_name);
         pairedListView = (ListView) findViewById(R.id.paired_devices);
@@ -170,9 +162,6 @@ public class DeviceListActivity extends BluetoothBaseActivity {
 
         pairedListView.setAdapter(this.mPairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(this.mDeviceClickListener);
-        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
-        newDevicesListView.setAdapter(this.mNewDevicesArrayAdapter);
-        newDevicesListView.setOnItemClickListener(this.mDeviceClickListener);
 
         registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.device.action.FOUND"));
         registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.DISCOVERY_FINISHED"));
@@ -232,16 +221,5 @@ public class DeviceListActivity extends BluetoothBaseActivity {
 
     }
 
-    private void doDiscovery() {
-        Log.d(TAG, "doDiscovery()");
 
-        setTitle("Scanning");
-
-        findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
-
-        if (mBluetoothPipe.isDiscovery()) {
-            mBluetoothPipe.cancelDiscovery();
-        }
-        mBluetoothPipe.startDiscovery();
-    }
 }

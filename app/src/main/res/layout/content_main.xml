@@ -16,7 +16,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/throwmeterdocscroll"
-        android:layout_marginBottom="60dp"
         android:scrollbars="vertical">
         <WebView
             android:layout_width="fill_parent"

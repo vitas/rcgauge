@@ -4,6 +4,7 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Quaterniond;
 
+import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 
 public class ThrowGauge {
@@ -28,8 +29,12 @@ public class ThrowGauge {
     double tauLP = 0.07; // time constant tau in seconds
 
     // min/max thresholds
+    long tMin = 0;
     int iMin = 0;
+    double sumMin;
+    long tMax = 0;
     int iMax = 0;
+    double sumMax = 0;
 
     Vector3d mAcceleration = new Vector3d();
     Vector3d mAngularVelocity = new Vector3d();
@@ -45,6 +50,10 @@ public class ThrowGauge {
         this.ignoreZ = ignoreZ;
     }
 
+    MainPrefs.throwCalcMethodT throwCalcMethod;
+    public void setThrowCalcMethod(MainPrefs.throwCalcMethodT method) {
+        this.throwCalcMethod = method;
+    }
 
     public void SetNeutral()
     {
@@ -111,8 +120,16 @@ public class ThrowGauge {
         return mTemperature;
     }
 
+    public void SetMinThrow(double val) {
+        mMinThrow = val;
+    }
+
     public double GetMinThrow() {
         return mMinThrow;
+    }
+
+    public void SetMaxThrow(double val) {
+        mMaxThrow = val;
     }
 
     public double GetMaxThrow() {
@@ -211,19 +228,54 @@ public class ThrowGauge {
         mMinTravelAlarm = travel;
     }
 
-    public boolean IsAboveTravelMax(){
-        if (mMaxTravelAlarm == 0)
+    public boolean IsAboveAngleMax(){
+        if (mMaxTravelAlarm == 0) {
             return false;
-        return mCurrentTravel > mMaxTravelAlarm;
+        }
+        if (mChord == 0) {
+            return Math.toDegrees(mQuatAngleFiltered) > mMaxTravelAlarm;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean IsBelowAngleMin(){
+        if (mMinTravelAlarm == 0) {
+            return false;
+        }
+        if (mChord == 0) {
+            return Math.toDegrees(mQuatAngleFiltered) < mMinTravelAlarm;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean IsAboveTravelMax(){
+        if (mMaxTravelAlarm == 0) {
+            return false;
+        }
+        if (mChord == 0) {
+            return false;
+        } else {
+            return mCurrentTravel > mMaxTravelAlarm;
+        }
     }
 
     public boolean IsBelowTravelMin(){
-        if (mMinTravelAlarm == 0)
+        if (mMinTravelAlarm == 0) {
             return false;
-        return mCurrentTravel < mMinTravelAlarm;
+        }
+        if (mChord == 0) {
+            return false;
+        } else {
+            return mCurrentTravel < mMinTravelAlarm;
+        }
     }
 
     public double ResolveQuatsThrow() {
+
+        double mCurrentTmp = 0;
+
         if (ignoreZ) {
             toQuaternion(mQBoard, 0, mEulerPitch, mEulerRoll);
         } else {
@@ -251,27 +303,60 @@ public class ThrowGauge {
         }
 
         mQuatAngle = mQuatAngleFiltered;
-        mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
 
-        if(mCurrentTravel < mMinThrow) {
-            iMin++;
-            if (iMin > 5) {
-                mMinThrow = mCurrentTravel;
+        // calculate throw distance
+        switch (throwCalcMethod) {
+            case ORTHO: // orthogonal distance
+                mCurrentTravel = mChord * Math.sin(mQuatAngleFiltered);
+                break;
+            case CHORD: // chord distance
+                // limit calculation to -90 to +90 deg deflection range
+                if ((mQuatAngleFiltered > PI/2.0) || (mQuatAngleFiltered < -PI/2.0)) {
+                    mCurrentTravel = 0.0;
+                } else {
+                    mCurrentTravel = mChord * 2 * Math.sin(mQuatAngleFiltered / 2.0);
+                }
+                break;
+        }
+
+        //  chord=0 show angle min/max instead travel min/max being 0.0
+        if (mChord == 0) {
+            mCurrentTmp = Math.toDegrees(mQuatAngleFiltered);
+        } else {
+            mCurrentTmp = mCurrentTravel;
+        }
+
+        // min/max travel with glitch filter
+        if(mCurrentTmp < mMinThrow) {
+            tMin += deltaT;
+            sumMin += mCurrentTmp;
+            iMin ++;
+            if (tMin > 800) {
+                mMinThrow = sumMin / iMin;
+                tMin = 0;
                 iMin = 0;
+                sumMin = 0;
             }
         } else {
+            tMin = 0;
             iMin = 0;
+            sumMin = 0;
         }
-        if(mCurrentTravel > mMaxThrow) {
-            iMax++;
-            if (iMax > 5) {
-                mMaxThrow = mCurrentTravel;
+        if(mCurrentTmp > mMaxThrow) {
+            tMax += deltaT;
+            sumMax += mCurrentTmp;
+            iMax ++;
+            if (tMax > 800) {
+                mMaxThrow = sumMax / iMax;
+                tMax = 0;
                 iMax = 0;
+                sumMax = 0;
             }
         } else {
+            tMax = 0;
             iMax = 0;
+            sumMax = 0;
         }
-
         return mCurrentTravel;
     }
 

@@ -1,45 +1,82 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# Make your own Bluetooth RC Throwmeter
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+This mobile application allows you to build your own Bluetooth Throwmeter for a very reasonable cost. 
+It doesn't require any soldering or cabling. You just need to have access to a 3D printer and that is all!
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+![RC Throwmeter](/doc/rc-throwmeter.jpg)
 
----
+## Installation
 
-## Edit a file
+The app is available on playstore. Alternatively you can install the APK by your own. See releases folder for a proper APK file.
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+[RC Throwmeter Releases](https://github.com/vitas/rcgauge/releases)
 
----
+## Documentation
 
-## Create a file
+The app displays a description and instructions on the first screen, just install it. See also [Planet Soaring Blogspot](https://planet-soaring.blogspot.com/) and search in blogs for 'rc throwmeter'.
 
-Next, you’ll add a new file to this repository.
+![RC Throwmeter](/doc/start_screen.jpg)
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
 
----
+This is an example of the throwmeter display screen.
 
-## Clone a repository
+![RC Throwmeter](/doc/main_screen.jpg)
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+## Resources
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+Datasheets and manuals for the sensors you can find on the manufacturer websites. Otherwise, find the datatsheets here.
+
+WitMotion 
+[BWT61CL](/doc/BWT61CL)
+
+WitMotion
+[BWT901CL](/doc/BWT901CL)
+
+
+# 3D Printed Holding Clip
+
+You can print your own universal mounting clip. 
+
+<img src="/doc/clip/clip-02.jpg" alt="drawing" width="300"/>
+
+All parts and more are published on [Thingiverse (Part 6479899)](https://www.thingiverse.com/thing:6479899)
+
+[Mounting Clip STL](/doc/clip/clips_V2.stl)
+
+[Sensor Sticker PDF](/doc/clip/sticker.pdf)
+
+<img src="/doc/clip/clip-03.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-04.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-05.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-06.jpg" alt="drawing" width="300"/>
+
+<img src="/doc/clip/clip-07.jpg" alt="drawing" width="300"/>
+
+
+
+# Measuring Incidence Angle
+
+Use this ideas to make your own incidence angle gauge.
+
+See here for ![More Details about Incidence Angle Gauge ](/doc/incidence_angle/README-wing-incidence.md)
+
+## Design 1 by Pierre Rondel
+<img src="/doc/incidence_angle/thingiverse/images/ab188025-2032-4a18-9bfb-140bcdd05252.jpg" alt="drawing" width="300"/>
+
+## Design 2 by Thommy
+<img src="/doc/incidence_angle/incidence-gauge.jpg" alt="drawing" width="300"/>
+
+
+
+
+
+
+
+
+
