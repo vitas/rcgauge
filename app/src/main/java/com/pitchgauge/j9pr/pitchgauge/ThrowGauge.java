@@ -120,8 +120,16 @@ public class ThrowGauge {
         return mTemperature;
     }
 
+    public void SetMinThrow(double val) {
+        mMinThrow = val;
+    }
+
     public double GetMinThrow() {
         return mMinThrow;
+    }
+
+    public void SetMaxThrow(double val) {
+        mMaxThrow = val;
     }
 
     public double GetMaxThrow() {
