@@ -11,13 +11,7 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     compileSdkVersion 34
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-    }
+
     productFlavors {
     }
     dataBinding {
@@ -36,9 +30,10 @@ android {
                 keyPassword signingProperties['keyPassword']
             }
         }
-
         buildTypes {
             release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
             }
         }
