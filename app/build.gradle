@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     defaultConfig {
-        versionCode 8
-        versionName "1.6.2"
+        versionCode 9
+        versionName "1.6.3"
         resValue "string", "app_version", "$versionName"
         applicationId "com.pitchgauge.j9pr.pitchgauge"
         minSdkVersion 21
