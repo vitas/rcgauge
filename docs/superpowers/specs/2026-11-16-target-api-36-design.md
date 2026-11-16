@@ -1,6 +1,6 @@
 # RC Throwmeter: target Android 16 (API 36) for Google Play
 
-Date: 2026-11-16 · Branch: `target-api-36` · Status: draft, awaiting approval
+Date: 2026-11-16 · Branch: `target-api-36` · Status: implemented (see "What was built")
 
 ## Intent
 
@@ -61,7 +61,7 @@ and that behaves on Android 16 the way the app behaves today.
 ## Decisions
 
 1. **Build:** AGP 8.13.2 and Gradle 8.14.x. `compileSdk 36`, `targetSdk 36`, `minSdk 21`.
-   `dataBinding { enabled = true }` becomes `buildFeatures { dataBinding true }`. The dead
+   `dataBinding { enabled = true }` becomes `buildFeatures { dataBinding = true }`. The dead
    `oss.sonatype.org` repository is removed. Version becomes `versionCode 10` / `versionName "1.7.0"`.
 2. **JOML:** switch to `org.joml:joml:1.10.9`. Add a JVM unit test that pins `ThrowGauge`'s
    outputs to the values the old 1.9.3 library produces.
@@ -102,8 +102,55 @@ and that behaves on Android 16 the way the app behaves today.
 - Owner, before uploading to Play: a real-sensor session on a phone, ideally one running
   Android 15 or 16.
 
+## What was built
+
+- **Build:** AGP 8.13.2, Gradle 8.14.7 and JDK 17, with versionCode 10 and versionName 1.7.0.
+  The release APK and AAB build signed and contain no `.so` files, so 16 KB pages need nothing.
+- **JOML:** as decided. `ThrowGaugeTest` pins 11 cases to the values the old library gives.
+- **Back:** `MainActivity` handles back with an `OnBackPressedCallback`. No other screen overrode
+  `onBackPressed()`.
+- **Edge-to-edge (the builder's choice):** the main screen needed nothing, because its
+  `DrawerLayout` and app bar already handle the insets. The device list, settings and throw
+  screens call `SystemBars.applyTo(this)` after `setContentView`. Under edge-to-edge, appcompat
+  1.7.1 lays a screen's content out across the whole window and adds the action bar's height to
+  the top inset it hands over. On Android 15 and newer, `SystemBars` pads the content by those
+  insets and paints a `colorPrimaryDark` strip behind the status bar through the window
+  background. It also keeps the status bar icons white. On older versions it does nothing.
+- **Tablets:** the manifest property was checked on an emulator display of 1600x2560 at 240 dpi,
+  held in landscape. Without the property, the main screen stretched to landscape. With it, the
+  app kept a portrait window, letterboxed. System UI shows a one-time tip about letterboxed apps.
+- **Lint:** `app/lint-baseline.xml` records the 97 issues that predate this work (28 errors and
+  69 warnings), so lint fails only on new ones. Release builds print a note that the baseline's
+  entries were "not found". That note comes from the release build's fatal-only lint pass. It
+  doesn't mean the issues were fixed.
+- **Tests:** the JVM test is `ThrowGaugeTest` (11 tests). The instrumented tests are
+  `MainActivityBackTest` (5), `SystemBarsTest` (4) and `ManifestPropertiesTest` (1, Android 12
+  and newer).
+  - On the Android 16 emulator they all pass. `SystemBarsTest` also passes with 3-button
+    navigation and in dark mode.
+  - On the existing API 30 emulator they pass too. The manifest test is skipped there.
+- **Emulator setup:** on this Intel Mac, the Android 16 emulator needs software rendering
+  (`swiftshader_indirect`), 3 GB of RAM and `-no-window`. The host GPU offers only GLES 3.0, and
+  Android 16 needs 3.1. Without these settings, System UI stops responding and its dialog takes
+  focus away from the tests.
+
 ## Follow-ups (not in this change)
 
 - On the throw screen, if Bluetooth is off, `BluetoothAdapter.enable()` silently does nothing
   (true since API 33). Use the "turn on Bluetooth" system dialog instead.
 - Targeting API 37 by about Aug 2027: drop the tablet opt-out, handle rotation, use AGP 9.
+  - Lint already flags the three portrait locks (`SourceLockedOrientationActivity`).
+  - In landscape, the main screen leaves a light strip beside its toolbar over the camera cutout.
+    This was seen with the tablet opt-out removed.
+- Gradle 10: in `app/build.gradle`, `namespace` and `signingConfig` still use the space form
+  (`namespace '…'`), which Gradle 10 removes. Switch them to `=`.
+- These lint errors predate this work and are kept in the baseline:
+  - 23 Bluetooth calls have no permission check.
+  - `onActivityResult` skips `super` in `MainActivity`, `ThrowActivity` and
+    `BluetoothBaseActivity`.
+  - `MainActivity.onRequestPermissionsResult` also skips `super`. So the permission launcher's
+    callback, which asks again after a denial, never runs. There is no ask-again loop. On
+    Android 11 and older, though, the main screen asks for the Android 12 Bluetooth permissions
+    at every start, and the system silently denies them.
+  - One missing translation (`txt_diffButton`).
+- Lint reports constraintlayout 2.2.2. This work didn't check whether it still supports minSdk 21.
