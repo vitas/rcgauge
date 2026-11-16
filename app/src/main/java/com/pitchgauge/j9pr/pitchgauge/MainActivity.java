@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.google.android.material.navigation.NavigationView;
 import android.util.Log;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -81,6 +82,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Android 16 (API 36) no longer calls onBackPressed() for apps that target it, so back is
+        // handled by this callback, on every Android version.
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                closeDrawerOrConfirmExit();
+            }
+        });
+
         WebView wv = (WebView) findViewById(R.id.throwmeterdoc);
         wv.loadUrl("file:///android_asset/Make-your-own-BlueTooth-RC-Throwmeter-V2.0.htm");
 
@@ -133,8 +143,9 @@ public class MainActivity extends AppCompatActivity
         return;
     }
 
-    @Override
-    public void onBackPressed() {
+    // closeDrawerOrConfirmExit closes the drawer if it is open; otherwise it reminds the user to
+    // switch off the sensors and leaves the app only on OK.
+    private void closeDrawerOrConfirmExit() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         Resources res = getResources();
 
@@ -154,7 +165,6 @@ public class MainActivity extends AppCompatActivity
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
-            //super.onBackPressed();
         }
     }
 
