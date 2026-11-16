@@ -47,6 +47,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'org.joml:joml:1.10.9'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -58,13 +59,4 @@ dependencies {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
-}
-repositories {
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-}
-project.ext.jomlVersion = "1.9.3-SNAPSHOT"
-dependencies {
-    implementation "org.joml:joml-android:${jomlVersion}"
 }

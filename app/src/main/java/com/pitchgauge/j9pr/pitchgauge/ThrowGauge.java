@@ -93,9 +93,10 @@ public class ThrowGauge {
         /*******************************************************************/
 
         /**** Second method use quaternions from board's euler angles *******/
-        mEulerRoll = Math.toRadians(x);
-        mEulerPitch = Math.toRadians(y);
-        mEulerYaw = Math.toRadians(z);
+        // Convert as double: JOML >= 1.10 added a float toRadians overload that loses precision.
+        mEulerRoll = Math.toRadians((double) x);
+        mEulerPitch = Math.toRadians((double) y);
+        mEulerYaw = Math.toRadians((double) z);
         /********************************************************************/
     }
 
@@ -284,7 +285,7 @@ public class ThrowGauge {
         Vector3d delta = EulerAnglesBetween(mQBoard, mQBoardNeutral);
         int sign = delta.y > 0 ? -1 : 1;
         mQBoard.difference(mQBoardNeutral);
-        mQuatAngle = mQBoard.angle() * sign;
+        mQuatAngle = rotationAngle(mQBoard) * sign;
         if (Double.isNaN(mQuatAngle)) {
             mQuatAngle = 0;
         }
@@ -367,6 +368,13 @@ public class ThrowGauge {
         else{
             return ResolveSimpleThrow();
         }
+    }
+
+    // rotationAngle returns the rotation angle of q folded into [0, PI], as JOML 1.9 did;
+    // JOML >= 1.10 stopped folding, which turned a 20 deg move across roll +-180 into 340 deg.
+    static double rotationAngle(Quaterniond q) {
+        double angle = q.angle();
+        return angle <= PI ? angle : PI + PI - angle;
     }
 
     void toQuaternion(Quaterniond q, double yaw, double pitch, double roll) // yaw (Z), pitch (Y), roll (X)
