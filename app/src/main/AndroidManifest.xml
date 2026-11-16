@@ -19,6 +19,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!-- Android 16 (API 36) ignores the portrait lock on large screens (600dp and wider).
+             This opt-out keeps the lock there. It is temporary: it no longer works once the
+             app targets API 37. -->
+        <property
+            android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY"
+            android:value="true" />
         <activity android:name=".MainSettings"></activity>
         <activity
             android:name=".MainActivity"
