@@ -17,6 +17,11 @@ android {
     buildFeatures {
         dataBinding = true
     }
+    lint {
+        // lint-baseline.xml lists the lint issues that predate the API 36 update, so lint fails
+        // only on new ones. Remove an entry from it once its issue is fixed.
+        baseline = file('lint-baseline.xml')
+    }
     namespace 'com.pitchgauge.j9pr.pitchgauge'
     if (new File("signing.properties").exists()) {
         Properties signingProperties = new Properties()
