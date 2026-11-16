@@ -500,6 +500,7 @@ public class ThrowActivity extends BluetoothBaseActivity {
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         ThrowActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.throw_activity);
+        SystemBars.applyTo(this);
 
         try {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

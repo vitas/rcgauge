@@ -146,6 +146,7 @@ public class DeviceListActivity extends BluetoothBaseActivity {
 
         requestWindowFeature(5);
         setContentView(R.layout.device_list);
+        SystemBars.applyTo(this);
 
         try {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
