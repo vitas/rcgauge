@@ -43,8 +43,9 @@ import org.junit.runner.RunWith;
 
 /**
  * SystemBarsTest checks that every screen keeps its top bar just below the status bar, its content
- * just above the navigation bar, and a teal status bar strip with white icons. Android 15 and 16
- * draw apps edge to edge, under both bars, so this is where they would differ.
+ * just above the navigation bar, a teal status bar strip with white icons, and navigation buttons
+ * that stand out from what is behind them. Android 15 and 16 draw apps edge to edge, under both
+ * bars, so this is where they would differ.
  */
 @RunWith(AndroidJUnit4.class)
 public class SystemBarsTest {
@@ -164,6 +165,16 @@ public class SystemBarsTest {
         assertFalse("status bar icons are dark instead of white",
                 WindowCompat.getInsetsController(a.getWindow(), decor)
                         .isAppearanceLightStatusBars());
+
+        // Below Android 15 the navigation bar is black, so its buttons stay white. From Android 15
+        // it is see-through over the screen's light background, so they must be dark.
+        boolean darkButtons = WindowCompat.getInsetsController(a.getWindow(), decor)
+                .isAppearanceLightNavigationBars();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            assertTrue("navigation bar buttons are white over the light background", darkButtons);
+        } else {
+            assertFalse("navigation bar buttons are dark on the black bar", darkButtons);
+        }
     }
 
     private static int topOf(View v) {

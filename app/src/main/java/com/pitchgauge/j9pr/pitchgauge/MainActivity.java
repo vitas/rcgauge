@@ -53,6 +53,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        // The drawer layout already keeps this screen clear of the system bars; on Android 15 and
+        // newer the navigation buttons also need to be dark to show over its light background.
+        SystemBars.showDarkNavigationButtons(this);
 
         try {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

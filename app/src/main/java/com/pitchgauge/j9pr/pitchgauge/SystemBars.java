@@ -1,5 +1,6 @@
 package com.pitchgauge.j9pr.pitchgauge;
 
+import android.app.Activity;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,12 +23,14 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 /**
- * SystemBars keeps a screen that uses the theme's action bar looking as it did before Android 15.
+ * SystemBars keeps the app's screens readable now that Android 15 and 16 draw them edge to edge,
+ * under transparent system bars.
  *
- * <p>Android 15 and 16 draw apps edge to edge, under transparent system bars. There, applyTo paints
- * a colorPrimaryDark strip behind the status bar, keeps the status bar icons white, and pads the
- * screen's content so it starts below the action bar and ends above the navigation bar. On older
- * versions it does nothing.
+ * <p>For a screen that uses the theme's action bar, applyTo paints a colorPrimaryDark strip behind
+ * the status bar, keeps the status bar icons white, gives the navigation bar dark buttons, and pads
+ * the screen's content so it starts below the action bar and ends above the navigation bar. A
+ * screen that handles the insets itself calls only showDarkNavigationButtons. On versions before
+ * Android 15 both do nothing.
  */
 final class SystemBars {
 
@@ -45,6 +48,7 @@ final class SystemBars {
         window.setBackgroundDrawable(background);
         WindowCompat.getInsetsController(window, window.getDecorView())
                 .setAppearanceLightStatusBars(false);
+        showDarkNavigationButtons(activity);
 
         ViewCompat.setOnApplyWindowInsetsListener(activity.findViewById(android.R.id.content),
                 (content, insets) -> {
@@ -60,6 +64,18 @@ final class SystemBars {
                             ? 0 : rootInsets.getInsets(WindowInsetsCompat.Type.statusBars()).top);
                     return insets;
                 });
+    }
+
+    // showDarkNavigationButtons gives the navigation bar dark buttons. From Android 15 the bar is
+    // see-through over the app's light background, where its usual white buttons would vanish;
+    // before that it is black and keeps them. It must be called after setContentView.
+    static void showDarkNavigationButtons(Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            return;
+        }
+        Window window = activity.getWindow();
+        WindowCompat.getInsetsController(window, window.getDecorView())
+                .setAppearanceLightNavigationBars(true);
     }
 
     private static Drawable themeWindowBackground(AppCompatActivity activity) {

@@ -109,13 +109,18 @@ and that behaves on Android 16 the way the app behaves today.
 - **JOML:** as decided. `ThrowGaugeTest` pins 11 cases to the values the old library gives.
 - **Back:** `MainActivity` handles back with an `OnBackPressedCallback`. No other screen overrode
   `onBackPressed()`.
-- **Edge-to-edge (the builder's choice):** the main screen needed nothing, because its
-  `DrawerLayout` and app bar already handle the insets. The device list, settings and throw
-  screens call `SystemBars.applyTo(this)` after `setContentView`. Under edge-to-edge, appcompat
-  1.7.1 lays a screen's content out across the whole window and adds the action bar's height to
-  the top inset it hands over. On Android 15 and newer, `SystemBars` pads the content by those
-  insets and paints a `colorPrimaryDark` strip behind the status bar through the window
-  background. It also keeps the status bar icons white. On older versions it does nothing.
+- **Edge-to-edge (the builder's choice):** the main screen's `DrawerLayout` and app bar already
+  handle the insets. The device list, settings and throw screens call `SystemBars.applyTo(this)`
+  after `setContentView`. Under edge-to-edge, appcompat 1.7.1 lays a screen's content out across
+  the whole window and adds the action bar's height to the top inset it hands over. On Android 15
+  and newer, `SystemBars` pads the content by those insets and paints a `colorPrimaryDark` strip
+  behind the status bar through the window background. It also keeps the status bar icons white.
+  On older versions it does nothing.
+  - The navigation bar is the one visible change. On Android 15 and newer it is no longer black:
+    it shows the screen's light background. Its buttons are made dark there on all four screens
+    (the main screen calls `SystemBars.showDarkNavigationButtons(this)`), so they stay readable
+    with 3-button and gesture navigation, in light and dark mode, and over the open drawer. Below
+    Android 15 the bar stays black with white buttons.
 - **Tablets:** the manifest property was checked on an emulator display of 1600x2560 at 240 dpi,
   held in landscape. Without the property, the main screen stretched to landscape. With it, the
   app kept a portrait window, letterboxed. System UI shows a one-time tip about letterboxed apps.
@@ -126,8 +131,9 @@ and that behaves on Android 16 the way the app behaves today.
 - **Tests:** the JVM test is `ThrowGaugeTest` (11 tests). The instrumented tests are
   `MainActivityBackTest` (5), `SystemBarsTest` (4) and `ManifestPropertiesTest` (1, Android 12
   and newer).
-  - On the Android 16 emulator they all pass. `SystemBarsTest` also passes with 3-button
-    navigation and in dark mode.
+  - On the Android 16 emulator they all pass with 3-button navigation. Screenshots taken after
+    the navigation-button fix show the same layout and dark buttons in dark mode and with
+    gesture navigation.
   - On the existing API 30 emulator they pass too. The manifest test is skipped there.
 - **Emulator setup:** on this Intel Mac, the Android 16 emulator needs software rendering
   (`swiftshader_indirect`), 3 GB of RAM and `-no-window`. The host GPU offers only GLES 3.0, and
